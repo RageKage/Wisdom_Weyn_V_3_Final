@@ -12,15 +12,14 @@ var admin = require("firebase-admin");
 
 var db = admin.database();
 
-// example testing for firebase
-router.get('/testing', function(req, res) {
+// getting all of the data in my collections
+router.get('/all-collections', function(req, res) {
   // set a reference to to my collection collections
   const ref = db.ref('/collections');
 
   // now we get the collection
   ref.once('value', (snapshot) => {
     let data = snapshot.val();
-    console.log(data);
     res.json(data); // send it to the client side
   }, (errorObject) => {
     console.log('The read failed: ' + errorObject.name);

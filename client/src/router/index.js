@@ -9,6 +9,8 @@ const Home = () => import("@/views/HomeView.vue");
 const signIn = () => import("@/components/auth/SignIn.vue")
 const signUp = () => import("@/components/auth/SignUp.vue")
 
+const collections = import("@/components/Views/collections.vue")
+
 
 export const showHeader = ref(true);
 
@@ -32,6 +34,12 @@ const router = createRouter({
       name: "signUp",
       component: signUp,
       meta: { title: "sign Up" },
+    },
+    {
+      path: "/collections",
+      name: "collections",
+      component: collections,
+      meta: { title: "collections" },
     },
   ],
   // Change the active class name for <router-link> instances
