@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'h-screen': isLoading }" class="container mx-auto p-8">
+  <div :class="{ 'h-screen': isLoading }" class="container mx-auto">
     <div v-if="!isLoading">
       <div class="flex flex-col justify-center">
         <h1 class="text-4xl font-bold text-center mb-10 text-custom-purple-600">
@@ -54,7 +54,7 @@
     <!-- Loader Component -->
     <LoaderVue
       v-if="isLoading"
-      class="fixed top-0 left-0 w-full h-full flex justify-center items-center z-20"
+      class="fixed top-0 left-0 w-full h-full flex justify-center items-center "
     />
   </div>
 </template>
