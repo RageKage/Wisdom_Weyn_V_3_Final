@@ -84,7 +84,7 @@
             </li>
             <li>
               <a
-                @click="closeDropdown"
+                @click="signOutUser"
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >Sign out</a
@@ -170,11 +170,11 @@
             </svg>
           </li>
           <li>
-            <!-- <router-link
-              to="/SubmitProverb"
+            <router-link
+              to="/submission"
               class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-custom-purple-700 md:p-0"
               >Submit</router-link
-            > -->
+            >
           </li>
           <li>
             <svg
@@ -199,11 +199,13 @@
 
 <script setup>
 import { defineProps, defineEmits, onMounted, ref, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
 import Logo from "./Logo.vue";
-import { currentUser, getCurrentUser } from "@/service/auth.js";
+import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
 
 const user = ref(null);
 const dropdownOpen = ref(false);
+const router = useRouter();
 
 // Props and Emits
 const props = defineProps({
@@ -242,7 +244,7 @@ onMounted(async () => {
     const authUser = await currentUser();
 
     if (authUser) {
-      // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password, 
+      // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
       // also this is better encase the provider doesn't provide that data
       const dbUser = await getCurrentUser(authUser.uid);
       user.value = dbUser;
@@ -251,6 +253,18 @@ onMounted(async () => {
     console.error("Error getting current user:", error);
   }
 });
+
+// Sign out user
+const signOutUser = async () => {
+  try {
+    await signout();
+    dropdownOpen.value = false;
+    user.value = null;
+    router.push("/"); // Redirect to home after successful login
+  } catch (error) {
+    console.error("Error signing out:", error);
+  }
+};
 
 onUnmounted(() => {
   document.removeEventListener("click", onClickOutside);

@@ -2,13 +2,11 @@
   <div :class="{ 'h-screen': isLoading }" class="container mx-auto p-8">
     <div v-if="!isLoading">
       <div class="flex flex-col justify-center">
-          <h1
-            class="text-4xl font-bold text-center mb-10 text-custom-purple-600"
-          >
-            Collections
-          </h1>
+        <h1 class="text-4xl font-bold text-center mb-10 text-custom-purple-600">
+          Collections
+        </h1>
       </div>
-      
+
       <div
         class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-full mx-auto sm:max-w-[1200px]"
       >
@@ -23,7 +21,6 @@
           @update:searchQuery="searchQuery = $event"
         />
       </div>
-
 
       <!-- Display Collections Component -->
       <DisplayCollections

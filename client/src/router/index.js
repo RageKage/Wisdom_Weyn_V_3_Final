@@ -10,7 +10,9 @@ const signIn = () => import("@/components/auth/SignIn.vue")
 const signUp = () => import("@/components/auth/SignUp.vue")
 
 const collections = import("@/components/Views/collections.vue")
+const submissionPage  = import("@/components/Views/submissionPage.vue")
 
+// submitProverb
 
 export const showHeader = ref(true);
 
@@ -40,6 +42,12 @@ const router = createRouter({
       name: "collections",
       component: collections,
       meta: { title: "collections" },
+    },
+    {
+      path: "/submission",
+      name: "submission",
+      component: submissionPage,
+      meta: { title: "submission" },
     },
   ],
   // Change the active class name for <router-link> instances

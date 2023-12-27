@@ -35,7 +35,7 @@
                 <router-link to="/collections" @click="closeMenu" class="block text-lg font-medium text-gray-700 hover:text-gray-900">Collections</router-link>
               </li>
               <li>
-                <!-- <router-link to="/SubmitProverb" @click="closeMenu" class="block text-lg font-medium text-gray-700 hover:text-gray-900">Submit</router-link> -->
+                <router-link to="/submission" @click="closeMenu" class="block text-lg font-medium text-gray-700 hover:text-gray-900">Submit</router-link>
               </li>
               <li>
                 <!-- <router-link to="/admin" @click="closeMenu" class="block text-lg font-medium text-gray-700 hover:text-gray-900">Admin</router-link> -->

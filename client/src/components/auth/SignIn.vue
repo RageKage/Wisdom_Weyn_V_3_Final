@@ -106,8 +106,8 @@
 <script setup>
 import { ref } from "vue";
 import { signinWithEmail, signinWithGoogle } from "./Auth";
+import { addUserDataviaGoogle } from "./UserDatabase";
 import { useRouter } from "vue-router";
-
 
 const router = useRouter();
 const email = ref("");
@@ -146,6 +146,7 @@ async function signin() {
 async function signinGoogle() {
   try {
     const userCredential = await signinWithGoogle();
+    await addUserDataviaGoogle(userCredential.user);
     router.push("/"); // Redirect to home after successful login
   } catch (error) {
     if (error) {
