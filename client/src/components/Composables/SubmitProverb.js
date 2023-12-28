@@ -32,39 +32,29 @@ export function submissionFunctions() {
 
     try {
       console.log("Submitting data:", formData);
-      const response = await service
-        .createSubmission(formData)
-        .then((response) => {
-          if (response.success) {
-            isSent.value = true;
+      const response = await service.createSubmission(formData);
 
-            // reset the form after few milliseconds
-            setTimeout(() => {
-              // reset the form by sending a reset event to the child component
-              formVueRef.value.resetForm();
-              isSent.value = false;
-              isLoading.value = false;
-            }, 2500);
+      if (response) {
+        // reset the form after a delay
+        setTimeout(() => {
+          // reset the form by sending a reset event to the child component
+          formVueRef.value.resetForm();
+          isSent.value = true;
+          isLoading.value = false;
+        }, 2500);
 
-            setTimeout(() => {
-              isLoading.value = false;
-            }, 3300);
-
-            console.log("Looks good to me");
-          }
-        })
-        .catch((error) => {
-          console.error("Error submitting data:", error);
-        });
+        setTimeout(() => {
+          isLoading.value = false;
+          isSent.value = false;
+        }, 3300);
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting data:", error);
       await Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Something went wrong!",
       });
-      isLoading.value = false;
-    } finally {
       isLoading.value = false;
     }
   };
