@@ -1,6 +1,5 @@
-// clinet side 
+// clinet side
 import axios from "axios";
-
 
 const AppApiService = () => {
   return {
@@ -15,7 +14,21 @@ const AppApiService = () => {
       return axios.post("/api/sendSubmission", formData).then((res) => {
         return res.data;
       });
-    }
+    },
+
+    upvoteSubmission(id) {
+      console.log(id);
+      return axios.put("/api/upvoteSubmission/" + id).then((res) => {
+        return res.data;
+      });
+    },
+
+    downvoteSubmission(id) {
+      console.log(id);
+      return axios.put("/api/downvoteSubmission/" + id).then((res) => {
+        return res.data;
+      });
+    },
   };
 };
 

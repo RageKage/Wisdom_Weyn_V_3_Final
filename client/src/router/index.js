@@ -6,11 +6,11 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // import view
 const Home = () => import("@/views/HomeView.vue");
-const signIn = () => import("@/components/auth/SignIn.vue")
-const signUp = () => import("@/components/auth/SignUp.vue")
+const signIn = () => import("@/components/auth/SignIn.vue");
+const signUp = () => import("@/components/auth/SignUp.vue");
 
-const collections = import("@/components/Views/collections.vue")
-const submissionPage  = import("@/components/Views/submissionPage.vue")
+const collections = import("@/components/Views/collections.vue");
+const submissionPage = import("@/components/Views/submissionPage.vue");
 
 // submitProverb
 
@@ -58,14 +58,14 @@ router.afterEach(() => {
   AOS.refresh();
 });
 
-
-// // Get the currently signed-in user
+// // Helper function to get the currently authenticated user
 // const getCurrentUser = () => {
 //   return new Promise((resolve, reject) => {
+//     // Listen for changes in the authentication state
 //     const removeListener = onAuthStateChanged(
-//       getAuth(),
+//       auth,
 //       (user) => {
-//         removeListener();
+//         removeListener(); // Remove the listener once the user is retrieved
 //         resolve(user);
 //       },
 //       reject
@@ -73,36 +73,35 @@ router.afterEach(() => {
 //   });
 // };
 
-// // Check for authentication before navigating to protected routes
+// // Before each navigation, check if the user is authenticated and has access to the requested route ie submission routes meta {authority: "user"}
 // router.beforeEach(async (to, from, next) => {
-//   showHeader.value = to.name !== "not-found";
-
-//   const user = await getCurrentUser();
-//   const adminUid = import.meta.env.VITE_ADMIN_UID;
-
 //   if (to.matched.some((record) => record.meta.requireAuth)) {
-//     if (user && user.uid === adminUid) {
+//     if (await getCurrentUser()) {
 //       next();
 //     } else {
-//       next("/sign-in");
+//       alert("You don't have access.");
+//       next("/Login"); // Redirect to the Login page if not authenticated
 //     }
 //   } else {
 //     next();
 //   }
 // });
 
-// Update the document title using the meta information from the route definition
-router.afterEach((to) => {
-  document.title = to.meta.title || "Admin";
-  
-});
 
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {
   // Hide the navbar for signIn and signUp routes
-  showHeader.value = !['signIn', 'signUp'].includes(to.name);
+  showHeader.value = !["signIn", "signUp"].includes(to.name);
   next();
 });
+
+// Update the document title using the meta information from the route definition
+router.afterEach((to) => {
+  if (to.meta.title !== document.title) {
+    document.title = `${to.meta.title} | Wisdom Weyn`;
+  }
+});
+
 
 
 export default router; // Export the router instance for use in other parts of the application

@@ -1,42 +1,41 @@
 <template>
-    <div class="flex space-x-2">
-      <button
-        :class="['py-2 px-4 rounded transition-colors duration-300 ease-in-out text-lg font-semibold', activeFilter === 'all' ? 'bg-custom-purple-600 text-white' : 'bg-custom-purple-50 text-custom-purple-700']"
-        @click="filterType('all')"
-      >
-        All
-      </button>
-      <button
-        :class="['py-2 px-4 rounded transition-colors duration-300 ease-in-out text-lg font-semibold', activeFilter === 'Poetry' ? 'bg-custom-purple-600 text-white' : 'bg-custom-purple-50 text-custom-purple-700']"
-        @click="filterType('Poetry')"
-      >
-        Poetry
-      </button>
-      <button
-        :class="['py-2 px-4 rounded transition-colors duration-300 ease-in-out text-lg font-semibold', activeFilter === 'proverb' ? 'bg-custom-purple-600 text-white' : 'bg-custom-purple-50 text-custom-purple-700']"
-        @click="filterType('proverb')"
-      >
-        Proverbs
-      </button>
-    </div>
-  </template>
-  
-  
-  
-    
-    <script setup>
-    import { defineProps, defineEmits } from "vue";
-    
-    const props = defineProps({
-      filterType: Function,
-      activeFilter: String,
-    });
-    
-    const emits = defineEmits(["filterType", "activeFilter"]);
-    
-    const filterType = (type) => {
-      emits("filterType", type);
-      emits("activeFilter", type);
-    };
-    </script>
-    
+  <div class="flex items-center justify-between space-x-2 md:space-x-4">
+    <button
+      v-for="filter in filters"
+      :key="filter.value"
+      :class="[
+        'rounded-lg p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300',
+        'bg-custom-purple-100 text-custom-purple-600',
+        activeFilter === filter.value
+          ? 'bg-custom-gold-600 text-black'
+          : 'text-custom-gold-600 hover:text-custom-gold-700 transition rounded-full bg-custom-gold-10',
+      ]"
+      @click="filterType(filter.value)"
+    >
+      {{ filter.label }}
+    </button>
+  </div>
+</template>
+
+
+<script setup>
+import { defineProps, defineEmits } from "vue";
+
+const props = defineProps({
+  filterType: Function,
+  activeFilter: String,
+});
+
+const filters = [
+  { label: "All", value: "all" },
+  { label: "Poetry", value: "Poetry" },
+  { label: "Proverb", value: "proverb" },
+];
+
+const emits = defineEmits(["filterType", "activeFilter"]);
+
+const filterType = (type) => {
+  emits("filterType", type);
+  emits("activeFilter", type);
+};
+</script>

@@ -30,6 +30,7 @@ module.exports = {
           900: '#74480F',
           950: '#442604',
         },
+        customBlue: "#51CBEE",
       },
       height: {
         '128': '32rem',

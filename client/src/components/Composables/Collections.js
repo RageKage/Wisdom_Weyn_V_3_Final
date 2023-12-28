@@ -4,7 +4,6 @@ import { getDatabase, ref as dbRef, get } from "firebase/database";
 import AppApiService from "../../service/index";
 
 export function CollectionsFunctions() {
-  const database = getDatabase();
   const collectionData = ref({});
   const showScrollToTopBtn = ref(false);
   const activeFilter = ref(null);
@@ -113,6 +112,24 @@ export function CollectionsFunctions() {
     window.removeEventListener("scroll", checkScroll);
   });
 
+  // now we will add our vote send to our db and the same for the downvote using service
+
+  const upvote = async (itemId) => {
+    try {
+      await service.upvoteSubmission(itemId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const downvote = async (itemId) => {
+    try {
+      await service.downvoteSubmission(itemId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // Return all the functions so they can be used globally
   return {
     collectionData,
@@ -128,5 +145,7 @@ export function CollectionsFunctions() {
     showScrollToTopBtn,
     scrollToTop,
     checkScroll,
+    upvote,
+    downvote,
   };
 }

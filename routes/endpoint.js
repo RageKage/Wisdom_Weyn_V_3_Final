@@ -7,7 +7,7 @@ router.use(express.json());
 let admin = require("firebase-admin");
 
 var db = admin.database();
-const { set, ref } = require("firebase/database");
+const { set, ref, update } = require("firebase/database");
 
 // getting all of the data in my collections
 router.get("/all-collections", function (req, res) {
@@ -107,7 +107,6 @@ router.post("/sendSubmission", async (req, res) => {
       });
     }
 
-
     // now we need to update the user's submission count
     const updateUserCount = db.ref("users/" + formData.user_id);
 
@@ -126,7 +125,7 @@ router.post("/sendSubmission", async (req, res) => {
     // create a unique key for the submission
     const submissionKey = "submission_" + newEntryID;
 
-    // make path to the collection find the type and add the submission key to it, this should create a path like this collections/Poetry/submission_Poetry_1
+    // now we create make path to the collection find the type and add the submission key to it, this should create a path like this collections/Poetry/submission_Poetry_1
     const collectionRef = db.ref(
       "collections/" + formData.picked + "/" + submissionKey
     );
@@ -144,6 +143,7 @@ router.post("/sendSubmission", async (req, res) => {
     // we check if the collection exists if so we add to it if not we create it, this can we future edit the submission if needed
     if (collectionSnapshot.exists()) {
       await collectionRef.update({
+        id: submissionKey,
         entry_id: newEntryID,
         title: formData.title,
         content: formData.content,
@@ -158,6 +158,7 @@ router.post("/sendSubmission", async (req, res) => {
       });
     } else {
       await collectionRef.set({
+        id: submissionKey,
         entry_id: newEntryID,
         title: formData.title,
         content: formData.content,
@@ -172,10 +173,69 @@ router.post("/sendSubmission", async (req, res) => {
       });
     }
 
-    // send client a data object with the new entry id and a success message
+    // send client a success message
     res.json({
       message: "Submission successful!",
     });
+  } catch (error) {
+    return res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// this is to upvote a submission
+router.put("/upvoteSubmission/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("Received upvote request for submission ID: " + id);
+
+    const type = id.split("_")[1];
+
+    const ref = db.ref("collections/" + type + "/" + id);
+
+    const snapshot = await ref.once("value");
+
+    if (snapshot.exists()) {
+      console.log("Snapshot exists");
+      const data = snapshot.val();
+      const upvotes = data.upvotes + 1;
+
+      await ref.update({ upvotes });
+      console.log("Upvote successful!"); 
+      res.json({ message: "Upvote successful!" });
+    } else {
+      console.log("Snapshot does not exist");
+      return res.status(404).send("Submission not found");
+    }
+  } catch (error) {
+    console.error("Error updating upvote:", error); 
+    return res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// this is to downvote a submission
+router.put("/downvoteSubmission/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("Received downvote request for submission ID: " + id);
+
+    const type = id.split("_")[1];
+
+    const ref = db.ref("collections/" + type + "/" + id);
+
+    const snapshot = await ref.once("value");
+
+    if (snapshot.exists()) {
+      console.log("Snapshot exists");
+      const data = snapshot.val();
+      const downvotes = data.downvotes + 1;
+
+      await ref.update({ downvotes });
+      console.log("Downvote successful!"); // Log after update
+      res.json({ message: "Downvote successful!" });
+    } else {
+      console.log("Snapshot does not exist");
+      return res.status(404).send("Submission not found");
+    }
   } catch (error) {
     return res.status(500).send("Server error: " + error.message);
   }

@@ -1,31 +1,34 @@
 <template>
   <div :class="{ 'h-screen': isLoading }" class="container mx-auto">
     <div v-if="!isLoading">
-      <div class="flex flex-col justify-center">
-        <h1 class="text-4xl font-bold text-center mb-10 text-custom-purple-600">
-          Collections
-        </h1>
-      </div>
+      <h1 class="text-center text-3xl font-bold text-custom-purple-600 mb-6">
+        Collections
+      </h1>
 
       <div
-        class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-full mx-auto sm:max-w-[1200px]"
+        class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 mx-auto max-w-[1200px]"
+
+
       >
+
+      <!-- class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-full mx-auto sm:max-w-[1200px]" -->
+
         <CollectionFilter
           :activeFilter="activeFilter"
           @filterType="filterType"
         />
 
-        <!-- Search Bar Component -->
         <SearchBarVue
           :searchQuery="searchQuery"
           @update:searchQuery="searchQuery = $event"
         />
       </div>
 
-      <!-- Display Collections Component -->
       <DisplayCollections
         :displayedItems="displayedItems"
         :activeFilter="activeFilter"
+        @upvote="upvote"
+        @downvote="downvote"
       ></DisplayCollections>
 
       <!-- Scroll to Top Button -->
@@ -54,7 +57,7 @@
     <!-- Loader Component -->
     <LoaderVue
       v-if="isLoading"
-      class="fixed top-0 left-0 w-full h-full flex justify-center items-center "
+      class="fixed top-0 left-0 w-full h-full flex justify-center items-center"
     />
   </div>
 </template>
@@ -80,5 +83,7 @@ const {
   fetchCollectionData,
   scrollToTop,
   showScrollToTopBtn,
+  upvote,
+  downvote,
 } = CollectionsFunctions();
 </script>
