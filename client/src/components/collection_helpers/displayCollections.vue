@@ -76,9 +76,9 @@
           <div class="flex-1">
             <div class="flex items-center mt-4">
               <button
-              @click="upvote(item.id)"
-              class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
-            >
+                @click="upvote(item.id)"
+                class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -96,9 +96,9 @@
               </button>
               <span class="text-gray-700">{{ item.upvotes }}</span>
               <button
-              @click="downvote(item.id)"
-              class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300 ml-4"
-            >
+                @click="downvote(item.id)"
+                class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300 ml-4 mr-4"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -124,7 +124,8 @@
 </template>
 
 <script setup>
-import { defineProps,defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref } from "vue";
+import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
 
 const props = defineProps({
   displayedItems: {
@@ -137,6 +138,8 @@ const props = defineProps({
   },
   isLoading: Boolean,
 });
+
+const isLoggedIn = ref(false);
 
 const toggleMeaning = (item) => {
   item.showMeaning = !item.showMeaning;
@@ -180,17 +183,36 @@ const ShareToTwitter = (item) => {
   window.open(shareToTwitterUrl, "_blank");
 };
 
+const getCurrentUserStatus = async () => {
+  try {
+    const authUser = await currentUser();
+    // if current user is true then return set the is  isLoggedIn.value = true;
+    if (authUser) {
+      isLoggedIn.value = true;
+    } else {
+      isLoggedIn.value = false;
+    }
+  } catch (error) {
+    console.error("Error getting current user:", error);
+  }
+};
 
 // we will now define what we are emitting to the parent
-const emits = defineEmits(["upvote", "downvote"]);
+const emits = defineEmits(["upvote", "downvote", "loginRequired"]);
 
 const upvote = (id) => {
-  emits("upvote", id);
+  if (isLoggedIn.value) {
+    emits("upvote", id);
+  } else {
+    emits("loginRequired", id);
+  }
 };
 
 const downvote = (id) => {
-  emits("downvote", id);
+  if (isLoggedIn.value) {
+    emits("downvote", id);
+  } else {
+    emits("loginRequired", id);
+  }
 };
-
-
 </script>

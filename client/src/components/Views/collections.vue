@@ -7,11 +7,8 @@
 
       <div
         class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 mx-auto max-w-[1200px]"
-
-
       >
-
-      <!-- class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-full mx-auto sm:max-w-[1200px]" -->
+        <!-- class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-full mx-auto sm:max-w-[1200px]" -->
 
         <CollectionFilter
           :activeFilter="activeFilter"
@@ -29,6 +26,7 @@
         :activeFilter="activeFilter"
         @upvote="upvote"
         @downvote="downvote"
+        @loginRequired="showLoginPopup"
       ></DisplayCollections>
 
       <!-- Scroll to Top Button -->
@@ -64,6 +62,7 @@
 
 <script setup>
 import LoaderVue from "@/assets/loader.vue";
+import Swal from "sweetalert2";
 
 // Child components
 import SearchBarVue from "@/components/collection_helpers/searchBar.vue";
@@ -72,6 +71,30 @@ import CollectionFilter from "@/components/collection_helpers/collectionFilter.v
 
 // Composable collections function
 import { CollectionsFunctions } from "../Composables/Collections";
+
+const showLoginPopup = () => {
+  Swal.fire({
+    title: "Login Required",
+    text: "You must be logged in to vote on collections!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Login",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+    customClass: {
+      popup: "flex flex-col space-y-4",
+      header: "flex items-center justify-between w-full",
+      closeButton: "text-gray-400 hover:text-gray-500 ml-auto",
+      content: "text-gray-700 prose",
+      actions: "flex justify-end gap-4 mt-4",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Redirect to login page
+      window.location.href = "/signin";
+    }
+  });
+};
 
 const {
   displayedItems,

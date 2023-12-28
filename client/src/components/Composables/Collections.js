@@ -1,5 +1,6 @@
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { getDatabase, ref as dbRef, get } from "firebase/database";
+import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
 
 import AppApiService from "../../service/index";
 
@@ -10,6 +11,7 @@ export function CollectionsFunctions() {
   const isLoading = ref(false);
   const searchQuery = ref("");
   const searchResults = ref([]);
+  const isLoggedIn = ref(false);
 
   const service = AppApiService();
 
@@ -91,7 +93,7 @@ export function CollectionsFunctions() {
       setTimeout(() => {
         collectionData.value = tempArray;
         isLoading.value = false;
-      }, 3000);
+      }, 100);
     }
   };
 
@@ -112,11 +114,30 @@ export function CollectionsFunctions() {
     window.removeEventListener("scroll", checkScroll);
   });
 
+  const getCurrentUser = async () => {
+    try {
+      const authUser = await currentUser();
+      // if current user is true then return set the is  isLoggedIn.value = true;
+      if (authUser) {
+        isLoggedIn.value = true;
+      } else {
+        isLoggedIn.value = false;
+      }
+    } catch (error) {
+      console.error("Error getting current user:", error);
+    }
+  };
+
   // now we will add our vote send to our db and the same for the downvote using service
 
   const upvote = async (itemId) => {
     try {
-      await service.upvoteSubmission(itemId);
+      // check if they are logged in and if they are not then we will not allow them to vote
+      if (isLoggedIn.value) {
+        await service.upvoteSubmission(itemId);
+      } else {
+        console.log("You must be logged in to vote");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -124,7 +145,11 @@ export function CollectionsFunctions() {
 
   const downvote = async (itemId) => {
     try {
-      await service.downvoteSubmission(itemId);
+      if (isLoggedIn.value) {
+        await service.downvoteSubmission(itemId);
+      } else {
+        console.log("You must be logged in to vote");
+      }
     } catch (error) {
       console.error(error);
     }
