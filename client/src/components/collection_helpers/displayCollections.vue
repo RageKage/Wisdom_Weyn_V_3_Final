@@ -4,7 +4,7 @@
   </div>
   <div
     v-if="!isLoading"
-    class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-[1200px] mx-auto md:px-0"
+    class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-[1200px] mx-auto md:px-0 "
   >
     <div
       v-for="item in displayedItems"
@@ -185,23 +185,13 @@ const formatDate = (date) => {
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(date).toLocaleDateString("en-US", options);
 };
-onMounted(() => {
-  getCurrentUserStatus();
-});
-
-const getCurrentUserStatus = async () => {
+onMounted(async () => {
   try {
-    const authUser = await currentUser();
-    // if current user is true then return set the is  isLoggedIn.value = true;
-    if (authUser) {
-      isLoggedIn.value = true;
-    } else {
-      isLoggedIn.value = false;
-    }
+    isLoggedIn.value = await currentUser() !== null; 
   } catch (error) {
     console.error("Error getting current user:", error);
   }
-};
+});
 
 // we will now define what we are emitting to the parent
 const emits = defineEmits([

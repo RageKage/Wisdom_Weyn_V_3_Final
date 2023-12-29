@@ -81,19 +81,20 @@ router.afterEach(() => {
 //   });
 // };
 
-// // Before each navigation, check if the user is authenticated and has access to the requested route ie submission routes meta {authority: "user"}
-// router.beforeEach(async (to, from, next) => {
-//   if (to.matched.some((record) => record.meta.requireAuth)) {
-//     if (await getCurrentUser()) {
-//       next();
-//     } else {
-//       alert("You don't have access.");
-//       next("/Login"); // Redirect to the Login page if not authenticated
-//     }
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some((record) => record.meta.requireAuth)) {
+    const user = await currentUser(); 
+    if (user) {
+      next();
+    } else {
+      alert("You need to sign in to access this page.");
+      next("/signIn"); // Redirect to the sign-in page
+    }
+  } else {
+    next();
+  }
+});
+
 
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {

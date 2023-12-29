@@ -241,16 +241,16 @@ onMounted(async () => {
   document.addEventListener("click", onClickOutside);
 
   try {
-    const authUser = await currentUser();
+    const authUser = await currentUser(); 
 
     if (authUser) {
-      // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
+            // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
       // also this is better encase the provider doesn't provide that data
-      const dbUser = await getCurrentUser(authUser.uid);
+      const dbUser = await getCurrentUser(authUser.uid); 
       user.value = dbUser;
     }
   } catch (error) {
-    console.error("Error getting current user:", error);
+    console.error("Error getting current user:", error.message);
   }
 });
 

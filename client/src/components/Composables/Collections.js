@@ -33,8 +33,13 @@ export function CollectionsFunctions() {
     // Loop through the collection data and push all the items into the allItems array and trucate the content and meaning
     Object.values(collectionData.value).forEach((typeCollection) => {
       typeCollection.forEach((item) => {
-        item.content = truncateString(item.content, 100);
-        item.meaning = truncateString(item.meaning, 100);
+        // check if title isn't empty string
+        if (item.title) {
+          item.title = truncateString(item.title, 50);
+
+        }
+        item.content = truncateString(item.content, 50);
+        item.meaning = truncateString(item.meaning, 50);
         allItems.push(item);
       });
     });
@@ -90,23 +95,18 @@ export function CollectionsFunctions() {
     const tempArray = {};
 
     try {
-      service
-        .getAllCollections()
-        .then((data) => {
-          if (data) {
-            Object.keys(data).forEach((type) => {
-              tempArray[type] = Object.values(data[type]).reverse();
-            });
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching collections:", error);
+      const data = await service.getAllCollections(); // Await the promise
+      if (data) {
+        Object.keys(data).forEach((type) => {
+          tempArray[type] = Object.values(data[type]).reverse();
         });
+      }
+      collectionData.value = tempArray;
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching collections:", error);
+      // Handle errors appropriately, e.g., display user-friendly messages
     } finally {
       setTimeout(() => {
-        collectionData.value = tempArray;
         isLoading.value = false;
       }, 100);
     }
@@ -128,7 +128,6 @@ export function CollectionsFunctions() {
   onUnmounted(() => {
     window.removeEventListener("scroll", checkScroll);
   });
-
 
   // Return all the functions so they can be used globally
   return {

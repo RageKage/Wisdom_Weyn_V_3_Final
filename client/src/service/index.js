@@ -1,5 +1,6 @@
 // clinet side
 import axios from "axios";
+import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
 
 const AppApiService = () => {
   return {
@@ -10,22 +11,40 @@ const AppApiService = () => {
       });
     },
     // function to create a new submission
-    createSubmission(formData) {
-      return axios.post("/api/sendSubmission", formData).then((res) => {
-        return res.data;
-      });
+    async createSubmission(formData) {
+      // check that isn't an auth user
+      const authUser = await currentUser();
+      if (!authUser) {
+        // return not login validation
+        return Promise.reject("You must be logged in to create a submission");
+      } else {
+        console.log("NOoooo");
+        return axios.post("/api/sendSubmission", formData).then((res) => {
+          return res.data;
+        });
+      }
     },
 
-    upvoteSubmission(id) {
-      return axios.put("/api/upvoteSubmission/" + id).then((res) => {
-        return res.data;
-      });
+    async upvoteSubmission(id) {
+      const authUser = await currentUser();
+      if (!authUser) {
+        return Promise.reject("Sorry, you must be logged in to vote");
+      } else {
+        return axios.put("/api/upvoteSubmission/" + id).then((res) => {
+          return res.data;
+        });
+      }
     },
 
-    downvoteSubmission(id) {
-      return axios.put("/api/downvoteSubmission/" + id).then((res) => {
-        return res.data;
-      });
+    async downvoteSubmission(id) {
+      const authUser = await currentUser();
+      if (!authUser) {
+        return Promise.reject("Sorry, you must be logged in to vote");
+      } else {
+        return axios.put("/api/downvoteSubmission/" + id).then((res) => {
+          return res.data;
+        });
+      }
     },
 
     // this is to get one submission by id

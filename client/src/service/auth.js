@@ -1,11 +1,14 @@
-// For firebase authentications  and getting data from firebase for user authentication
+// auth.js
+
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 
-function currentUser() {
+// Get the current user
+export function currentUser() {
   return new Promise((resolve, reject) => {
     const auth = getAuth();
-    onAuthStateChanged(
+
+    const unsubscribe = onAuthStateChanged(
       auth,
       (user) => {
         if (user) {
@@ -13,6 +16,8 @@ function currentUser() {
         } else {
           resolve(null); // set to null if no user logged in
         }
+
+        unsubscribe(); 
       },
       reject
     );
@@ -20,35 +25,37 @@ function currentUser() {
 }
 
 // this is to get the current user from our db
-function getCurrentUser(Useruid) {
+export function getCurrentUser(Useruid) {
   return new Promise((resolve, reject) => {
     const db = getDatabase();
     const userLocation = ref(db, "users/" + Useruid);
 
-    onValue(
-      userLocation,
-      (snapshot) => {
-        const data = snapshot.val();
-        resolve(data); // return the data if the promise is resolved
-      },
-      (error) => {
-        reject(error); //
-      }
-    );
-  });
-}
-
-// signout the user
-
-function signout() {
-  return new Promise((resolve, reject) => {
-    const auth = getAuth();
-    if (auth) {
-      resolve(signOut(auth));
-    } else {
-      reject("User not signed out");
+    try {
+      onValue(
+        userLocation,
+        (snapshot) => {
+          const data = snapshot.val();
+          resolve(data); // return the data if the promise is resolved
+        },
+        (error) => {
+          reject(error); 
+        }
+      );
+    } catch (error) {
+      console.error("Error getting current user from database:", error);
+      reject(error); // Reject the promise with the error
     }
   });
 }
 
-export { currentUser, getCurrentUser, signout };
+// Sign out the user
+export async function signout() {
+  const auth = getAuth();
+
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Error signing out:", error);
+    throw error; 
+  }
+}

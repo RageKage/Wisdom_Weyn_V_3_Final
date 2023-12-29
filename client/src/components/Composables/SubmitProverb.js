@@ -24,7 +24,7 @@ export function submissionFunctions() {
       await Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Please fill in all fields! 2",
+        text: "Please fill in all fields!",
       });
       isLoading.value = false;
       return;
@@ -49,13 +49,34 @@ export function submissionFunctions() {
         }, 3300);
       }
     } catch (error) {
-      console.error("Error submitting data:", error);
-      await Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-      });
-      isLoading.value = false;
+      // check if error contains the msg "You must be logged in to create a submission"
+      if (error.includes("You must be logged in to create a submission")) {
+        await Swal.fire({
+          title: "Login Required",
+          text: "You must be logged in to create a submission",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Login",
+          cancelButtonText: "Cancel",
+          reverseButtons: true,
+          customClass: {
+            popup: "flex flex-col space-y-4",
+            header: "flex items-center justify-between w-full",
+            closeButton: "text-gray-400 hover:text-gray-500 ml-auto",
+            content: "text-gray-700 prose",
+            actions: "flex justify-end gap-4 mt-4",
+          },
+        });
+        isLoading.value = false;
+        return;
+      } else {
+        await Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+        isLoading.value = false;
+      }
     }
   };
 

@@ -9,7 +9,6 @@ export function Actions() {
   const service = AppApiService();
   const router = useRouter();
 
-
   // now we will add our vote send to our db and the same for the downvote using service
 
   const upvote = async (itemId) => {
