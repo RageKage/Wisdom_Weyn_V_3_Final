@@ -241,4 +241,29 @@ router.put("/downvoteSubmission/:id", async (req, res) => {
   }
 });
 
+// this is to get one submission by id
+router.get("/getSubmission/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("Received request for submission ID: " + id);
+
+    const type = id.split("_")[1];
+
+    const ref = db.ref("collections/" + type + "/" + id);
+
+    const snapshot = await ref.once("value");
+
+    if (snapshot.exists()) {
+      console.log("Snapshot exists");
+      const data = snapshot.val();
+      res.json(data);
+    } else {
+      console.log("Snapshot does not exist");
+      return res.status(404).send("Submission not found");
+    }
+  } catch (error) {
+    return res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

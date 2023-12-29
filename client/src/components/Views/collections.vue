@@ -27,6 +27,7 @@
         @upvote="upvote"
         @downvote="downvote"
         @loginRequired="showLoginPopup"
+        @showfullText="showFullText"
       ></DisplayCollections>
 
       <!-- Scroll to Top Button -->
@@ -71,6 +72,7 @@ import CollectionFilter from "@/components/collection_helpers/collectionFilter.v
 
 // Composable collections function
 import { CollectionsFunctions } from "../Composables/Collections";
+import { Actions } from "../Composables/actions";
 
 const showLoginPopup = () => {
   Swal.fire({
@@ -106,7 +108,7 @@ const {
   fetchCollectionData,
   scrollToTop,
   showScrollToTopBtn,
-  upvote,
-  downvote,
 } = CollectionsFunctions();
+
+const { upvote, downvote, showFullText } = Actions();
 </script>

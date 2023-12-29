@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { ref } from "vue";
+import AOS from 'aos';
 
 // firebase import
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -9,8 +10,9 @@ const Home = () => import("@/views/HomeView.vue");
 const signIn = () => import("@/components/auth/SignIn.vue");
 const signUp = () => import("@/components/auth/SignUp.vue");
 
-const collections = import("@/components/Views/collections.vue");
-const submissionPage = import("@/components/Views/submissionPage.vue");
+const collections  = () => import("@/components/Views/collections.vue");
+const submissionPage  = () => import("@/components/Views/submissionPage.vue");
+const DisplayPoetry  = ()  => import("@/components/Views/DisplayPoetry.vue");
 
 // submitProverb
 
@@ -48,6 +50,12 @@ const router = createRouter({
       name: "submission",
       component: submissionPage,
       meta: { title: "submission" },
+    },
+    {
+      path: "/displayPoetry/:id",
+      name: "displayPoetry",
+      component: DisplayPoetry,
+      meta: { title: "Display Poetry" },
     },
   ],
   // Change the active class name for <router-link> instances
@@ -87,7 +95,6 @@ router.afterEach(() => {
 //   }
 // });
 
-
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {
   // Hide the navbar for signIn and signUp routes
@@ -101,7 +108,5 @@ router.afterEach((to) => {
     document.title = `${to.meta.title} | Wisdom Weyn`;
   }
 });
-
-
 
 export default router; // Export the router instance for use in other parts of the application

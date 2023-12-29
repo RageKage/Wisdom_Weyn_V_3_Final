@@ -17,15 +17,20 @@ const AppApiService = () => {
     },
 
     upvoteSubmission(id) {
-      console.log(id);
       return axios.put("/api/upvoteSubmission/" + id).then((res) => {
         return res.data;
       });
     },
 
     downvoteSubmission(id) {
-      console.log(id);
       return axios.put("/api/downvoteSubmission/" + id).then((res) => {
+        return res.data;
+      });
+    },
+
+    // this is to get one submission by id
+    getSubmission(id) {
+      return axios.get("/api/getSubmission/" + id).then((res) => {
         return res.data;
       });
     },

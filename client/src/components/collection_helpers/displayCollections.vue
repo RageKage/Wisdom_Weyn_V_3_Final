@@ -16,39 +16,73 @@
         class="flex flex-row md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6"
       >
         <div class="flex-1">
-          <div class="flex flex-row flex-nowrap justify-between items-center">
-            <div class="pr-2">
-              <h2
-                v-if="item.title"
-                class="text-xl font-bold text-custom-purple-600 mb-2"
-              >
-                {{ item.title || item.proverb }}
-              </h2>
-              <p class="text-gray-700">
-                {{ item.content }}
-              </p>
-            </div>
+          <div class="pr-2">
+            <div>
+              <template v-if="item.title && item.title.trim() !== ''">
+                <div class="flex flex-col items-start">
+                  <h2 class="text-xl font-bold text-custom-purple-600 mb-2">
+                    {{ item.title || item.proverb }}
+                  </h2>
 
-            <!-- Share Button -->
-            <button
-              @click="ShareToTwitter(item)"
-              class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
+                  <div class="flex items-center mb-4">
+                    <button
+                      @click="showfullText(item.id)"
+                      class="rounded-lg bg-blue-100 text-blue-600 p-2 hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 mr-4"
+                    >
+                      Details
+                    </button>
+
+                    <button
+                      v-if="item.title && item.title.trim() !== ''"
+                      @click="ShareToTwitter(item)"
+                      class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </template>
+
+              <div
+                class="text-gray-700 text-lg leading-relaxed flex justify-between items-center"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                />
-              </svg>
-            </button>
+                {{ item.content }}
+
+                <button
+                  v-if="!item.title && !item.title.trim() !== ''"
+                  @click="ShareToTwitter(item)"
+                  class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div
@@ -124,8 +158,10 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref, onMounted } from "vue";
 import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
+// /Users/nimanahmed/VS_code/Project/final_wisdom_weyn/client/src/components/Composables/actions.js
+import { Actions } from "../Composables/actions";
 
 const props = defineProps({
   displayedItems: {
@@ -149,39 +185,9 @@ const formatDate = (date) => {
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(date).toLocaleDateString("en-US", options);
 };
-
-const ShareToTwitter = (item) => {
-  const itemType = item.title ? "poem" : "proverb";
-  const textToShare = item.title || item.content;
-  let tweetText = `Check out this ${itemType}: "${textToShare}"`;
-
-  const viaText = " - via [YourAppName]";
-  const websiteLink = "https://www.yourwebsite.com"; // Replace with your actual website URL
-  const meaningText = item.meaning ? ` - Meaning: "${item.meaning}"` : "";
-  const logoUrl = "https://www.yourwebsite.com/logo.png"; // Replace with the actual URL of your logo
-  const potentialTweet =
-    tweetText + meaningText + ` [${websiteLink}]` + viaText;
-
-  // Add the logo URL at the end of the tweet if there's space
-  let spaceForLogoUrl = 280 - potentialTweet.length - 24; // 24 chars for the URL shortening
-  if (spaceForLogoUrl > 0) {
-    tweetText = potentialTweet + ` [${logoUrl}]`;
-  } else {
-    tweetText = potentialTweet;
-  }
-
-  // Truncate if still too long
-  if (tweetText.length > 280) {
-    const maxMeaningLength = 280 - (tweetText.length - item.meaning.length) - 3; // Adjust for ellipsis and other text
-    const truncatedMeaning = item.meaning.slice(0, maxMeaningLength) + "...";
-    tweetText = `Check out this ${itemType}: "${textToShare}"\nMeaning: "${truncatedMeaning}"\n[${websiteLink}] - via ${viaText} [${logoUrl}]`;
-  }
-
-  const shareToTwitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    tweetText
-  )}`;
-  window.open(shareToTwitterUrl, "_blank");
-};
+onMounted(() => {
+  getCurrentUserStatus();
+});
 
 const getCurrentUserStatus = async () => {
   try {
@@ -198,7 +204,12 @@ const getCurrentUserStatus = async () => {
 };
 
 // we will now define what we are emitting to the parent
-const emits = defineEmits(["upvote", "downvote", "loginRequired"]);
+const emits = defineEmits([
+  "upvote",
+  "downvote",
+  "loginRequired",
+  "showfullText",
+]);
 
 const upvote = (id) => {
   if (isLoggedIn.value) {
@@ -215,4 +226,10 @@ const downvote = (id) => {
     emits("loginRequired", id);
   }
 };
+
+const showfullText = (id) => {
+  emits("showfullText", id);
+};
+
+const { ShareToTwitter } = Actions();
 </script>
