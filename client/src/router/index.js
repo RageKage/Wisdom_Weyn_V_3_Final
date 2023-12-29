@@ -13,6 +13,7 @@ const signUp = () => import("@/components/auth/SignUp.vue");
 const collections  = () => import("@/components/Views/collections.vue");
 const submissionPage  = () => import("@/components/Views/submissionPage.vue");
 const DisplayPoetry  = ()  => import("@/components/Views/DisplayPoetry.vue");
+const dashboard = () => import("@/components/features/dashboard.vue")
 
 // submitProverb
 
@@ -56,6 +57,12 @@ const router = createRouter({
       name: "displayPoetry",
       component: DisplayPoetry,
       meta: { title: "Display Poetry" },
+    },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: dashboard,
+      meta: { title: "dashboard" },
     },
   ],
   // Change the active class name for <router-link> instances

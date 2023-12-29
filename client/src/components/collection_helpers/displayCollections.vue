@@ -4,12 +4,12 @@
   </div>
   <div
     v-if="!isLoading"
-    class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-[1200px] mx-auto md:px-0 "
+    class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-[1200px] mx-auto md:px-0"
   >
     <div
       v-for="item in displayedItems"
       :key="item.id"
-      class="bg-white shadow rounded-lg p-6"
+      class="bg-white shadow-lg rounded-lg p-6"
     >
       <!-- Flex Container -->
       <div
@@ -18,69 +18,44 @@
         <div class="flex-1">
           <div class="pr-2">
             <div>
-              <template v-if="item.title && item.title.trim() !== ''">
-                <div class="flex flex-col items-start">
-                  <h2 class="text-xl font-bold text-custom-purple-600 mb-2">
-                    {{ item.title || item.proverb }}
-                  </h2>
-
-                  <div class="flex items-center mb-4">
-                    <button
-                      @click="showfullText(item.id)"
-                      class="rounded-lg bg-blue-100 text-blue-600 p-2 hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 mr-4"
-                    >
-                      Details
-                    </button>
-
-                    <button
-                      v-if="item.title && item.title.trim() !== ''"
-                      @click="ShareToTwitter(item)"
-                      class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-6 h-6"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </template>
+              <div class="flex flex-col items-start">
+                <h2 class="text-lg font-bold text-custom-purple-600 mb-2">
+                  {{ item.title || item.proverb }}
+                </h2>
+              </div>
 
               <div
-                class="text-gray-700 text-lg leading-relaxed flex justify-between items-center"
+                class="text-gray-700 text-md leading-relaxed flex justify-between items-center"
               >
                 {{ item.content }}
-
-                <button
-                  v-if="!item.title && !item.title.trim() !== ''"
-                  @click="ShareToTwitter(item)"
-                  class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6"
+                <div class="flex justify-between items-center">
+                  <button
+                    @click="showfullText(item.id)"
+                    class="rounded-lg text-sm font-bold bg-blue-100 text-blue-600 p-2 hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 mr-4"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                    />
-                  </svg>
-                </button>
+                    Details
+                  </button>
+
+                  <button
+                    @click="ShareToTwitter(item)"
+                    class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -94,7 +69,7 @@
           </div>
           <button
             @click="toggleMeaning(item)"
-            class="mt-2 text-custom-purple-600 hover:text-custom-purple-700 transition"
+            class="mt-2 text-custom-purple-600 text-md hover:text-custom-purple-700 transition"
           >
             {{ item.showMeaning ? "Hide Meaning" : "See Meaning" }}
           </button>
@@ -187,7 +162,7 @@ const formatDate = (date) => {
 };
 onMounted(async () => {
   try {
-    isLoggedIn.value = await currentUser() !== null; 
+    isLoggedIn.value = (await currentUser()) !== null;
   } catch (error) {
     console.error("Error getting current user:", error);
   }
@@ -223,3 +198,88 @@ const showfullText = (id) => {
 
 const { ShareToTwitter } = Actions();
 </script>
+
+<!-- <style scoped>
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.bg-white {
+  background-color: #fff;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.shadow {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.text-gray-900 {
+  color: #111827;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.border-t {
+  border-top-width: 1px;
+}
+
+.border-gray-200 {
+  border-color: #e5e7eb;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.block {
+  display: block;
+}
+
+.hover\:underline:hover {
+  text-decoration: underline;
+}
+</style> -->
