@@ -1,6 +1,6 @@
 <template>
   <div
-    class="container px-4 bg-white shadow rounded-lg p-6 max-w-[1200px] mx-auto"
+    class="container px-4 bg-white shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[800px] py-4"
     v-if="item"
   >
     <div class="flex flex-col space-y-4">
