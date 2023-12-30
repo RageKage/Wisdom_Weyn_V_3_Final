@@ -5,22 +5,24 @@
         Collections
       </h1>
 
+      <!-- filter and search row -->
       <div
-        class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 mx-auto max-w-[1200px]"
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mx-auto max-w-[1200px]"
       >
-        <!-- class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 max-w-full mx-auto sm:max-w-[1200px]" -->
-
         <CollectionFilter
           :activeFilter="activeFilter"
           @filterType="filterType"
+          class="p-2 rounded-lg outline-none"
         />
 
         <SearchBarVue
           :searchQuery="searchQuery"
           @update:searchQuery="searchQuery = $event"
+          class="p-2 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-custom-purple-400 focus:border-custom-purple-400 transition-all duration-300"
         />
       </div>
 
+      <!-- collections -->
       <DisplayCollections
         :displayedItems="displayedItems"
         :activeFilter="activeFilter"

@@ -28,34 +28,6 @@
                 class="text-gray-700 text-md leading-relaxed flex justify-between items-center"
               >
                 {{ item.content }}
-                <div class="flex justify-between items-center">
-                  <button
-                    @click="showfullText(item.id)"
-                    class="rounded-lg text-sm font-bold bg-blue-100 text-blue-600 p-2 hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 mr-4"
-                  >
-                    Details
-                  </button>
-
-                  <button
-                    @click="ShareToTwitter(item)"
-                    class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-6 h-6"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                      />
-                    </svg>
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -67,6 +39,8 @@
           >
             <span>{{ item.meaning }}</span>
           </div>
+
+          <!-- toggle meaning -->
           <button
             @click="toggleMeaning(item)"
             class="mt-2 text-custom-purple-600 text-md hover:text-custom-purple-700 transition"
@@ -74,7 +48,12 @@
             {{ item.showMeaning ? "Hide Meaning" : "See Meaning" }}
           </button>
           <p class="text-sm text-gray-500 mt-2">
-            Submitted by: <span class="font-medium">{{ item.username }}</span>
+            Submitted by:
+            <span
+              class="font-medium hover:underline hover:cursor-pointer"
+              @click="userdashboard(item.submittedBy)"
+              >{{ item.username }}</span
+            >
           </p>
 
           <p class="text-sm text-gray-500">
@@ -82,7 +61,8 @@
             <span class="font-medium">{{ formatDate(item.creationDate) }}</span>
           </p>
 
-          <div class="flex-1">
+          <!-- voting -->
+          <div class="flex items-center justify-between">
             <div class="flex items-center mt-4">
               <button
                 @click="upvote(item.id)"
@@ -125,6 +105,36 @@
               </button>
               <span class="text-gray-700">{{ item.downvotes }}</span>
             </div>
+
+            <!-- sharing and full text -->
+            <div class="flex items-center mt-4">
+              <button
+                @click="showfullText(item.id)"
+                class="rounded-lg text-sm font-bold bg-blue-100 text-blue-600 p-2 hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 mr-4"
+              >
+                Expand
+              </button>
+
+              <button
+                @click="ShareToTwitter(item)"
+                class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -155,11 +165,13 @@ const isLoggedIn = ref(false);
 const toggleMeaning = (item) => {
   item.showMeaning = !item.showMeaning;
 };
+
+// Format the date
 const formatDate = (date) => {
-  // Format the date
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(date).toLocaleDateString("en-US", options);
 };
+
 onMounted(async () => {
   try {
     isLoggedIn.value = (await currentUser()) !== null;
@@ -196,5 +208,5 @@ const showfullText = (id) => {
   emits("showfullText", id);
 };
 
-const { ShareToTwitter } = Actions();
+const { ShareToTwitter, userdashboard } = Actions();
 </script>

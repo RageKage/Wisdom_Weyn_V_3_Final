@@ -17,13 +17,17 @@ export function CollectionsFunctions() {
   const service = AppApiService();
   const router = useRouter();
 
-  // truncateString function to truncate the displayedItems content and meaning
-  const truncateString = (string, limit) => {
-    if (string.length > limit) {
-      return string.slice(0, limit) + "...";
-    } else {
-      return string;
+  const truncateString = (text, limit) => {
+    text = text.trim();
+    const words = text.split(" ");
+
+    if (words.length <= limit) {
+      return text;
     }
+
+    const truncatedText = words.slice(0, limit).join(" ");
+
+    return truncatedText + "...";
   };
 
   // Filter the collection data based on the active filter
@@ -35,11 +39,10 @@ export function CollectionsFunctions() {
       typeCollection.forEach((item) => {
         // check if title isn't empty string
         if (item.title) {
-          item.title = truncateString(item.title, 50);
-
+          item.title = truncateString(item.title, 5);
         }
-        item.content = truncateString(item.content, 50);
-        item.meaning = truncateString(item.meaning, 50);
+        item.content = truncateString(item.content, 10);
+        item.meaning = truncateString(item.meaning, 10);
         allItems.push(item);
       });
     });
@@ -104,7 +107,6 @@ export function CollectionsFunctions() {
       collectionData.value = tempArray;
     } catch (error) {
       console.error("Error fetching collections:", error);
-      // Handle errors appropriately, e.g., display user-friendly messages
     } finally {
       setTimeout(() => {
         isLoading.value = false;
@@ -112,6 +114,7 @@ export function CollectionsFunctions() {
     }
   };
 
+  // Scroll to the top of the page
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -120,6 +123,7 @@ export function CollectionsFunctions() {
     showScrollToTopBtn.value = window.scrollY > 100;
   };
 
+  // Call the fetchCollectionData function when the component is mounted
   onMounted(() => {
     fetchCollectionData();
     window.addEventListener("scroll", checkScroll);

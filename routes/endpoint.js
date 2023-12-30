@@ -36,12 +36,6 @@ router.post("/sendSubmission", async (req, res) => {
 
     const getisodate = new Date().toISOString();
     const date = new Date(getisodate);
-    const month = date.toLocaleString("default", { month: "long" });
-    const day = date.getDate();
-    const year = date.getFullYear();
-
-    // this is the current date in the format of Month Day, Year
-    const currentDate = `${month} ${day}, ${year}`;
 
     let counterRef;
     if (formData.picked === "proverb") {
@@ -64,22 +58,9 @@ router.post("/sendSubmission", async (req, res) => {
     await counterRef.set(currentCount + 1);
 
     const newEntryID = `${formData.picked}_${currentCount + 1}`;
-    // this creates a reference to the path of the type or in this case teh form.type and then it's new id "newEntryID"
-    const newEntryRef = db.ref(`${formData.picked}s/${newEntryID}`);
 
-    // this is the data that will be saved into the reference above
-    const entryData = {
-      id: newEntryID,
-      title: formData.title,
-      content: formData.content,
-      meaning: formData.meaning,
-      creationDate: currentDate,
-      upvotes: 0,
-      downvotes: 0,
-      flagged: false,
-    };
-    // this will now save that data into the reference
-    await newEntryRef.set(entryData);
+    // create a unique key for the submission
+    const submissionKey = "submission_" + newEntryID;
 
     // now we need to add the submission to the user's submissions
     const userSubmissionRef = db.ref(
@@ -92,7 +73,7 @@ router.post("/sendSubmission", async (req, res) => {
     if (userSnapshot.exists()) {
       await userSubmissionRef.update({
         [newEntryID]: {
-          entry_id: newEntryID,
+          entry_id: submissionKey,
           user_id: formData.user_id,
         },
       });
@@ -101,7 +82,7 @@ router.post("/sendSubmission", async (req, res) => {
     else {
       await userSubmissionRef.set({
         [newEntryID]: {
-          entry_id: newEntryID,
+          entry_id: submissionKey,
           user_id: formData.user_id,
         },
       });
@@ -121,9 +102,6 @@ router.post("/sendSubmission", async (req, res) => {
         submissionCount: userCount + 1,
       });
     }
-
-    // create a unique key for the submission
-    const submissionKey = "submission_" + newEntryID;
 
     // now we create make path to the collection find the type and add the submission key to it, this should create a path like this collections/Poetry/submission_Poetry_1
     const collectionRef = db.ref(
@@ -148,7 +126,7 @@ router.post("/sendSubmission", async (req, res) => {
         title: formData.title,
         content: formData.content,
         meaning: formData.meaning,
-        creationDate: currentDate,
+        creationDate: date,
         upvotes: 0,
         downvotes: 0,
         flagged: false,
@@ -163,7 +141,7 @@ router.post("/sendSubmission", async (req, res) => {
         title: formData.title,
         content: formData.content,
         meaning: formData.meaning,
-        creationDate: currentDate,
+        creationDate: date,
         upvotes: 0,
         downvotes: 0,
         flagged: false,
@@ -307,6 +285,86 @@ router.get("/getSubmission/:id", async (req, res) => {
     } else {
       console.log("Snapshot does not exist");
       return res.status(404).send("Submission not found");
+    }
+  } catch (error) {
+    return res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// get user by email this is for the dashboard feature 
+router.get("/userDashboard/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+    console.log("Received request for user email: " + email);
+
+    const ref = db.ref("users");
+
+    const snapshot = await ref.once("value");
+
+    if (snapshot.exists()) {
+      console.log("Snapshot exists");
+      // find the user that matches the email address and then their data like the user uid and display name
+      const data = snapshot.val();
+      const user = Object.keys(data);
+      const uid = user.find((user) => data[user].email === email);
+      const userObject = data[uid];
+      console.log("uid: " + uid);
+      console.log("User object:", userObject);
+
+      // get the user's submissions from the user's submissions reference
+
+      const userSubmissionsRef = db.ref("users/" + uid + "/submissions");
+
+      const userSubmissionsSnapshot = await userSubmissionsRef.once("value");
+
+      const userSubmissionsData = userSubmissionsSnapshot.val();
+
+      // if it's null, then the user has no submissions for this user
+      if (userSubmissionsData === null) {
+        return res.json({
+          uid: uid,
+          displayName: userObject.displayName,
+          email: userObject.email,
+          submissionCount: userObject.submissionCount,
+        });
+      }
+
+      console.log("User submissions data:", userSubmissionsData);
+
+      // get the submission_Poetry_1 from the user submission it's a value and find it the collections /collections
+
+      const userSubmissions = Object.values(userSubmissionsData);
+
+      console.log("User submissions:", userSubmissions);
+
+      const userSubmissionKeys = userSubmissions.map(
+        (submission) => submission.entry_id
+      );
+
+      console.log("User submission keys:", userSubmissionKeys);
+
+      const userSubmissionData = {};
+
+      for (const key of userSubmissionKeys) {
+        const type = key.split("_")[1];
+
+        const submissionRef = db.ref("collections/" + type + "/" + key);
+        const submissionSnapshot = await submissionRef.once("value");
+        const submissionData = submissionSnapshot.val();
+        userSubmissionData[key] = submissionData;
+      }
+
+      // now we will return all of the data back to the client side
+      res.json({
+        uid: uid,
+        displayName: userObject.displayName,
+        email: userObject.email,
+        submissionCount: userObject.submissionCount,
+        submissions: userSubmissionData,
+      });
+    } else {
+      console.log("Snapshot does not exist");
+      return res.status(404).send("User not found");
     }
   } catch (error) {
     return res.status(500).send("Server error: " + error.message);

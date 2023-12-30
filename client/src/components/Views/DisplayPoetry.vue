@@ -1,6 +1,6 @@
 <template>
   <div
-    class="container px-4 bg-white shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[800px] py-4"
+    class="container px-4 bg-white shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[800px] py-4 m-4"
     v-if="item"
   >
     <div class="flex flex-col space-y-4">
@@ -21,7 +21,12 @@
         </div>
 
         <p class="text-sm text-gray-500 mt-2">
-          Submitted by: <span class="font-medium">{{ item.username }}</span>
+          Submitted by:
+          <span
+            class="font-medium hover:underline hover:cursor-pointer"
+            @click="userdashboard(item.submittedBy)"
+            >{{ item.username }}</span
+          >
         </p>
 
         <p class="text-sm text-gray-500">
@@ -74,26 +79,24 @@
           <span class="text-gray-700">{{ item.downvotes }}</span>
 
           <button
-          @click="ShareToTwitter(item)"
-
-
-          class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100  ml-4 mr-4" 
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
+            @click="ShareToTwitter(item)"
+            class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100 ml-4 mr-4"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -121,8 +124,8 @@ const fetchItem = async () => {
   }
 };
 
+// Format the date
 const formatDate = (date) => {
-  // Format the date
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(date).toLocaleDateString("en-US", options);
 };
@@ -139,7 +142,8 @@ const {
   showScrollToTopBtn,
 } = CollectionsFunctions();
 
-const { upvote, downvote, showFullText, ShareToTwitter } = Actions();
+const { upvote, downvote, showFullText, ShareToTwitter, userdashboard } =
+  Actions();
 
 onMounted(fetchItem);
 </script>

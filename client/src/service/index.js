@@ -1,4 +1,4 @@
-// clinet side
+// this is the service file that will be used to make all the api calls
 import axios from "axios";
 import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
 
@@ -18,7 +18,6 @@ const AppApiService = () => {
         // return not login validation
         return Promise.reject("You must be logged in to create a submission");
       } else {
-        console.log("NOoooo");
         return axios.post("/api/sendSubmission", formData).then((res) => {
           return res.data;
         });
@@ -43,15 +42,24 @@ const AppApiService = () => {
         return Promise.reject("Sorry, you must be logged in to vote");
       } else {
         const uid = authUser.uid;
-        return axios.put("/api/downvoteSubmission/" + id, {uid}).then((res) => {
-          return res.data;
-        });
+        return axios
+          .put("/api/downvoteSubmission/" + id, { uid })
+          .then((res) => {
+            return res.data;
+          });
       }
     },
 
     // this is to get one submission by id
     getSubmission(id) {
       return axios.get("/api/getSubmission/" + id).then((res) => {
+        return res.data;
+      });
+    },
+
+    // get user by email
+    getuserDashBoardAPI(email) {
+      return axios.get("/api/userDashboard/" + email).then((res) => {
         return res.data;
       });
     },

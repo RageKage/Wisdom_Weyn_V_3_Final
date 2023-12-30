@@ -1,5 +1,7 @@
 <template>
-  <div class="flex items-center justify-between space-x-2 md:space-x-4">
+  <div
+    class="space-x-2 md:space-x-4 flex flex-wrap justify-center md:justify-start"
+  >
     <button
       v-for="filter in filters"
       :key="filter.value"
@@ -16,7 +18,6 @@
     </button>
   </div>
 </template>
-
 
 <script setup>
 import { defineProps, defineEmits } from "vue";

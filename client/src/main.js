@@ -12,7 +12,6 @@ import 'flowbite';
 
 
 
-
 const app = createApp(App);
 AOS.init();
 

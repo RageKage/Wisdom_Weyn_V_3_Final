@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { ref } from "vue";
-import AOS from 'aos';
+import AOS from "aos";
 
 // firebase import
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -10,12 +10,11 @@ const Home = () => import("@/views/HomeView.vue");
 const signIn = () => import("@/components/auth/SignIn.vue");
 const signUp = () => import("@/components/auth/SignUp.vue");
 
-const collections  = () => import("@/components/Views/collections.vue");
-const submissionPage  = () => import("@/components/Views/submissionPage.vue");
-const DisplayPoetry  = ()  => import("@/components/Views/DisplayPoetry.vue");
-const dashboard = () => import("@/components/features/dashboard.vue")
+const collections = () => import("@/components/Views/collections.vue");
+const submissionPage = () => import("@/components/Views/submissionPage.vue");
+const DisplayPoetry = () => import("@/components/Views/DisplayPoetry.vue");
+const dashboard = () => import("@/components/features/dashboard.vue");
 
-// submitProverb
 
 export const showHeader = ref(true);
 
@@ -59,7 +58,7 @@ const router = createRouter({
       meta: { title: "Display Poetry" },
     },
     {
-      path: "/dashboard",
+      path: "/dashboard/:id",
       name: "dashboard",
       component: dashboard,
       meta: { title: "dashboard" },
@@ -90,7 +89,7 @@ router.afterEach(() => {
 
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requireAuth)) {
-    const user = await currentUser(); 
+    const user = await currentUser();
     if (user) {
       next();
     } else {
@@ -101,7 +100,6 @@ router.beforeEach(async (to, from, next) => {
     next();
   }
 });
-
 
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {

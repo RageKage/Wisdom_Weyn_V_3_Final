@@ -3,6 +3,10 @@
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 
+import AppApiService from "../service/index";
+
+const service = AppApiService();
+
 // Get the current user
 export function currentUser() {
   return new Promise((resolve, reject) => {

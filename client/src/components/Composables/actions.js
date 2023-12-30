@@ -9,54 +9,45 @@ export function Actions() {
   const service = AppApiService();
   const router = useRouter();
 
-  // now we will add our vote send to our db and the same for the downvote using service
-
+  // upvote a submission
   const upvote = async (itemId) => {
     try {
       await service.upvoteSubmission(itemId);
-
     } catch (error) {
       console.error(error);
     }
   };
 
+  // downvote a submission
   const downvote = async (itemId) => {
     try {
       await service.downvoteSubmission(itemId);
-
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Show the full text of the item
-  const showFullText = async (itemId) => {
-    try {
-      // Redirect to the displayPoetry page with the received data
-      router.push({
-        name: "displayPoetry",
-        params: {
-          id: itemId, // Include the item ID in the path
-        },
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  // Share to Twitter
   const ShareToTwitter = (item) => {
-    const itemType = item.title ? "poem" : "proverb";
+    // item is an object
+
+    const itemType = item.title ? "Poetry" : "Proverb";
+
     const textToShare = item.title || item.content;
-    let tweetText = `Check out this ${itemType}: "${textToShare}"`;
 
-    const viaText = " - via [YourAppName]";
-    const websiteLink = "https://www.yourwebsite.com"; // Replace with your actual website URL
-    const meaningText = item.meaning ? ` - Meaning: "${item.meaning}"` : "";
-    const logoUrl = "https://www.yourwebsite.com/logo.png"; // Replace with the actual URL of your logo
+    // twitter text
+    let tweetText = `Check out this Somali ${itemType}: "${textToShare}"`;
+
+    const viaText = " - via [Wisdom Weyn]";
+    const websiteLink = "https://http://localhost:5173/"; // after app hosted replace this with the actual URL of your website
+    const fullTextLink = ` - View full text: ${websiteLink}/displayPoetry/${item.id}`; // path to take the twitter user to the full text of the item in our site
+
+    const logoUrl = "https://www.yourwebsite.com/logo.png";
+
     const potentialTweet =
-      tweetText + meaningText + ` [${websiteLink}]` + viaText;
+      tweetText + fullTextLink + ` [${websiteLink}]` + viaText;
 
-    // Add the logo URL at the end of the tweet if there's space
+    // 280 is the max length of a tweet
     let spaceForLogoUrl = 280 - potentialTweet.length - 24; // 24 chars for the URL shortening
     if (spaceForLogoUrl > 0) {
       tweetText = potentialTweet + ` [${logoUrl}]`;
@@ -67,9 +58,9 @@ export function Actions() {
     // Truncate if still too long
     if (tweetText.length > 280) {
       const maxMeaningLength =
-        280 - (tweetText.length - item.meaning.length) - 3; // Adjust for ellipsis and other text
+        280 - (tweetText.length - item.meaning.length) - 3; // 3 chars for the ellipsis
       const truncatedMeaning = item.meaning.slice(0, maxMeaningLength) + "...";
-      tweetText = `Check out this ${itemType}: "${textToShare}"\nMeaning: "${truncatedMeaning}"\n[${websiteLink}] - via ${viaText} [${logoUrl}]`;
+      tweetText = `Check out this Somali${itemType}: "${textToShare}"\nMeaning: "${truncatedMeaning}"\n[${websiteLink}] - via ${viaText} [${logoUrl}]`;
     }
 
     const shareToTwitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -78,10 +69,40 @@ export function Actions() {
     window.open(shareToTwitterUrl, "_blank");
   };
 
+  // Show the full text of the item
+  const showFullText = async (itemId) => {
+    try {
+      // take the user to the displayPoetry page along with the item id
+      router.push({
+        name: "displayPoetry",
+        params: {
+          id: itemId,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // take a user to a user dashboard
+  const userdashboard = (email) => {
+    try {
+      router.push({
+        name: "dashboard",
+        params: {
+          id: email,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return {
     ShareToTwitter,
     upvote,
     downvote,
     showFullText,
+    userdashboard,
   };
 }
