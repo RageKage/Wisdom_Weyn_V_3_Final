@@ -1,5 +1,5 @@
 <template>
-  <router-link 
+  <router-link
     to="/"
     class="text-3xl font-bold leading-none hover-img"
     active-class="active-img"
@@ -20,6 +20,5 @@
 
 .hover-spin {
   transition: transform 0.6s ease-in-out;
-
 }
 </style>

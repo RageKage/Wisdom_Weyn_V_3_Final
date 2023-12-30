@@ -134,67 +134,67 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { user, signupWithEmail, signinWithGoogle } from "./Auth";
-import { addUserData , addUserDataviaGoogle} from "./UserDatabase";
-import { useRouter } from "vue-router";
+import { ref } from 'vue'
+import { user, signupWithEmail, signinWithGoogle } from './Auth'
+import { addUserData, addUserDataviaGoogle } from './UserDatabase'
+import { useRouter } from 'vue-router'
 
-const router = useRouter();
-const username = ref("");
-const email = ref("");
-const password = ref("");
-const usernameError = ref("");
-const emailError = ref("");
-const passwordError = ref("");
-const firebaseError = ref("");
+const router = useRouter()
+const username = ref('')
+const email = ref('')
+const password = ref('')
+const usernameError = ref('')
+const emailError = ref('')
+const passwordError = ref('')
+const firebaseError = ref('')
 
 const validateUsername = () => {
   // username validation
   usernameError.value =
     username.value.length < 5
-      ? "Username must be at least 3 characters long."
-      : "";
-};
+      ? 'Username must be at least 3 characters long.'
+      : ''
+}
 
 const validateEmail = () => {
   // email validation
   emailError.value = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
-    ? ""
-    : "Invalid email format.";
-};
+    ? ''
+    : 'Invalid email format.'
+}
 
 const validatePassword = () => {
   // Password validation
   passwordError.value =
     password.value.length < 6
-      ? "Password must be at least 6 characters long."
-      : "";
-};
+      ? 'Password must be at least 6 characters long.'
+      : ''
+}
 
 async function signup() {
   // Validate fields before attempting to sign up
-  validateUsername();
-  validateEmail();
-  validatePassword();
+  validateUsername()
+  validateEmail()
+  validatePassword()
 
   if (usernameError.value || emailError.value || passwordError.value) {
-    return; // if there are any errors then return the error
+    return // if there are any errors then return the error
   }
 
   try {
-    const userCredential = await signupWithEmail(email.value, password.value);
-    const addUsertoDB = await addUserData(userCredential, username.value);
-    router.push("/"); // Redirect to home after successful login
+    const userCredential = await signupWithEmail(email.value, password.value)
+    const addUsertoDB = await addUserData(userCredential, username.value)
+    router.push('/') // Redirect to home after successful login
   } catch (error) {
-    firebaseError.value = error.message; // Display Firebase error
+    firebaseError.value = error.message // Display Firebase error
     if (error) {
       switch (error.code) {
-        case "auth/invalid-email":
-          firebaseError.value = "Invalid email";
-          break;
+        case 'auth/invalid-email':
+          firebaseError.value = 'Invalid email'
+          break
       }
     } else {
-      firebaseError.value = "An unknown error occurred";
+      firebaseError.value = 'An unknown error occurred'
     }
   }
 }
@@ -202,21 +202,21 @@ async function signup() {
 // Function to sign in with Google
 async function signinGoogle() {
   try {
-    const userCredential = await signinWithGoogle();
-    await addUserDataviaGoogle(userCredential.user);
-    router.push("/"); // Redirect to home after successful login
+    const userCredential = await signinWithGoogle()
+    await addUserDataviaGoogle(userCredential.user)
+    router.push('/') // Redirect to home after successful login
   } catch (error) {
     if (error) {
       switch (error.code) {
-        case "auth/invalid-email":
-          firebaseError.value = "Invalid email";
-          break;
-        case "auth/user-not-found":
-          firebaseError.value = "User not found";
-          break;
+        case 'auth/invalid-email':
+          firebaseError.value = 'Invalid email'
+          break
+        case 'auth/user-not-found':
+          firebaseError.value = 'User not found'
+          break
       }
     } else {
-      firebaseError.value = "An unknown error occurred";
+      firebaseError.value = 'An unknown error occurred'
     }
   }
 }

@@ -45,7 +45,7 @@
             @click="toggleMeaning(item)"
             class="mt-2 text-custom-purple-600 text-md hover:text-custom-purple-700 transition"
           >
-            {{ item.showMeaning ? "Hide Meaning" : "See Meaning" }}
+            {{ item.showMeaning ? 'Hide Meaning' : 'See Meaning' }}
           </button>
           <p class="text-sm text-gray-500 mt-2">
             Submitted by:
@@ -143,10 +143,10 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, onMounted } from "vue";
-import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
+import { defineProps, defineEmits, ref, onMounted } from 'vue'
+import { currentUser, getCurrentUser, signout } from '@/service/auth.js'
 // /Users/nimanahmed/VS_code/Project/final_wisdom_weyn/client/src/components/Composables/actions.js
-import { Actions } from "../Composables/actions";
+import { Actions } from '../Composables/actions'
 
 const props = defineProps({
   displayedItems: {
@@ -155,58 +155,58 @@ const props = defineProps({
   },
   activeFilter: {
     type: String,
-    default: "",
+    default: '',
   },
   isLoading: Boolean,
-});
+})
 
-const isLoggedIn = ref(false);
+const isLoggedIn = ref(false)
 
 const toggleMeaning = (item) => {
-  item.showMeaning = !item.showMeaning;
-};
+  item.showMeaning = !item.showMeaning
+}
 
 // Format the date
 const formatDate = (date) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(date).toLocaleDateString("en-US", options);
-};
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(date).toLocaleDateString('en-US', options)
+}
 
 onMounted(async () => {
   try {
-    isLoggedIn.value = (await currentUser()) !== null;
+    isLoggedIn.value = (await currentUser()) !== null
   } catch (error) {
-    console.error("Error getting current user:", error);
+    console.error('Error getting current user:', error)
   }
-});
+})
 
 // we will now define what we are emitting to the parent
 const emits = defineEmits([
-  "upvote",
-  "downvote",
-  "loginRequired",
-  "showfullText",
-]);
+  'upvote',
+  'downvote',
+  'loginRequired',
+  'showfullText',
+])
 
 const upvote = (id) => {
   if (isLoggedIn.value) {
-    emits("upvote", id);
+    emits('upvote', id)
   } else {
-    emits("loginRequired", id);
+    emits('loginRequired', id)
   }
-};
+}
 
 const downvote = (id) => {
   if (isLoggedIn.value) {
-    emits("downvote", id);
+    emits('downvote', id)
   } else {
-    emits("loginRequired", id);
+    emits('loginRequired', id)
   }
-};
+}
 
 const showfullText = (id) => {
-  emits("showfullText", id);
-};
+  emits('showfullText', id)
+}
 
-const { ShareToTwitter, userdashboard } = Actions();
+const { ShareToTwitter, userdashboard } = Actions()
 </script>

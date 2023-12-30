@@ -1,6 +1,8 @@
 <template>
-  <div class="bg-purple-50 p-8  rounded-lg shadow-lg">
-    <h2 class="text-purple-900 font-bold text-2xl mb-6">Submit Your Work or Findings</h2>
+  <div class="bg-purple-50 p-8 rounded-lg shadow-lg">
+    <h2 class="text-purple-900 font-bold text-2xl mb-6">
+      Submit Your Work or Findings
+    </h2>
 
     <div class="mb-4">
       <div class="container">
@@ -33,7 +35,6 @@
       </label>
     </div>
 
-
     <!-- Conditional Title Field for Poetry -->
     <div v-if="picked === 'Poetry'" class="flex flex-col mb-4">
       <label for="title" class="label">
@@ -64,7 +65,7 @@
         "
         rows="4"
         required
-        class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72 "
+        class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72"
       ></textarea>
     </div>
 
@@ -122,58 +123,58 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, defineProps, computed, onMounted } from "vue";
-import { currentUser, getCurrentUser } from "@/service/auth.js";
+import { ref, defineEmits, defineProps, computed, onMounted } from 'vue'
+import { currentUser, getCurrentUser } from '@/service/auth.js'
 
-const picked = ref("proverb");
-const title = ref("");
-const content = ref("");
-const meaning = ref("");
-const user = ref("");
-const currentUserDB = ref("");
+const picked = ref('proverb')
+const title = ref('')
+const content = ref('')
+const meaning = ref('')
+const user = ref('')
+const currentUserDB = ref('')
 
 // prop
 const props = defineProps({
   isLoading: Boolean,
-});
+})
 
 // emit
-const emit = defineEmits(["submit", "reset"]);
+const emit = defineEmits(['submit', 'reset'])
 
 const submitForm = () => {
-  emit("submit", {
+  emit('submit', {
     title: title.value,
     content: content.value,
     meaning: meaning.value,
     picked: picked.value,
     user_id: user.value,
-  });
-};
+  })
+}
 
 // this will reset the form by listening an event send by the parent
 const resetForm = () => {
-  title.value = "";
-  content.value = "";
-  meaning.value = "";
-  picked.value = "proverb";
-};
+  title.value = ''
+  content.value = ''
+  meaning.value = ''
+  picked.value = 'proverb'
+}
 
 onMounted(async () => {
   try {
-    const authUser = await currentUser();
+    const authUser = await currentUser()
     if (authUser) {
-      user.value = authUser.uid;
-      const userDB = await getCurrentUser(authUser.uid);
-      currentUserDB.value = userDB;
+      user.value = authUser.uid
+      const userDB = await getCurrentUser(authUser.uid)
+      currentUserDB.value = userDB
     }
   } catch (error) {
-    console.error("Error getting current user:", error);
+    console.error('Error getting current user:', error)
   }
-});
+})
 
 defineExpose({
   resetForm,
-});
+})
 </script>
 
 <style scoped>
@@ -222,7 +223,7 @@ defineExpose({
 .container label span:before {
   display: flex;
   flex-shrink: 0;
-  content: "";
+  content: '';
   background-color: #fff;
   width: 1.5em;
   height: 1.5em;

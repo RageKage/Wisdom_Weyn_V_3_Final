@@ -1,31 +1,31 @@
-import { getDatabase, ref, set, get } from "firebase/database";
+import { getDatabase, ref, set, get } from 'firebase/database'
 
-const db = getDatabase();
+const db = getDatabase()
 
 async function addUserData(userData, username) {
-  const user = userData.user;
+  const user = userData.user
   try {
     if (!user.uid || !user.email) {
-      throw new Error("Invalid user data: UID or email is missing.");
+      throw new Error('Invalid user data: UID or email is missing.')
     }
-    await user?.reload();
-    await set(ref(db, "users/" + user.uid), {
+    await user?.reload()
+    await set(ref(db, 'users/' + user.uid), {
       displayName: username,
       email: user.email,
       createdAt: user.metadata.creationTime || null,
       lastLoginAt: user.metadata.lastSignInTime || null,
       submissionCount: 0,
-    });
+    })
   } catch (error) {
-    console.error("Error adding user data:", error);
-    throw error; // throw error to be caught in the calling function
+    console.error('Error adding user data:', error)
+    throw error // throw error to be caught in the calling function
   }
 }
 
 async function addUserDataviaGoogle(user) {
   try {
     if (!user.uid || !user.email) {
-      throw new Error("Invalid user data: UID or email is missing.");
+      throw new Error('Invalid user data: UID or email is missing.')
     }
     const userData = {
       email: user.email,
@@ -34,21 +34,21 @@ async function addUserDataviaGoogle(user) {
       createdAt: user.metadata.creationTime || null,
       lastLoginAt: user.metadata.lastSignInTime || null,
       submissionCount: 0,
-    };
+    }
 
-    const userRef = ref(db, "users/" + user.uid);
+    const userRef = ref(db, 'users/' + user.uid)
 
     // await userSubmissionRef.once("value");
 
-    const snapshot = await get(userRef);
+    const snapshot = await get(userRef)
 
     if (!snapshot.exists()) {
-      await set(ref(db, "users/" + user.uid), userData);
+      await set(ref(db, 'users/' + user.uid), userData)
     }
   } catch (error) {
-    console.error("Error adding user data:", error);
-    throw error;
+    console.error('Error adding user data:', error)
+    throw error
   }
 }
 
-export { addUserData, addUserDataviaGoogle };
+export { addUserData, addUserDataviaGoogle }

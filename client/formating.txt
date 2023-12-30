@@ -1,0 +1,5 @@
+npm run lint
+npm run lint:fix
+npx eslint --fix .
+
+npm run format

@@ -104,31 +104,31 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import AppApiService from "../../service/index";
-import { CollectionsFunctions } from "../Composables/Collections";
-import { Actions } from "../Composables/actions";
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import AppApiService from '../../service/index'
+import { CollectionsFunctions } from '../Composables/Collections'
+import { Actions } from '../Composables/actions'
 
-const service = AppApiService();
-const router = useRouter();
+const service = AppApiService()
+const router = useRouter()
 
-const itemId = computed(() => router.currentRoute.value.params.id);
-const item = ref(null);
+const itemId = computed(() => router.currentRoute.value.params.id)
+const item = ref(null)
 
 const fetchItem = async () => {
   try {
-    item.value = await service.getSubmission(itemId.value);
+    item.value = await service.getSubmission(itemId.value)
   } catch (error) {
-    console.error("Error fetching item:", error);
+    console.error('Error fetching item:', error)
   }
-};
+}
 
 // Format the date
 const formatDate = (date) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(date).toLocaleDateString("en-US", options);
-};
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(date).toLocaleDateString('en-US', options)
+}
 
 const {
   displayedItems,
@@ -140,10 +140,10 @@ const {
   fetchCollectionData,
   scrollToTop,
   showScrollToTopBtn,
-} = CollectionsFunctions();
+} = CollectionsFunctions()
 
 const { upvote, downvote, showFullText, ShareToTwitter, userdashboard } =
-  Actions();
+  Actions()
 
-onMounted(fetchItem);
+onMounted(fetchItem)
 </script>

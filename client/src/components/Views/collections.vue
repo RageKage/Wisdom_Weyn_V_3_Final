@@ -64,41 +64,41 @@
 </template>
 
 <script setup>
-import LoaderVue from "@/assets/loader.vue";
-import Swal from "sweetalert2";
+import LoaderVue from '@/assets/loader.vue'
+import Swal from 'sweetalert2'
 
 // Child components
-import SearchBarVue from "@/components/collection_helpers/searchBar.vue";
-import DisplayCollections from "@/components/collection_helpers/displayCollections.vue";
-import CollectionFilter from "@/components/collection_helpers/collectionFilter.vue";
+import SearchBarVue from '@/components/collection_helpers/searchBar.vue'
+import DisplayCollections from '@/components/collection_helpers/displayCollections.vue'
+import CollectionFilter from '@/components/collection_helpers/collectionFilter.vue'
 
 // Composable collections function
-import { CollectionsFunctions } from "../Composables/Collections";
-import { Actions } from "../Composables/actions";
+import { CollectionsFunctions } from '../Composables/Collections'
+import { Actions } from '../Composables/actions'
 
 const showLoginPopup = () => {
   Swal.fire({
-    title: "Login Required",
-    text: "You must be logged in to vote on collections!",
-    icon: "warning",
+    title: 'Login Required',
+    text: 'You must be logged in to vote on collections!',
+    icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: "Login",
-    cancelButtonText: "Cancel",
+    confirmButtonText: 'Login',
+    cancelButtonText: 'Cancel',
     reverseButtons: true,
     customClass: {
-      popup: "flex flex-col space-y-4",
-      header: "flex items-center justify-between w-full",
-      closeButton: "text-gray-400 hover:text-gray-500 ml-auto",
-      content: "text-gray-700 prose",
-      actions: "flex justify-end gap-4 mt-4",
+      popup: 'flex flex-col space-y-4',
+      header: 'flex items-center justify-between w-full',
+      closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+      content: 'text-gray-700 prose',
+      actions: 'flex justify-end gap-4 mt-4',
     },
   }).then((result) => {
     if (result.isConfirmed) {
       // Redirect to login page
-      window.location.href = "/signin";
+      window.location.href = '/signin'
     }
-  });
-};
+  })
+}
 
 const {
   displayedItems,
@@ -110,7 +110,7 @@ const {
   fetchCollectionData,
   scrollToTop,
   showScrollToTopBtn,
-} = CollectionsFunctions();
+} = CollectionsFunctions()
 
-const { upvote, downvote, showFullText } = Actions();
+const { upvote, downvote, showFullText } = Actions()
 </script>

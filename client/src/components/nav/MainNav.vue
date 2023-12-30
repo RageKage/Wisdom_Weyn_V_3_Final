@@ -198,77 +198,77 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, onMounted, ref, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
-import Logo from "./Logo.vue";
-import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
+import { defineProps, defineEmits, onMounted, ref, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+import Logo from './Logo.vue'
+import { currentUser, getCurrentUser, signout } from '@/service/auth.js'
 
-const user = ref(null);
-const dropdownOpen = ref(false);
-const router = useRouter();
+const user = ref(null)
+const dropdownOpen = ref(false)
+const router = useRouter()
 
 // Props and Emits
 const props = defineProps({
   isMenuOpen: Boolean,
   isLargeScreen: Boolean,
-});
-const emit = defineEmits(["toggleMenu"]); // this emmits the toggle menu
+})
+const emit = defineEmits(['toggleMenu']) // this emmits the toggle menu
 
 // show the dropdown menu
 const toggleDropdown = () => {
-  dropdownOpen.value = !dropdownOpen.value;
-};
+  dropdownOpen.value = !dropdownOpen.value
+}
 
 // close the dropdown menu
 const closeDropdown = () => {
-  dropdownOpen.value = false;
-};
+  dropdownOpen.value = false
+}
 const toggleMenu = () => {
-  emit("toggleMenu");
-};
+  emit('toggleMenu')
+}
 
 // this closes the dropdown menu when users clicks outside the dropdown menu
 const onClickOutside = (event) => {
   if (
-    !event.target.closest("#user-menu-button") &&
-    !event.target.closest("#user-dropdown")
+    !event.target.closest('#user-menu-button') &&
+    !event.target.closest('#user-dropdown')
   ) {
-    closeDropdown(); // Reuse closeDropdown for consistent behavior.
+    closeDropdown() // Reuse closeDropdown for consistent behavior.
   }
-};
+}
 
 onMounted(async () => {
-  document.addEventListener("click", onClickOutside);
+  document.addEventListener('click', onClickOutside)
 
   try {
-    const authUser = await currentUser(); 
+    const authUser = await currentUser()
 
     if (authUser) {
-            // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
+      // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
       // also this is better encase the provider doesn't provide that data
-      const dbUser = await getCurrentUser(authUser.uid); 
-      user.value = dbUser;
+      const dbUser = await getCurrentUser(authUser.uid)
+      user.value = dbUser
     }
   } catch (error) {
-    console.error("Error getting current user:", error.message);
+    console.error('Error getting current user:', error.message)
   }
-});
+})
 
 // Sign out user
 const signOutUser = async () => {
   try {
-    await signout();
-    dropdownOpen.value = false;
-    user.value = null;
-    router.push("/"); // Redirect to home after successful login
+    await signout()
+    dropdownOpen.value = false
+    user.value = null
+    router.push('/') // Redirect to home after successful login
   } catch (error) {
-    console.error("Error signing out:", error);
+    console.error('Error signing out:', error)
   }
-};
+}
 
 onUnmounted(() => {
-  document.removeEventListener("click", onClickOutside);
-});
+  document.removeEventListener('click', onClickOutside)
+})
 </script>
 
 <style scoped>

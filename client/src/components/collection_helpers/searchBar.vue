@@ -32,23 +32,23 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
   isLoading: Boolean,
   searchQuery: String,
   searchItems: Function,
   fetchCollectionData: Function,
-});
+})
 
 const emits = defineEmits([
-  "update:searchQuery",
-  "searchItems",
-  "fetchCollectionData",
-]);
+  'update:searchQuery',
+  'searchItems',
+  'fetchCollectionData',
+])
 
 // emit event to parent component
 const handleInput = (event) => {
-  emits("update:searchQuery", event.target.value);
-};
+  emits('update:searchQuery', event.target.value)
+}
 </script>

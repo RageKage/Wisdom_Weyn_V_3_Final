@@ -20,23 +20,23 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
   filterType: Function,
   activeFilter: String,
-});
+})
 
 const filters = [
-  { label: "All", value: "all" },
-  { label: "Poetry", value: "Poetry" },
-  { label: "Proverb", value: "proverb" },
-];
+  { label: 'All', value: 'all' },
+  { label: 'Poetry', value: 'Poetry' },
+  { label: 'Proverb', value: 'proverb' },
+]
 
-const emits = defineEmits(["filterType", "activeFilter"]);
+const emits = defineEmits(['filterType', 'activeFilter'])
 
 const filterType = (type) => {
-  emits("filterType", type);
-  emits("activeFilter", type);
-};
+  emits('filterType', type)
+  emits('activeFilter', type)
+}
 </script>

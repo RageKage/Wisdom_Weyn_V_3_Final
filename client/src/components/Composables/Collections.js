@@ -1,137 +1,132 @@
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { getDatabase, ref as dbRef, get } from "firebase/database";
-import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 
-import AppApiService from "../../service/index";
+import AppApiService from '../../service/index'
 
 export function CollectionsFunctions() {
-  const collectionData = ref({});
-  const showScrollToTopBtn = ref(false);
-  const activeFilter = ref(null);
-  const isLoading = ref(false);
-  const searchQuery = ref("");
-  const searchResults = ref([]);
-  const isLoggedIn = ref(false);
+  const collectionData = ref({})
+  const showScrollToTopBtn = ref(false)
+  const activeFilter = ref(null)
+  const isLoading = ref(false)
+  const searchQuery = ref('')
+  const searchResults = ref([])
 
-  const service = AppApiService();
-  const router = useRouter();
+  const service = AppApiService()
 
   const truncateString = (text, limit) => {
-    text = text.trim();
-    const words = text.split(" ");
+    text = text.trim()
+    const words = text.split(' ')
 
     if (words.length <= limit) {
-      return text;
+      return text
     }
 
-    const truncatedText = words.slice(0, limit).join(" ");
+    const truncatedText = words.slice(0, limit).join(' ')
 
-    return truncatedText + "...";
-  };
+    return truncatedText + '...'
+  }
 
   // Filter the collection data based on the active filter
   const filteredCollection = computed(() => {
-    let allItems = [];
+    let allItems = []
 
     // Loop through the collection data and push all the items into the allItems array and trucate the content and meaning
     Object.values(collectionData.value).forEach((typeCollection) => {
       typeCollection.forEach((item) => {
         // check if title isn't empty string
         if (item.title) {
-          item.title = truncateString(item.title, 5);
+          item.title = truncateString(item.title, 5)
         }
-        item.content = truncateString(item.content, 10);
-        item.meaning = truncateString(item.meaning, 10);
-        allItems.push(item);
-      });
-    });
+        item.content = truncateString(item.content, 10)
+        item.meaning = truncateString(item.meaning, 10)
+        allItems.push(item)
+      })
+    })
 
-    if (activeFilter.value && activeFilter.value !== "all") {
-      return allItems.filter((item) => item.type === activeFilter.value);
+    if (activeFilter.value && activeFilter.value !== 'all') {
+      return allItems.filter((item) => item.type === activeFilter.value)
     }
 
-    return allItems;
-  });
+    return allItems
+  })
 
   // Display the items based on the search query
   const displayedItems = computed(() => {
     if (searchQuery.value) {
-      return searchResults.value;
+      return searchResults.value
     }
 
-    return filteredCollection.value;
-  });
+    return filteredCollection.value
+  })
 
   // Search the items based on the search query
   const searchItems = () => {
     searchResults.value = filteredCollection.value.filter(
       (item) =>
         item.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        item.content.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-  };
+        item.content.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    )
+  }
 
   // Watch the search query and call the searchItems function when it changes
-  watch(searchQuery, searchItems);
+  watch(searchQuery, searchItems)
 
   // Filter the collection data based on the active filter
   const filterType = (type) => {
-    activeFilter.value = type !== "all" ? type : null;
-    searchQuery.value = "";
-  };
+    activeFilter.value = type !== 'all' ? type : null
+    searchQuery.value = ''
+  }
 
   const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString("en-US");
-  };
+    const date = new Date(timestamp)
+    return date.toLocaleDateString('en-US')
+  }
 
-  const showMeaning = ref(false);
+  const showMeaning = ref(false)
 
   const toggleMeaning = (item) => {
-    item.showMeaning = !item.showMeaning;
-  };
+    item.showMeaning = !item.showMeaning
+  }
 
   // Fetch the collection data from the database
   const fetchCollectionData = async () => {
-    isLoading.value = true;
-    const tempArray = {};
+    isLoading.value = true
+    const tempArray = {}
 
     try {
-      const data = await service.getAllCollections(); // Await the promise
+      const data = await service.getAllCollections() // Await the promise
       if (data) {
         Object.keys(data).forEach((type) => {
-          tempArray[type] = Object.values(data[type]).reverse();
-        });
+          tempArray[type] = Object.values(data[type]).reverse()
+        })
       }
-      collectionData.value = tempArray;
+      collectionData.value = tempArray
     } catch (error) {
-      console.error("Error fetching collections:", error);
+      console.error('Error fetching collections:', error)
     } finally {
       setTimeout(() => {
-        isLoading.value = false;
-      }, 100);
+        isLoading.value = false
+      }, 100)
     }
-  };
+  }
 
   // Scroll to the top of the page
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const checkScroll = () => {
-    showScrollToTopBtn.value = window.scrollY > 100;
-  };
+    showScrollToTopBtn.value = window.scrollY > 100
+  }
 
   // Call the fetchCollectionData function when the component is mounted
   onMounted(() => {
-    fetchCollectionData();
-    window.addEventListener("scroll", checkScroll);
-  });
+    fetchCollectionData()
+    window.addEventListener('scroll', checkScroll)
+  })
 
   onUnmounted(() => {
-    window.removeEventListener("scroll", checkScroll);
-  });
+    window.removeEventListener('scroll', checkScroll)
+  })
 
   // Return all the functions so they can be used globally
   return {
@@ -148,5 +143,5 @@ export function CollectionsFunctions() {
     showScrollToTopBtn,
     scrollToTop,
     checkScroll,
-  };
+  }
 }
