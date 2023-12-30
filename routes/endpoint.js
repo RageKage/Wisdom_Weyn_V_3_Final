@@ -7,7 +7,7 @@ router.use(express.json());
 let admin = require("firebase-admin");
 
 var db = admin.database();
-const { set, ref, update } = require("firebase/database");
+const { set, ref, update, remove } = require("firebase/database");
 
 // getting all of the data in my collections
 router.get("/all-collections", function (req, res) {
@@ -182,63 +182,110 @@ router.post("/sendSubmission", async (req, res) => {
   }
 });
 
-// this is to upvote a submission
-router.put("/upvoteSubmission/:id", async (req, res) => {
+const handleVote = async (req, res, voteType) => {
   try {
     const id = req.params.id;
-    console.log("Received upvote request for submission ID: " + id);
+    console.log("Submission ID:", id);
 
     const type = id.split("_")[1];
+    console.log("Submission Type:", type);
 
-    const ref = db.ref("collections/" + type + "/" + id);
+    // Retrieve authenticated user information
+    const uid = req.body.uid;
+    console.log("Authenticated User ID:", uid);
 
-    const snapshot = await ref.once("value");
+    const userVotesRef = db.ref(`users/${uid}/votes`);
+    const userVoteSnapshot = await userVotesRef.once("value");
 
-    if (snapshot.exists()) {
-      console.log("Snapshot exists");
-      const data = snapshot.val();
-      const upvotes = data.upvotes + 1;
+    if (userVoteSnapshot.exists()) {
+      const userVotes = userVoteSnapshot.val();
 
-      await ref.update({ upvotes });
-      console.log("Upvote successful!"); 
-      res.json({ message: "Upvote successful!" });
+      // Check if the user has voted on this post
+      if (id in userVotes) {
+        // User is removing their vote
+        const previousVoteType = userVotes[id];
+        await userVotesRef.child(id).remove();
+
+        // remove it from collections as well
+        const ref = db.ref(`collections/${type}/${id}`);
+        const snapshot = await ref.once("value");
+
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const voteCount = data[previousVoteType];
+
+          // Only update the vote count if it's greater than 0
+          if (voteCount > 0) {
+            await ref.update({ [previousVoteType]: voteCount - 1 });
+          }
+        }
+
+        res.json({
+          message: `Vote removed!`,
+        });
+      } else {
+        // User is switching there vote
+        await userVotesRef.update({ [id]: voteType });
+
+        // update the vote count in collections
+        const ref = db.ref(`collections/${type}/${id}`);
+        const snapshot = await ref.once("value");
+
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          // update the vote count in collections
+          await ref.update({
+            upvotes:
+              voteType === "upvotes"
+                ? (data.upvotes || 0) + 1
+                : data.upvotes || 0,
+            downvotes:
+              voteType === "downvotes"
+                ? (data.downvotes || 0) + 1
+                : data.downvotes || 0,
+          });
+        }
+
+        const message = "Vote changed!";
+        // send client a success message
+        res.json({
+          message: message,
+        });
+      }
     } else {
-      console.log("Snapshot does not exist");
-      return res.status(404).send("Submission not found");
+      // User is adding a new vote
+      const newVote = {};
+      newVote[id] = voteType;
+      await userVotesRef.set(newVote);
+
+      const ref = db.ref(`collections/${type}/${id}`);
+      const snapshot = await ref.once("value");
+
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        await ref.update({ [voteType]: (data[voteType] || 0) + 1 });
+      }
+
+      const message = "Updated vote!, " + voteType;
+      // send client a success message
+      res.json({
+        message: message,
+      });
     }
   } catch (error) {
-    console.error("Error updating upvote:", error); 
-    return res.status(500).send("Server error: " + error.message);
+    console.error(`Error updating ${voteType}vote:`, error);
+    res.status(500).send(`Server error: ${error.message}`);
   }
+};
+
+// Route for upvoting
+router.put("/upvoteSubmission/:id", async (req, res) => {
+  handleVote(req, res, "upvotes");
 });
 
-// this is to downvote a submission
+// Route for downvoting
 router.put("/downvoteSubmission/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    console.log("Received downvote request for submission ID: " + id);
-
-    const type = id.split("_")[1];
-
-    const ref = db.ref("collections/" + type + "/" + id);
-
-    const snapshot = await ref.once("value");
-
-    if (snapshot.exists()) {
-      console.log("Snapshot exists");
-      const data = snapshot.val();
-      const downvotes = data.downvotes + 1;
-
-      await ref.update({ downvotes });
-      console.log("Downvote successful!"); // Log after update
-      res.json({ message: "Downvote successful!" });
-    } else {
-      console.log("Snapshot does not exist");
-      return res.status(404).send("Submission not found");
-    }
-  } catch (error) {
-    return res.status(500).send("Server error: " + error.message);
-  }
+  handleVote(req, res, "downvotes");
 });
 
 // this is to get one submission by id

@@ -30,7 +30,8 @@ const AppApiService = () => {
       if (!authUser) {
         return Promise.reject("Sorry, you must be logged in to vote");
       } else {
-        return axios.put("/api/upvoteSubmission/" + id).then((res) => {
+        const uid = authUser.uid; // Get the auth user uid
+        return axios.put("/api/upvoteSubmission/" + id, { uid }).then((res) => {
           return res.data;
         });
       }
@@ -41,7 +42,8 @@ const AppApiService = () => {
       if (!authUser) {
         return Promise.reject("Sorry, you must be logged in to vote");
       } else {
-        return axios.put("/api/downvoteSubmission/" + id).then((res) => {
+        const uid = authUser.uid;
+        return axios.put("/api/downvoteSubmission/" + id, {uid}).then((res) => {
           return res.data;
         });
       }
