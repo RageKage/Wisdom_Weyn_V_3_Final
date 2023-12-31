@@ -107,7 +107,6 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import AppApiService from "../../service/index";
-import { CollectionsFunctions } from "../Composables/Collections";
 import { Actions } from "../Composables/actions";
 
 const service = AppApiService();
@@ -130,19 +129,9 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", options);
 };
 
-const {
-  displayedItems,
-  activeFilter,
-  searchQuery,
-  isLoading,
-  filterType,
-  searchItems,
-  fetchCollectionData,
-  scrollToTop,
-  showScrollToTopBtn,
-} = CollectionsFunctions();
 
-const { upvote, downvote, showFullText, ShareToTwitter, userdashboard } =
+// eslint-disable-next-line no-unused-vars
+const { upvote, downvote, ShareToTwitter, userdashboard } =
   Actions();
 
 onMounted(fetchItem);

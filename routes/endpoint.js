@@ -22,7 +22,6 @@ router.get("/all-collections", function (req, res) {
       res.json(data); // send it to the client side
     },
     (errorObject) => {
-      console.log("The read failed: " + errorObject.name);
       res.status(500).send("Error reading from database: " + errorObject.name);
     }
   );
@@ -156,21 +155,19 @@ router.post("/sendSubmission", async (req, res) => {
       message: "Submission successful!",
     });
   } catch (error) {
-    return res.status(500).send("Server error: " + error.message);
+    // if we got an error trying to send the submission we send the client a server error
+    res.status(500).send("Server error: " + error.message);
   }
 });
 
 const handleVote = async (req, res, voteType) => {
   try {
     const id = req.params.id;
-    console.log("Submission ID:", id);
 
     const type = id.split("_")[1];
-    console.log("Submission Type:", type);
 
     // Retrieve authenticated user information
     const uid = req.body.uid;
-    console.log("Authenticated User ID:", uid);
 
     const userVotesRef = db.ref(`users/${uid}/votes`);
     const userVoteSnapshot = await userVotesRef.once("value");
@@ -251,6 +248,7 @@ const handleVote = async (req, res, voteType) => {
       });
     }
   } catch (error) {
+    // TODO COME BACK TO THIS ERROR
     console.error(`Error updating ${voteType}vote:`, error);
     res.status(500).send(`Server error: ${error.message}`);
   }
@@ -270,7 +268,6 @@ router.put("/downvoteSubmission/:id", async (req, res) => {
 router.get("/getSubmission/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("Received request for submission ID: " + id);
 
     const type = id.split("_")[1];
 
@@ -279,37 +276,32 @@ router.get("/getSubmission/:id", async (req, res) => {
     const snapshot = await ref.once("value");
 
     if (snapshot.exists()) {
-      console.log("Snapshot exists");
       const data = snapshot.val();
       res.json(data);
     } else {
-      console.log("Snapshot does not exist");
       return res.status(404).send("Submission not found");
     }
   } catch (error) {
+    // TODO COME BACK TO THIS ERROR
     return res.status(500).send("Server error: " + error.message);
   }
 });
 
-// get user by email this is for the dashboard feature 
+// get user by email this is for the dashboard feature
 router.get("/userDashboard/:email", async (req, res) => {
   try {
     const email = req.params.email;
-    console.log("Received request for user email: " + email);
 
     const ref = db.ref("users");
 
     const snapshot = await ref.once("value");
 
     if (snapshot.exists()) {
-      console.log("Snapshot exists");
       // find the user that matches the email address and then their data like the user uid and display name
       const data = snapshot.val();
       const user = Object.keys(data);
       const uid = user.find((user) => data[user].email === email);
       const userObject = data[uid];
-      console.log("uid: " + uid);
-      console.log("User object:", userObject);
 
       // get the user's submissions from the user's submissions reference
 
@@ -329,19 +321,13 @@ router.get("/userDashboard/:email", async (req, res) => {
         });
       }
 
-      console.log("User submissions data:", userSubmissionsData);
-
       // get the submission_Poetry_1 from the user submission it's a value and find it the collections /collections
 
       const userSubmissions = Object.values(userSubmissionsData);
 
-      console.log("User submissions:", userSubmissions);
-
       const userSubmissionKeys = userSubmissions.map(
         (submission) => submission.entry_id
       );
-
-      console.log("User submission keys:", userSubmissionKeys);
 
       const userSubmissionData = {};
 
@@ -363,7 +349,6 @@ router.get("/userDashboard/:email", async (req, res) => {
         submissions: userSubmissionData,
       });
     } else {
-      console.log("Snapshot does not exist");
       return res.status(404).send("User not found");
     }
   } catch (error) {

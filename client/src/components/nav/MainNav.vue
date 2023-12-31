@@ -57,29 +57,21 @@
               user?.email
             }}</span>
           </div>
-          <ul class="py-2" aria-labelledby="user-menu-button">
+          <ul class="py-2" aria-labelledby="user-menu-button" @click="closeDropdown">
             <li>
               <a
-                @click="closeDropdown"
-                href="/dashboard"
+                @click="userdashboard(user?.email)"
+                href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >Dashboard</a
               >
             </li>
             <li>
               <a
-                @click="closeDropdown"
+
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >Settings</a
-              >
-            </li>
-            <li>
-              <a
-                @click="closeDropdown"
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >Earnings</a
               >
             </li>
             <li>
@@ -198,10 +190,12 @@
 </template>
 
 <script setup>
-import {  onMounted, ref, onUnmounted } from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import Logo from "./Logo.vue";
+import Logo from "./Site-Logo.vue";
 import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
+
+import { Actions } from "../Composables/actions";
 
 const user = ref(null);
 const dropdownOpen = ref(false);
@@ -241,12 +235,12 @@ onMounted(async () => {
   document.addEventListener("click", onClickOutside);
 
   try {
-    const authUser = await currentUser(); 
+    const authUser = await currentUser();
 
     if (authUser) {
-            // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
+      // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
       // also this is better encase the provider doesn't provide that data
-      const dbUser = await getCurrentUser(authUser.uid); 
+      const dbUser = await getCurrentUser(authUser.uid);
       user.value = dbUser;
     }
   } catch (error) {
@@ -269,6 +263,8 @@ const signOutUser = async () => {
 onUnmounted(() => {
   document.removeEventListener("click", onClickOutside);
 });
+
+const { userdashboard } = Actions();
 </script>
 
 <style scoped>

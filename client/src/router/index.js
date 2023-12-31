@@ -8,11 +8,12 @@ import AOS from "aos";
 const Home = () => import("@/views/HomeView.vue");
 const signIn = () => import("@/components/auth/SignIn.vue");
 const signUp = () => import("@/components/auth/SignUp.vue");
+const errorPage = () => import("@/views/errorPage.vue");
 
-const collections = () => import("@/components/Views/collections.vue");
+const collections = () => import("@/components/Views/collections-view.vue");
 const submissionPage = () => import("@/components/Views/submissionPage.vue");
 const DisplayPoetry = () => import("@/components/Views/DisplayPoetry.vue");
-const dashboard = () => import("@/components/features/dashboard.vue");
+const dashboard = () => import("@/components/features/dashboard-view.vue");
 
 
 export const showHeader = ref(true);
@@ -61,6 +62,12 @@ const router = createRouter({
       name: "dashboard",
       component: dashboard,
       meta: { title: "dashboard" },
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "",
+      component: errorPage,
+      meta: { title: "" },
     },
   ],
   // Change the active class name for <router-link> instances

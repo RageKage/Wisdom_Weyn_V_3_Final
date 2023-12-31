@@ -12,7 +12,6 @@
 
 
 <script setup>
-import { ref, provide } from "vue";
 import siteNavigation from "./components/nav/SiteNavigation.vue";
 import { showHeader } from "@/router";
 </script>

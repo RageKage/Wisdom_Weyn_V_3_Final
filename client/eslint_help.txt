@@ -3,7 +3,14 @@ See problems and erros
 
 npx eslint .
 
+or
+
+npx eslint --ext .jsx --ext .js --ext .vue src/
+
 
 Fix ones that are unused imports and variables
 
 npx eslint --fix .
+
+
+npx eslint --ext .jsx --ext .js --ext .vue src/ --fix

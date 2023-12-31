@@ -42,12 +42,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import Swal from "sweetalert2";
 
 // import child component
-import formVue from "@/components/Views/form.vue";
+import formVue from "@/components/Views/submission-form.vue";
 
 import { submissionFunctions } from "../Composables/SubmitProverb";
 

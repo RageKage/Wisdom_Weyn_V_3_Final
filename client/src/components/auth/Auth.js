@@ -1,4 +1,4 @@
-// auth.js
+// authentication.js
 import { ref } from "vue";
 import { 
   getAuth, 

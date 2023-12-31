@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import LoaderVue from "@/assets/loader.vue";
+import LoaderVue from "@/assets/app-loader.vue";
 import Swal from "sweetalert2";
 
 // Child components
@@ -106,8 +106,6 @@ const {
   searchQuery,
   isLoading,
   filterType,
-  searchItems,
-  fetchCollectionData,
   scrollToTop,
   showScrollToTopBtn,
 } = CollectionsFunctions();

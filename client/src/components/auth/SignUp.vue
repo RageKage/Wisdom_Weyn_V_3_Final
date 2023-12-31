@@ -135,7 +135,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { user, signupWithEmail, signinWithGoogle } from "./Auth";
+import { signupWithEmail, signinWithGoogle } from "./Auth";
 import { addUserData , addUserDataviaGoogle} from "./UserDatabase";
 import { useRouter } from "vue-router";
 
@@ -184,7 +184,11 @@ async function signup() {
   try {
     const userCredential = await signupWithEmail(email.value, password.value);
     const addUsertoDB = await addUserData(userCredential, username.value);
-    router.push("/"); // Redirect to home after successful login
+    if (addUsertoDB) {
+      router.push("/"); // Redirect to home after successful login
+    } else {
+      firebaseError.value = "An unknown error occurred";
+    }
   } catch (error) {
     firebaseError.value = error.message; // Display Firebase error
     if (error) {

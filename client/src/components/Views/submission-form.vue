@@ -122,7 +122,7 @@
 </template>
 
 <script setup>
-import { ref,computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { currentUser, getCurrentUser } from "@/service/auth.js";
 
 const picked = ref("proverb");
