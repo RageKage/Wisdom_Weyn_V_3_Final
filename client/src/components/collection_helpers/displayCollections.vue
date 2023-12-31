@@ -143,7 +143,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
 // /Users/nimanahmed/VS_code/Project/final_wisdom_weyn/client/src/components/Composables/actions.js
 import { Actions } from "../Composables/actions";

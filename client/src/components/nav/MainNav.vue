@@ -198,7 +198,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, onMounted, ref, onUnmounted } from "vue";
+import {  onMounted, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import Logo from "./Logo.vue";
 import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
