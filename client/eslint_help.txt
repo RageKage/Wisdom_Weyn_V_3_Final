@@ -1,0 +1,9 @@
+
+See problems and erros
+
+npx eslint .
+
+
+Fix ones that are unused imports and variables
+
+npx eslint --fix .
