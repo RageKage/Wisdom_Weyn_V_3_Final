@@ -1,6 +1,3 @@
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { getDatabase, ref as dbRef, get } from "firebase/database";
-import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
 import { useRouter } from "vue-router";
 
 import AppApiService from "../../service/index";

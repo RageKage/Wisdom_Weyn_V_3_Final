@@ -1,5 +1,4 @@
 import { ref } from "vue";
-import { getFunctions, httpsCallable } from "firebase/functions";
 import Swal from "sweetalert2";
 import AppApiService from "../../service/index";
 

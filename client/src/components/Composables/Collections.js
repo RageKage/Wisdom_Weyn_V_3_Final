@@ -1,7 +1,4 @@
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { getDatabase, ref as dbRef, get } from "firebase/database";
-import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
-import { useRouter } from "vue-router";
 
 import AppApiService from "../../service/index";
 
@@ -12,10 +9,8 @@ export function CollectionsFunctions() {
   const isLoading = ref(false);
   const searchQuery = ref("");
   const searchResults = ref([]);
-  const isLoggedIn = ref(false);
 
   const service = AppApiService();
-  const router = useRouter();
 
   const truncateString = (text, limit) => {
     text = text.trim();

@@ -3,7 +3,6 @@ import { ref } from "vue";
 import AOS from "aos";
 
 // firebase import
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // import view
 const Home = () => import("@/views/HomeView.vue");
@@ -87,19 +86,19 @@ router.afterEach(() => {
 //   });
 // };
 
-router.beforeEach(async (to, from, next) => {
-  if (to.matched.some((record) => record.meta.requireAuth)) {
-    const user = await currentUser();
-    if (user) {
-      next();
-    } else {
-      alert("You need to sign in to access this page.");
-      next("/signIn"); // Redirect to the sign-in page
-    }
-  } else {
-    next();
-  }
-});
+// router.beforeEach(async (to, from, next) => {
+//   if (to.matched.some((record) => record.meta.requireAuth)) {
+//     const user = await currentUser();
+//     if (user) {
+//       next();
+//     } else {
+//       alert("You need to sign in to access this page.");
+//       next("/signIn"); // Redirect to the sign-in page
+//     }
+//   } else {
+//     next();
+//   }
+// });
 
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {

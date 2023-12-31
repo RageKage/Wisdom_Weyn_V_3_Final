@@ -1,6 +1,6 @@
 // this is the service file that will be used to make all the api calls
 import axios from "axios";
-import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
+import { currentUser } from "@/service/auth.js";
 
 const AppApiService = () => {
   return {
