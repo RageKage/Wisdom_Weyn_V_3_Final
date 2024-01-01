@@ -95,6 +95,16 @@ export function Actions() {
     }
   };
 
+  // TODO finish this delete logic
+
+  const deleteSubmission = async (itemID) => {
+    try {
+      await service.deleteSubmission(itemID);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return {
     ShareToTwitter,
     upvote,

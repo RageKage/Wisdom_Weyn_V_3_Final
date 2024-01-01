@@ -16,6 +16,8 @@ async function addUserData(userData, username) {
       lastLoginAt: user.metadata.lastSignInTime || null,
       submissionCount: 0,
     });
+    // return a success message
+    return "User data added successfully.";
   } catch (error) {
     console.error("Error adding user data:", error);
     throw error; // throw error to be caught in the calling function

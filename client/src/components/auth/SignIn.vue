@@ -117,7 +117,8 @@ const firebaseError = ref("");
 async function signin() {
   try {
     const userCredential = await signinWithEmail(email.value, password.value);
-    if (userCredential.user.emailVerified) {
+    //    if (userCredential.user.emailVerified) future implements email verification with firebase
+    if (userCredential.user) {
       router.push("/"); // Redirect to home after successful login
     } else {
       firebaseError.value = "Please verify your email/password";

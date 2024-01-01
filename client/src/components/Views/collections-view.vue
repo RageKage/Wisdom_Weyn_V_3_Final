@@ -26,10 +26,7 @@
       <DisplayCollections
         :displayedItems="displayedItems"
         :activeFilter="activeFilter"
-        @upvote="upvote"
-        @downvote="downvote"
         @loginRequired="showLoginPopup"
-        @showfullText="showFullText"
       ></DisplayCollections>
 
       <!-- Scroll to Top Button -->
@@ -110,5 +107,5 @@ const {
   showScrollToTopBtn,
 } = CollectionsFunctions();
 
-const { upvote, downvote, showFullText } = Actions();
+const { upvote, downvote } = Actions();
 </script>

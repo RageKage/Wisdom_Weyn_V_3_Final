@@ -57,7 +57,7 @@ const AppApiService = () => {
       });
     },
 
-    // get user by email
+    // get data by user email
     getuserDashBoardAPI(email) {
       return axios.get("/api/userDashboard/" + email).then((res) => {
         return res.data;

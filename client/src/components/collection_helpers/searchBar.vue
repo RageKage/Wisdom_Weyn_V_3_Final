@@ -6,11 +6,11 @@
       placeholder="Search for proverb or Gabay"
       :value="searchQuery"
       @input="handleInput"
-      class="flex-grow p-2 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-custom-purple-400 focus:border-custom-purple-400 transition-all duration-300"
+      class="flex-grow p-2 rounded-lg outline-none border-custom-purple-100 focus:bg-white focus:ring-2 focus:ring-custom-purple-400 focus:border-custom-purple-400 transition-all duration-300"
     />
 
     <span
-      class="p-2 bg-custom-purple-600 text-white rounded-lg hover:bg-custom-purple-700 transition-colors duration-300 flex items-center hover:cursor-pointer"
+      class="flex items-center hover:cursor-pointer rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-3"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,6 @@
 </template>
 
 <script setup>
-
 const props = defineProps({
   isLoading: Boolean,
   searchQuery: String,

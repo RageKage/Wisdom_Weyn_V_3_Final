@@ -30,7 +30,6 @@ export function submissionFunctions() {
     }
 
     try {
-      console.log("Submitting data:", formData);
       const response = await service.createSubmission(formData);
 
       if (response) {

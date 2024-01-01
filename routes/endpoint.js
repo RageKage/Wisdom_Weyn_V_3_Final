@@ -155,8 +155,7 @@ router.post("/sendSubmission", async (req, res) => {
       message: "Submission successful!",
     });
   } catch (error) {
-    // if we got an error trying to send the submission we send the client a server error
-    res.status(500).send("Server error: " + error.message);
+    return res.status(500).send("Server error: " + error.message);
   }
 });
 
@@ -287,73 +286,125 @@ router.get("/getSubmission/:id", async (req, res) => {
   }
 });
 
-// get user by email this is for the dashboard feature
+// get user data by email this is for the dashboard feature
+// ... (other imports and code)
+
 router.get("/userDashboard/:email", async (req, res) => {
   try {
+    const startTime = performance.now();
     const email = req.params.email;
 
-    const ref = db.ref("users");
+    const usersRef = db.ref("users");
+    const usersSnapshot = await usersRef.orderByChild("email").equalTo(email).once("value");
 
-    const snapshot = await ref.once("value");
+    if (!usersSnapshot.exists()) {
+      return res.status(404).send("User not found");
+    }
 
-    if (snapshot.exists()) {
-      // find the user that matches the email address and then their data like the user uid and display name
-      const data = snapshot.val();
-      const user = Object.keys(data);
-      const uid = user.find((user) => data[user].email === email);
-      const userObject = data[uid];
+    const userData = usersSnapshot.val();
+    const uid = Object.keys(userData)[0];
+    const userObject = userData[uid];
 
-      // get the user's submissions from the user's submissions reference
+    const userSubmissionsRef = db.ref(`users/${uid}/submissions`);
+    const userSubmissionsSnapshot = await userSubmissionsRef.once("value");
+    const userSubmissionsData = userSubmissionsSnapshot.val();
 
-      const userSubmissionsRef = db.ref("users/" + uid + "/submissions");
+    // console.log("userSubmissionsData", userSubmissionsData);
 
-      const userSubmissionsSnapshot = await userSubmissionsRef.once("value");
-
-      const userSubmissionsData = userSubmissionsSnapshot.val();
-
-      // if it's null, then the user has no submissions for this user
-      if (userSubmissionsData === null) {
-        return res.json({
-          uid: uid,
-          displayName: userObject.displayName,
-          email: userObject.email,
-          submissionCount: userObject.submissionCount,
-        });
-      }
-
-      // get the submission_Poetry_1 from the user submission it's a value and find it the collections /collections
-
-      const userSubmissions = Object.values(userSubmissionsData);
-
-      const userSubmissionKeys = userSubmissions.map(
-        (submission) => submission.entry_id
-      );
-
-      const userSubmissionData = {};
-
-      for (const key of userSubmissionKeys) {
-        const type = key.split("_")[1];
-
-        const submissionRef = db.ref("collections/" + type + "/" + key);
-        const submissionSnapshot = await submissionRef.once("value");
-        const submissionData = submissionSnapshot.val();
-        userSubmissionData[key] = submissionData;
-      }
-
-      // now we will return all of the data back to the client side
-      res.json({
+    if (!userSubmissionsData) {
+      var endTime = performance.now();
+      console.log("No submissions, this query took " + (endTime - startTime) + " milliseconds.");
+      return res.json({
         uid: uid,
         displayName: userObject.displayName,
         email: userObject.email,
         submissionCount: userObject.submissionCount,
-        submissions: userSubmissionData,
       });
-    } else {
-      return res.status(404).send("User not found");
     }
+
+    const userSubmissionData = {};
+    const submissionsCount = {
+      proverbs: 0,
+      poetrys: 0,
+    };
+    const mostVotes = [];
+    const mostRecent = [];
+
+    const submissionKeys = Object.keys(userSubmissionsData);
+    const submissionPromises = submissionKeys.map(key => {
+      const submission = userSubmissionsData[key];
+
+      const type = submission.entry_id.split("_")[1];
+
+
+      const submissionRef = db.ref(`collections/${type}/${submission.entry_id}`);
+      return submissionRef.once("value");
+    });
+
+    const submissionSnapshots = await Promise.all(submissionPromises);
+
+    submissionSnapshots.forEach((submissionSnapshot, index) => {
+      const submissionData = submissionSnapshot.val();
+      const key = submissionKeys[index];
+
+      userSubmissionData[key] = {
+        title: submissionData.title,
+        content: submissionData.content,
+        creationDate: submissionData.creationDate
+      };
+
+
+
+      const submission = submissionData.id
+
+      console.log("submission", submission);
+
+      const type = submission.split("_")[1];
+
+      submissionsCount[type] = (submissionsCount[type] || 0) + 1;
+      
+
+      if (userSubmissionData[key].upvotes >= 1) {
+        mostVotes.push(userSubmissionData[key]);
+      }
+
+
+      mostRecent.push(userSubmissionData[key]);
+    });
+
+ 
+    // Sort mostVotes and mostRecent and return the top 5
+    mostVotes.sort((a, b) => b.upvotes - a.upvotes);
+    mostRecent.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+
+    // Limit to the top 5
+    mostVotes.splice(5);
+    mostRecent.splice(5);
+
+    var endTime = performance.now();
+    console.log("Yes submissions, this query took " + (endTime - startTime) + " milliseconds.");
+
+    res.json({
+      uid: uid,
+      displayName: userObject.displayName,
+      email: userObject.email,
+      submissionCount: userObject.submissionCount,
+      userStats: {
+        proverbs: submissionsCount["proverb"],
+        poetrys: submissionsCount["Poetry"],
+        totalSubmissions: submissionKeys.length,
+      },
+      mostVotes: mostVotes,
+      mostRecent: mostRecent,
+    });
+
+    console.log(res)
   } catch (error) {
+    console.log("Error:", error.message);
     return res.status(500).send("Server error: " + error.message);
   }
 });
+
+
 
 module.exports = router;
