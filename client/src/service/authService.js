@@ -6,14 +6,19 @@ import { getDatabase, ref, onValue } from 'firebase/database'
 // Get the current user
 export function currentUser() {
   return new Promise((resolve, reject) => {
+    // const startTime = performance.now()
     const auth = getAuth()
 
     const unsubscribe = onAuthStateChanged(
       auth,
       (user) => {
         if (user) {
+          // Save user data in localStorage
+          localStorage.setItem('user', JSON.stringify(user))
           resolve(user)
         } else {
+          // Remove user data from localStorage
+          localStorage.removeItem('user')
           resolve(null) // set to null if no user logged in
         }
 
@@ -21,6 +26,8 @@ export function currentUser() {
       },
       reject,
     )
+    // var endTime = performance.now()
+    // console.error('this query took ' + (endTime - startTime) + ' milliseconds.')
   })
 }
 
@@ -51,7 +58,7 @@ export function getCurrentUser(Useruid) {
 // Sign out the user
 export async function signout() {
   const auth = getAuth()
-
+  localStorage.removeItem('user')
   try {
     await signOut(auth)
   } catch (error) {

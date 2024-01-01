@@ -177,7 +177,15 @@
 
   onMounted(async () => {
     try {
-      isLoggedIn.value = (await currentUser()) !== null
+      const storedUser = localStorage.getItem('user')
+      if (storedUser) {
+        isLoggedIn.value = true
+      } else {
+        isLoggedIn.value = (await currentUser()) !== null
+        if (isLoggedIn.value) {
+          localStorage.setItem('user', 'true')
+        }
+      }
     } catch (error) {
       console.error('Error getting current user:', error)
     }

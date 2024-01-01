@@ -173,26 +173,11 @@
   const fetchData = async () => {
     try {
       data.value = await service.getuserDashBoardAPI(id.value)
-      // we check if the data only contains uid, email, display name, if yes then we can say no submissions yet
-      // if (
-      //   data.value.uid &&
-      //   data.value.email &&
-      //   data.value.displayName
-      // ) {
-      //   noSubmissions.value = false;
-      // }
 
-      // check the length of the data object
-      const dataLength = computed(() =>
-        data.value ? Object.keys(data.value).length : 0,
-      )
-
-      if (dataLength.value === 3) {
+      // Check if there are any submissions
+      if (!data.value.mostRecent) {
         noSubmissions.value = false
       }
-      // if (dataLength.value === 0) {
-      //   noSubmissions.value = true;
-      // }
     } catch (error) {
       console.error('Error fetching item:', error)
     }
