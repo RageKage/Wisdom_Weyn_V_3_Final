@@ -177,13 +177,23 @@
 
   onMounted(async () => {
     try {
-      isLoggedIn.value = (await currentUser()) !== null
-      user.value = await currentUser()
+      const storedUser = localStorage.getItem('user')
+      if (storedUser) {
+        user.value = JSON.parse(storedUser)
+        isLoggedIn.value = true
+      } else {
+
+        const currentUserData = await currentUser()
+        if (currentUserData) {
+          user.value = currentUserData
+          isLoggedIn.value = true
+          localStorage.setItem('user', JSON.stringify(currentUserData))
+        }
+      }
     } catch (error) {
       console.error('Error getting current user:', error)
     }
   })
-
   // we will now define what we are emitting to the parent
   const emits = defineEmits(['loginRequired'])
 

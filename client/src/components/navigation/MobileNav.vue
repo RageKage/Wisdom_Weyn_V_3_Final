@@ -49,7 +49,7 @@
               to="/submissions/create"
               @click="closeMenu"
               class="block text-lg font-medium text-gray-700 hover:text-gray-900"
-              >Submit</router-link
+              >Contribute</router-link
             >
           </li>
           <li>

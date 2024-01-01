@@ -242,10 +242,14 @@ const handleVote = async (req, res, voteType) => {
 };
 
 // Route for upvoting
-router.put("/submissions/:id/upvote", handleVote.bind(null, "upvotes"));
+router.put("/submissions/:id/upvote", async (req, res) => {
+  handleVote(req, res, "upvotes");
+});
 
 // Route for downvoting
-router.put("/submissions/:id/downvote", handleVote.bind(null, "downvotes"));
+router.put("/submissions/:id/downvote", async (req, res) => {
+  handleVote(req, res, "downvotes");
+});
 
 // this is to get one submission by id
 router.get("/submissions/:id", async (req, res) => {
