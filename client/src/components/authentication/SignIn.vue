@@ -104,68 +104,68 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { signinWithEmail, signinWithGoogle } from "./Auth";
-import { addUserDataviaGoogle } from "./UserDatabase";
-import { useRouter } from "vue-router";
+  import { ref } from 'vue'
+  import { signinWithEmail, signinWithGoogle } from './Auth'
+  import { syncGoogleUserData } from './UserDataManager'
+  import { useRouter } from 'vue-router'
 
-const router = useRouter();
-const email = ref("");
-const password = ref("");
-const firebaseError = ref("");
+  const router = useRouter()
+  const email = ref('')
+  const password = ref('')
+  const firebaseError = ref('')
 
-async function signin() {
-  try {
-    const userCredential = await signinWithEmail(email.value, password.value);
-    //    if (userCredential.user.emailVerified) future implements email verification with firebase
-    if (userCredential.user) {
-      router.push("/"); // Redirect to home after successful login
-    } else {
-      firebaseError.value = "Please verify your email/password";
-    }
-  } catch (error) {
-    if (error) {
-      switch (error.code) {
-        case "auth/invalid-email":
-          firebaseError.value = "Invalid email";
-          break;
-        case "auth/invalid-credential":
-          firebaseError.value = "Invalid credential";
-          break;
-        case "auth/user-not-found":
-          firebaseError.value = "User not found";
-          break;
-        case "auth/wrong-password":
-          firebaseError.value = "Wrong password";
-          break;
-        default:
-          firebaseError.value = "Email or password is incorrect";
-          break;
+  async function signin() {
+    try {
+      const userCredential = await signinWithEmail(email.value, password.value)
+      //    if (userCredential.user.emailVerified) future implements email verification with firebase
+      if (userCredential.user) {
+        router.push('/') // Redirect to home after successful login
+      } else {
+        firebaseError.value = 'Please verify your email/password'
       }
-    } else {
-      firebaseError.value = "An unknown error occurred";
+    } catch (error) {
+      if (error) {
+        switch (error.code) {
+          case 'auth/invalid-email':
+            firebaseError.value = 'Invalid email'
+            break
+          case 'auth/invalid-credential':
+            firebaseError.value = 'Invalid credential'
+            break
+          case 'auth/user-not-found':
+            firebaseError.value = 'User not found'
+            break
+          case 'auth/wrong-password':
+            firebaseError.value = 'Wrong password'
+            break
+          default:
+            firebaseError.value = 'Email or password is incorrect'
+            break
+        }
+      } else {
+        firebaseError.value = 'An unknown error occurred'
+      }
     }
   }
-}
 
-async function signinGoogle() {
-  try {
-    const userCredential = await signinWithGoogle();
-    await addUserDataviaGoogle(userCredential.user);
-    router.push("/"); // Redirect to home after successful login
-  } catch (error) {
-    if (error) {
-      switch (error.code) {
-        case "auth/invalid-email":
-          firebaseError.value = "Invalid email";
-          break;
-        default:
-          firebaseError.value = "Email or password is incorrect";
-          break;
+  async function signinGoogle() {
+    try {
+      const userCredential = await signinWithGoogle()
+      await syncGoogleUserData(userCredential.user)
+      router.push('/') // Redirect to home after successful login
+    } catch (error) {
+      if (error) {
+        switch (error.code) {
+          case 'auth/invalid-email':
+            firebaseError.value = 'Invalid email'
+            break
+          default:
+            firebaseError.value = 'Email or password is incorrect'
+            break
+        }
+      } else {
+        firebaseError.value = 'An unknown error occurred'
       }
-    } else {
-      firebaseError.value = "An unknown error occurred";
     }
   }
-}
 </script>

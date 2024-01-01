@@ -1,82 +1,81 @@
-import { createRouter, createWebHistory } from "vue-router";
-import { ref } from "vue";
-import AOS from "aos";
+import { createRouter, createWebHistory } from 'vue-router'
+import { ref } from 'vue'
+import AOS from 'aos'
 
 // firebase import
 
 // import view
-const Home = () => import("@/views/HomeView.vue");
-const signIn = () => import("@/components/auth/SignIn.vue");
-const signUp = () => import("@/components/auth/SignUp.vue");
-const errorPage = () => import("@/views/errorPage.vue");
+const Home = () => import('@/views/HomeView.vue')
+const SignIn = () => import('@/components/authentication/SignIn.vue')
+const SignUp = () => import('@/components/authentication/SignUp.vue')
+const ErrorPage = () => import('@/views/ErrorPage.vue')
 
-const collections = () => import("@/components/Views/collections-view.vue");
-const submissionPage = () => import("@/components/Views/submissionPage.vue");
-const DisplayPoetry = () => import("@/components/Views/DisplayPoetry.vue");
-const dashboard = () => import("@/components/features/dashboard-view.vue");
+const Collections = () => import('@/components/Views/collections-view.vue')
+const SubmissionPage = () => import('@/components/Views/submissionPage.vue')
+const ExpandedView = () => import('@/components/Views/ExpandedView.vue')
+const Dashboard = () => import('@/components/features/dashboard-view.vue')
 
-
-export const showHeader = ref(true);
+export const showHeader = ref(true)
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
-      name: "Home",
+      path: '/',
+      name: 'Home',
       component: Home,
-      meta: { title: "Home" },
+      meta: { title: 'Home' },
     },
     {
-      path: "/signIn",
-      name: "signIn",
-      component: signIn,
-      meta: { title: "sign In" },
+      path: '/sign-in',
+      name: 'SignIn',
+      component: SignIn,
+      meta: { title: 'Sign In' },
     },
     {
-      path: "/signUp",
-      name: "signUp",
-      component: signUp,
-      meta: { title: "sign Up" },
+      path: '/sign-up',
+      name: 'SignUp',
+      component: SignUp,
+      meta: { title: 'Sign Up' },
     },
     {
-      path: "/collections",
-      name: "collections",
-      component: collections,
-      meta: { title: "collections" },
+      path: '/collections',
+      name: 'Collections',
+      component: Collections,
+      meta: { title: 'Collections' },
     },
     {
-      path: "/submission",
-      name: "submission",
-      component: submissionPage,
-      meta: { title: "submission" },
+      path: '/submissions/create',
+      name: 'CreateSubmission',
+      component: SubmissionPage,
+      meta: { title: 'Create Submission' },
     },
     {
-      path: "/displayPoetry/:id",
-      name: "displayPoetry",
-      component: DisplayPoetry,
-      meta: { title: "Display Poetry" },
+      path: '/submission/:id',
+      name: 'SubmissionDetails',
+      component: ExpandedView,
+      meta: { title: 'Submission Details' },
     },
     {
-      path: "/dashboard/:id",
-      name: "dashboard",
-      component: dashboard,
-      meta: { title: "dashboard" },
+      path: '/users/:id/dashboard',
+      name: 'UserDashboard',
+      component: Dashboard,
+      meta: { title: 'User Dashboard' },
     },
     {
-      path: "/:pathMatch(.*)*",
-      name: "",
-      component: errorPage,
-      meta: { title: "" },
+      path: '/:pathMatch(.*)*',
+      name: '',
+      component: ErrorPage,
+      meta: { title: '' },
     },
   ],
   // Change the active class name for <router-link> instances
-  linkActiveClass: "active",
-});
+  linkActiveClass: 'active',
+})
 
 router.afterEach(() => {
-  AOS.refresh();
-});
+  AOS.refresh()
+})
 
 // // Helper function to get the currently authenticated user
 // const getCurrentUser = () => {
@@ -110,15 +109,15 @@ router.afterEach(() => {
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {
   // Hide the navbar for signIn and signUp routes
-  showHeader.value = !["signIn", "signUp"].includes(to.name);
-  next();
-});
+  showHeader.value = !['signIn', 'signUp'].includes(to.name)
+  next()
+})
 
 // Update the document title using the meta information from the route definition
 router.afterEach((to) => {
   if (to.meta.title !== document.title) {
-    document.title = `${to.meta.title} | Wisdom Weyn`;
+    document.title = `${to.meta.title} | Wisdom Weyn`
   }
-});
+})
 
-export default router; // Export the router instance for use in other parts of the application
+export default router // Export the router instance for use in other parts of the application

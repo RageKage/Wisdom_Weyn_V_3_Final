@@ -146,101 +146,101 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import AppApiService from "../../service/index";
-import { Actions } from "../Composables/actions";
-import { currentUser } from "@/service/auth.js";
-import Swal from "sweetalert2";
+  import { ref, computed, onMounted } from 'vue'
+  import { useRouter } from 'vue-router'
+  import AppApiService from '../../service/index'
+  import { Actions } from '../Composables/actions'
+  import { currentUser } from '@/service/authService.js'
+  import Swal from 'sweetalert2'
 
-const service = AppApiService();
-const router = useRouter();
+  const service = AppApiService()
+  const router = useRouter()
 
-const itemId = computed(() => router.currentRoute.value.params.id);
-const item = ref(null);
+  const itemId = computed(() => router.currentRoute.value.params.id)
+  const item = ref(null)
 
-const fetchItem = async () => {
-  try {
-    item.value = await service.getSubmission(itemId.value);
-  } catch (error) {
-    console.error("Error fetching item:", error);
+  const isLoggedIn = ref(false)
+
+  const fetchItem = async () => {
+    try {
+      item.value = await service.getSubmission(itemId.value)
+    } catch (error) {
+      console.error('Error fetching item:', error)
+    }
   }
-};
 
-// Format the date
-const formatDate = (date) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(date).toLocaleDateString("en-US", options);
-};
-
-const isLoggedIn = ref(false);
-
-onMounted(async () => {
-  try {
-    isLoggedIn.value = (await currentUser()) !== null;
-  } catch (error) {
-    console.error("Error getting current user:", error);
+  // Format the date
+  const formatDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' }
+    return new Date(date).toLocaleDateString('en-US', options)
   }
-});
 
-const upvoteSubmisson = (id) => {
-  if (isLoggedIn.value) {
-    upvote(id);
-  } else {
-    Swal.fire({
-      title: "Login Required",
-      text: "You must be logged in to vote on collections!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Login",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
-      customClass: {
-        popup: "flex flex-col space-y-4",
-        header: "flex items-center justify-between w-full",
-        closeButton: "text-gray-400 hover:text-gray-500 ml-auto",
-        content: "text-gray-700 prose",
-        actions: "flex justify-end gap-4 mt-4",
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Redirect to login page
-        window.location.href = "/signin";
-      }
-    });
+  onMounted(async () => {
+    try {
+      isLoggedIn.value = (await currentUser()) !== null
+    } catch (error) {
+      console.error('Error getting current user:', error)
+    }
+  })
+
+  const upvoteSubmisson = (id) => {
+    if (isLoggedIn.value) {
+      upvote(id)
+    } else {
+      Swal.fire({
+        title: 'Login Required',
+        text: 'You must be logged in to vote on collections!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        customClass: {
+          popup: 'flex flex-col space-y-4',
+          header: 'flex items-center justify-between w-full',
+          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+          content: 'text-gray-700 prose',
+          actions: 'flex justify-end gap-4 mt-4',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page
+          window.location.href = '/signin'
+        }
+      })
+    }
   }
-};
 
-const downvoteSubmisson = (id) => {
-  if (isLoggedIn.value) {
-    upvote(id);
-  } else {
-    Swal.fire({
-      title: "Login Required",
-      text: "You must be logged in to vote on collections!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Login",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
-      customClass: {
-        popup: "flex flex-col space-y-4",
-        header: "flex items-center justify-between w-full",
-        closeButton: "text-gray-400 hover:text-gray-500 ml-auto",
-        content: "text-gray-700 prose",
-        actions: "flex justify-end gap-4 mt-4",
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Redirect to login page
-        window.location.href = "/signin";
-      }
-    });
+  const downvoteSubmisson = (id) => {
+    if (isLoggedIn.value) {
+      upvote(id)
+    } else {
+      Swal.fire({
+        title: 'Login Required',
+        text: 'You must be logged in to vote on collections!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        customClass: {
+          popup: 'flex flex-col space-y-4',
+          header: 'flex items-center justify-between w-full',
+          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+          content: 'text-gray-700 prose',
+          actions: 'flex justify-end gap-4 mt-4',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page
+          window.location.href = '/signin'
+        }
+      })
+    }
   }
-};
 
-// eslint-disable-next-line no-unused-vars
-const { upvote, downvote, ShareToTwitter, userdashboard } = Actions();
+  // eslint-disable-next-line no-unused-vars
+  const { upvote, downvote, ShareToTwitter, userdashboard } = Actions()
 
-onMounted(fetchItem);
+  onMounted(fetchItem)
 </script>
