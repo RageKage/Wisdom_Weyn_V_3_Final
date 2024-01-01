@@ -42,31 +42,30 @@
 </template>
 
 <script setup>
+  // import child component
+  import formVue from '@/components/Views/submission-form.vue'
 
-// import child component
-import formVue from "@/components/Views/submission-form.vue";
+  import { submissionFunctions } from '../Composables/FormSubmission'
 
-import { submissionFunctions } from "../Composables/SubmitProverb";
-
-const { formVueRef, isSent, isLoading, submitEntry } = submissionFunctions();
+  const { formVueRef, isSent, isLoading, submitEntry } = submissionFunctions()
 </script>
 
 <style scoped>
-.bounce-enter-active {
-  animation: bounce-in 0.5s;
-}
-.bounce-leave-active {
-  animation: bounce-in 0.5s reverse;
-}
-@keyframes bounce-in {
-  0% {
-    transform: scale(0);
+  .bounce-enter-active {
+    animation: bounce-in 0.5s;
   }
-  50% {
-    transform: scale(1.25);
+  .bounce-leave-active {
+    animation: bounce-in 0.5s reverse;
   }
-  100% {
-    transform: scale(1);
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.25);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
-}
 </style>

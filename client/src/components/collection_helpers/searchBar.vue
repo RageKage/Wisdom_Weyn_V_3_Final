@@ -32,21 +32,21 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  isLoading: Boolean,
-  searchQuery: String,
-  searchItems: Function,
-  fetchCollectionData: Function,
-});
+  const props = defineProps({
+    isLoading: Boolean,
+    searchQuery: String,
+    searchItems: Function,
+    fetchCollectionData: Function,
+  })
 
-const emits = defineEmits([
-  "update:searchQuery",
-  "searchItems",
-  "fetchCollectionData",
-]);
+  const emits = defineEmits([
+    'update:searchQuery',
+    'searchItems',
+    'fetchCollectionData',
+  ])
 
-// emit event to parent component
-const handleInput = (event) => {
-  emits("update:searchQuery", event.target.value);
-};
+  // emit event to parent component
+  const handleInput = (event) => {
+    emits('update:searchQuery', event.target.value)
+  }
 </script>

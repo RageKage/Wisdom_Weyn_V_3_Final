@@ -10,7 +10,7 @@ var db = admin.database();
 const { set, ref, update, remove } = require("firebase/database");
 
 // getting all of the data in my collections
-router.get("/all-collections", function (req, res) {
+router.get("/collections", function (req, res) {
   // set a reference to to my collection collections
   const ref = db.ref("/collections");
 
@@ -28,7 +28,7 @@ router.get("/all-collections", function (req, res) {
 });
 
 // this is to add a new submission to the database
-router.post("/sendSubmission", async (req, res) => {
+router.post("/submissions", async (req, res) => {
   try {
     // this is the data that is being sent from the client side
     const formData = req.body;
@@ -254,17 +254,14 @@ const handleVote = async (req, res, voteType) => {
 };
 
 // Route for upvoting
-router.put("/upvoteSubmission/:id", async (req, res) => {
-  handleVote(req, res, "upvotes");
-});
+router.put("/submissions/:id/upvote", handleVote.bind(null, "upvotes"));
 
 // Route for downvoting
-router.put("/downvoteSubmission/:id", async (req, res) => {
-  handleVote(req, res, "downvotes");
-});
+router.put("/submissions/:id/downvote", handleVote.bind(null, "downvotes"));
+
 
 // this is to get one submission by id
-router.get("/getSubmission/:id", async (req, res) => {
+router.get("/submissions/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -289,7 +286,7 @@ router.get("/getSubmission/:id", async (req, res) => {
 // get user data by email this is for the dashboard feature
 // ... (other imports and code)
 
-router.get("/userDashboard/:email", async (req, res) => {
+router.get("/users/:email/dashboard", async (req, res) => {
   try {
     const startTime = performance.now();
     const email = req.params.email;
@@ -350,7 +347,8 @@ router.get("/userDashboard/:email", async (req, res) => {
       userSubmissionData[key] = {
         title: submissionData.title,
         content: submissionData.content,
-        creationDate: submissionData.creationDate
+        creationDate: submissionData.creationDate,
+        id: submissionData.id
       };
 
 

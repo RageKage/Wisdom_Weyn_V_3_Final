@@ -57,30 +57,33 @@
               user?.email
             }}</span>
           </div>
-          <ul class="py-2" aria-labelledby="user-menu-button" @click="closeDropdown">
+          <ul
+            class="py-2 "
+            aria-labelledby="user-menu-button"
+            @click="closeDropdown"
+          >
             <li>
-              <a
-                @click="userdashboard(user?.email)"
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >Dashboard</a
+              <button
+              @click="userdashboard(user?.email)"
+              class="block w-full text-left  px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+              Dashboard
+              </button>
             </li>
             <li>
               <a
-
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >Settings</a
               >
             </li>
             <li>
-              <a
-                @click="signOutUser"
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >Sign out</a
+              <button
+              @click="signOutUser"
+              class="block w-full text-left  px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+              Sign out
+              </button>
             </li>
           </ul>
         </div>
@@ -163,7 +166,7 @@
           </li>
           <li>
             <router-link
-              to="/submission"
+              to="/submissions/create"
               class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-custom-purple-700 md:p-0"
               >Submit</router-link
             >
@@ -190,102 +193,106 @@
 </template>
 
 <script setup>
-import { onMounted, ref, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
-import Logo from "./Site-Logo.vue";
-import { currentUser, getCurrentUser, signout } from "@/service/auth.js";
+  import { onMounted, ref, onUnmounted } from 'vue'
+  import { useRouter } from 'vue-router'
+  import Logo from './Site-Logo.vue'
+  import {
+    currentUser,
+    getCurrentUser,
+    signout,
+  } from '@/service/authService.js'
 
-import { Actions } from "../Composables/actions";
+  import { Actions } from '../Composables/actions'
 
-const user = ref(null);
-const dropdownOpen = ref(false);
-const router = useRouter();
+  const user = ref(null)
+  const dropdownOpen = ref(false)
+  const router = useRouter()
 
-// Props and Emits
-const props = defineProps({
-  isMenuOpen: Boolean,
-  isLargeScreen: Boolean,
-});
-const emit = defineEmits(["toggleMenu"]); // this emmits the toggle menu
+  // Props and Emits
+  const props = defineProps({
+    isMenuOpen: Boolean,
+    isLargeScreen: Boolean,
+  })
+  const emit = defineEmits(['toggleMenu']) // this emmits the toggle menu
 
-// show the dropdown menu
-const toggleDropdown = () => {
-  dropdownOpen.value = !dropdownOpen.value;
-};
-
-// close the dropdown menu
-const closeDropdown = () => {
-  dropdownOpen.value = false;
-};
-const toggleMenu = () => {
-  emit("toggleMenu");
-};
-
-// this closes the dropdown menu when users clicks outside the dropdown menu
-const onClickOutside = (event) => {
-  if (
-    !event.target.closest("#user-menu-button") &&
-    !event.target.closest("#user-dropdown")
-  ) {
-    closeDropdown(); // Reuse closeDropdown for consistent behavior.
+  // show the dropdown menu
+  const toggleDropdown = () => {
+    dropdownOpen.value = !dropdownOpen.value
   }
-};
 
-onMounted(async () => {
-  document.addEventListener("click", onClickOutside);
+  // close the dropdown menu
+  const closeDropdown = () => {
+    dropdownOpen.value = false
+  }
+  const toggleMenu = () => {
+    emit('toggleMenu')
+  }
 
-  try {
-    const authUser = await currentUser();
-
-    if (authUser) {
-      // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
-      // also this is better encase the provider doesn't provide that data
-      const dbUser = await getCurrentUser(authUser.uid);
-      user.value = dbUser;
+  // this closes the dropdown menu when users clicks outside the dropdown menu
+  const onClickOutside = (event) => {
+    if (
+      !event.target.closest('#user-menu-button') &&
+      !event.target.closest('#user-dropdown')
+    ) {
+      closeDropdown() // Reuse closeDropdown for consistent behavior.
     }
-  } catch (error) {
-    console.error("Error getting current user:", error.message);
   }
-});
 
-// Sign out user
-const signOutUser = async () => {
-  try {
-    await signout();
-    dropdownOpen.value = false;
-    user.value = null;
-    router.push("/"); // Redirect to home after successful login
-  } catch (error) {
-    console.error("Error signing out:", error);
+  onMounted(async () => {
+    document.addEventListener('click', onClickOutside)
+
+    try {
+      const authUser = await currentUser()
+
+      if (authUser) {
+        // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
+        // also this is better encase the provider doesn't provide that data
+        const dbUser = await getCurrentUser(authUser.uid)
+        user.value = dbUser
+      }
+    } catch (error) {
+      console.error('Error getting current user:', error.message)
+    }
+  })
+
+  // Sign out user
+  const signOutUser = async () => {
+    try {
+      await signout()
+      dropdownOpen.value = false
+      user.value = null
+      router.push('/') // Redirect to home after successful login
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
-};
 
-onUnmounted(() => {
-  document.removeEventListener("click", onClickOutside);
-});
+  onUnmounted(() => {
+    document.removeEventListener('click', onClickOutside)
+  })
 
-const { userdashboard } = Actions();
+  const { userdashboard } = Actions()
 </script>
 
 <style scoped>
-.hamburger .line {
-  display: block;
-  width: 30px;
-  height: 2px;
-  background-color: #b794f4;
-  margin: 5px 0;
-  transition: transform 0.3s ease-in-out;
-}
+  .hamburger .line {
+    display: block;
+    width: 30px;
+    height: 2px;
+    background-color: #b794f4;
+    margin: 5px 0;
+    transition: transform 0.3s ease-in-out;
+  }
 
-#hamburger-10.is-active {
-  transform: rotate(90deg);
-}
+  #hamburger-10.is-active {
+    transform: rotate(90deg);
+  }
 
-#hamburger-10.is-active .line:nth-child(1) {
-  transform: translateY(10px) rotate(0deg);
-}
+  #hamburger-10.is-active .line:nth-child(1) {
+    transform: translateY(10px) rotate(0deg);
+  }
 
-#hamburger-10.is-active .line:nth-child(3) {
-  transform: translateY(-10px) rotate(0deg);
-}
+  #hamburger-10.is-active .line:nth-child(3) {
+    transform: translateY(-10px) rotate(0deg);
+  }
 </style>

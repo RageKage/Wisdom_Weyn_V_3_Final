@@ -113,20 +113,20 @@
 </template>
 
 <style>
-.emoji-404 {
-  position: relative;
-  animation: mymove 2.5s infinite;
-}
+  .emoji-404 {
+    position: relative;
+    animation: mymove 2.5s infinite;
+  }
 
-@keyframes mymove {
-  33% {
-    top: 0px;
+  @keyframes mymove {
+    33% {
+      top: 0px;
+    }
+    66% {
+      top: 20px;
+    }
+    100% {
+      top: 0px;
+    }
   }
-  66% {
-    top: 20px;
-  }
-  100% {
-    top: 0px;
-  }
-}
 </style>

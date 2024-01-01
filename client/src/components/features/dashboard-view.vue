@@ -35,7 +35,7 @@
         </div>
         <!-- check that  -->
         <div v-if="noSubmissions">
-          <div class="mb-6" >
+          <div class="mb-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-blue-600">
                 Most Popular Submissions
@@ -43,7 +43,7 @@
               <!-- <span class="text-sm text-indigo-500 cursor-pointer">See All</span> -->
             </div>
 
-            <div v-if="data.mostVotes.length > 0" >
+            <div v-if="data.mostVotes.length > 0">
               <div
                 v-for="submission in data.mostVotes"
                 :key="submission.id"
@@ -134,8 +134,9 @@
             <p v-else class="text-sm text-gray-500">No submissions yet.</p>
           </div>
         </div>
-        <div v-else
-        class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+        <div
+          v-else
+          class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
         >
           <div class="flex justify-center items-center">
             <p class="text-sm text-gray-500">No submissions yet.</p>
@@ -155,72 +156,73 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import AppApiService from "../../service/index";
-import { Actions } from "../Composables/actions";
-import Loader from "@/assets/app-loader.vue";
+  import { ref, watch, computed, onMounted } from 'vue'
+  import { useRouter } from 'vue-router'
+  import AppApiService from '../../service/index'
+  import { Actions } from '../Composables/actions'
+  import Loader from '@/assets/app-loader.vue'
 
-// Service
-const service = AppApiService();
-const router = useRouter();
+  // Service
+  const service = AppApiService()
+  const router = useRouter()
 
-const id = computed(() => router.currentRoute.value.params.id);
-const data = ref(null);
+  const noSubmissions = ref(true)
+  const id = computed(() => router.currentRoute.value.params.id)
+  const data = ref(null)
 
-const noSubmissions = ref(true);
+  const fetchData = async () => {
+    try {
+      data.value = await service.getuserDashBoardAPI(id.value)
+      // we check if the data only contains uid, email, display name, if yes then we can say no submissions yet
+      // if (
+      //   data.value.uid &&
+      //   data.value.email &&
+      //   data.value.displayName
+      // ) {
+      //   noSubmissions.value = false;
+      // }
 
-const fetchData = async () => {
-  try {
-    data.value = await service.getuserDashBoardAPI(id.value);
-    // we check if the data only contains uid, email, display name, if yes then we can say no submissions yet
-    // if (
-    //   data.value.uid &&
-    //   data.value.email &&
-    //   data.value.displayName
-    // ) {
-    //   noSubmissions.value = false;
-    // }
+      // check the length of the data object
+      const dataLength = computed(() =>
+        data.value ? Object.keys(data.value).length : 0,
+      )
 
-    // check the length of the data object
-    const dataLength = computed(() => data.value ? Object.keys(data.value).length : 0);
-
-    if (dataLength.value === 3) {
-      noSubmissions.value = false;
+      if (dataLength.value === 3) {
+        noSubmissions.value = false
+      }
+      // if (dataLength.value === 0) {
+      //   noSubmissions.value = true;
+      // }
+    } catch (error) {
+      console.error('Error fetching item:', error)
     }
-    // if (dataLength.value === 0) {
-    //   noSubmissions.value = true;
-    // }
-  } catch (error) {
-    console.error("Error fetching item:", error);
-  }
-};
-
-// Truncate text by words not characters
-const truncateText = (text, limit) => {
-  text = text.trim();
-  const words = text.split(" ");
-
-  if (words.length <= limit) {
-    return text;
   }
 
-  const truncatedText = words.slice(0, limit).join(" ");
+  // Truncate text by words not characters
+  const truncateText = (text, limit) => {
+    text = text.trim()
+    const words = text.split(' ')
 
-  return truncatedText + "...";
-};
+    if (words.length <= limit) {
+      return text
+    }
 
-// Format the date
-const readableDate = (date) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(date).toLocaleDateString("en-US", options);
-};
+    const truncatedText = words.slice(0, limit).join(' ')
 
-// Fetch data when the id changes, which happens when the route changes
-watch(id, () => {
-  fetchData();
-});
+    return truncatedText + '...'
+  }
 
-const { showFullText } = Actions();
-onMounted(fetchData);
+  // Format the date
+  const readableDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' }
+    return new Date(date).toLocaleDateString('en-US', options)
+  }
+
+  // Fetch data when the id changes, which happens when the route changes
+  watch(id, () => {
+    fetchData()
+  })
+
+  const { showFullText } = Actions()
+  onMounted(fetchData)
 </script>
