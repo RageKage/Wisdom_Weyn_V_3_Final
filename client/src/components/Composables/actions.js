@@ -97,9 +97,15 @@ export function Actions() {
 
   // TODO finish this delete logic
 
-  const deleteSubmission = async (itemID) => {
+  const deleteSubmission = async (id, uid) => {
+    const data = {
+      id,
+      uid,
+    }
     try {
-      await service.deleteSubmission(itemID)
+      await service.deleteSubmission(data)
+      // reload the page
+      location.reload()
     } catch (error) {
       console.error(error)
     }
@@ -111,5 +117,6 @@ export function Actions() {
     downvote,
     showFullText,
     userdashboard,
+    deleteSubmission,
   }
 }

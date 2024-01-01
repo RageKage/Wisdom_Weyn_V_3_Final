@@ -37,7 +37,7 @@
         </div>
         <router-link
           v-else
-          to="/signin"
+          to="/sign-in"
           class="hidden lg:inline text-gray-900 hover:text-custom-purple-700"
         >
           Log in <span>&rarr;</span>

@@ -24,6 +24,30 @@ const AppApiService = () => {
       }
     },
 
+    // this will delete a submission by data object which contains the id and the uid
+    async deleteSubmission(data) {
+      console.log(data)
+      const authUser = await currentUser()
+      if (!authUser) {
+        return Promise.reject('You must be logged in to delete a submission')
+      } else {
+        const uid = authUser.uid
+        return axios
+          .delete('/api/submissions/' + data.id + '/' + uid)
+          .then((res) => {
+            return res.data
+          })
+      }
+    },
+
+
+    // this is to get one submission by id
+    getSubmission(id) {
+      return axios.get('/api/submissions/' + id).then((res) => {
+        return res.data
+      })
+    },
+
     async upvoteSubmission(id) {
       const authUser = await currentUser()
       if (!authUser) {
@@ -50,13 +74,6 @@ const AppApiService = () => {
             return res.data
           })
       }
-    },
-
-    // this is to get one submission by id
-    getSubmission(id) {
-      return axios.get('/api/submissions/' + id).then((res) => {
-        return res.data
-      })
     },
 
     // get data by user email
