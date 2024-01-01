@@ -36,35 +36,23 @@ router.post("/submissions", async (req, res) => {
     const getisodate = new Date().toISOString();
     const date = new Date(getisodate);
 
-    let counterRef;
-    if (formData.picked === "proverb") {
-      counterRef = db.ref("counter/proverb_count");
-    } else if (formData.picked === "Poetry") {
-      counterRef = db.ref("counter/Poetry_count");
-    } else {
-      throw new Error(
-        "Could not find type " +
-          formData.picked +
-          " in form " +
-          JSON.stringify(formData) +
-          "."
-      );
-    }
-
-    // counter so we can increase counter so that each proverb or poetry is unique following this format type_count
-    const countSnapshot = await counterRef.once("value");
-    const currentCount = countSnapshot.exists() ? countSnapshot.val() : 0;
-    await counterRef.set(currentCount + 1);
-
-    const newEntryID = `${formData.picked}_${currentCount + 1}`;
-
-    // create a unique key for the submission
-    const submissionKey = "submission_" + newEntryID;
-
     // now we need to add the submission to the user's submissions
     const userSubmissionRef = db.ref(
       "users/" + formData.user_id + "/submissions"
     );
+
+    const submissionRef = userSubmissionRef.push();
+
+    const newEntryID = submissionRef.key;
+
+    // create a unique key for the submission
+    let submissionKey = "submission_" + newEntryID;
+
+    if (formData.picked === "proverb") {
+      submissionKey = "submission_proverb_" + newEntryID;
+    } else if (formData.picked === "Poetry") {
+      submissionKey = "submission_Poetry_" + newEntryID;
+    }
 
     // now we check if the user has any submissions if so we add to it if not we create it
     const userSnapshot = await userSubmissionRef.once("value");
@@ -259,7 +247,6 @@ router.put("/submissions/:id/upvote", handleVote.bind(null, "upvotes"));
 // Route for downvoting
 router.put("/submissions/:id/downvote", handleVote.bind(null, "downvotes"));
 
-
 // this is to get one submission by id
 router.get("/submissions/:id", async (req, res) => {
   try {
@@ -292,7 +279,10 @@ router.get("/users/:email/dashboard", async (req, res) => {
     const email = req.params.email;
 
     const usersRef = db.ref("users");
-    const usersSnapshot = await usersRef.orderByChild("email").equalTo(email).once("value");
+    const usersSnapshot = await usersRef
+      .orderByChild("email")
+      .equalTo(email)
+      .once("value");
 
     if (!usersSnapshot.exists()) {
       return res.status(404).send("User not found");
@@ -306,11 +296,13 @@ router.get("/users/:email/dashboard", async (req, res) => {
     const userSubmissionsSnapshot = await userSubmissionsRef.once("value");
     const userSubmissionsData = userSubmissionsSnapshot.val();
 
-    // console.log("userSubmissionsData", userSubmissionsData);
-
     if (!userSubmissionsData) {
       var endTime = performance.now();
-      console.log("No submissions, this query took " + (endTime - startTime) + " milliseconds.");
+      console.error(
+        "No submissions, this query took " +
+          (endTime - startTime) +
+          " milliseconds."
+      );
       return res.json({
         uid: uid,
         displayName: userObject.displayName,
@@ -328,13 +320,14 @@ router.get("/users/:email/dashboard", async (req, res) => {
     const mostRecent = [];
 
     const submissionKeys = Object.keys(userSubmissionsData);
-    const submissionPromises = submissionKeys.map(key => {
+    const submissionPromises = submissionKeys.map((key) => {
       const submission = userSubmissionsData[key];
 
       const type = submission.entry_id.split("_")[1];
 
-
-      const submissionRef = db.ref(`collections/${type}/${submission.entry_id}`);
+      const submissionRef = db.ref(
+        `collections/${type}/${submission.entry_id}`
+      );
       return submissionRef.once("value");
     });
 
@@ -348,39 +341,38 @@ router.get("/users/:email/dashboard", async (req, res) => {
         title: submissionData.title,
         content: submissionData.content,
         creationDate: submissionData.creationDate,
-        id: submissionData.id
+        id: submissionData.id,
       };
 
-
-
-      const submission = submissionData.id
-
-      console.log("submission", submission);
+      const submission = submissionData.id;
 
       const type = submission.split("_")[1];
 
       submissionsCount[type] = (submissionsCount[type] || 0) + 1;
-      
 
       if (userSubmissionData[key].upvotes >= 1) {
         mostVotes.push(userSubmissionData[key]);
       }
 
-
       mostRecent.push(userSubmissionData[key]);
     });
 
- 
     // Sort mostVotes and mostRecent and return the top 5
     mostVotes.sort((a, b) => b.upvotes - a.upvotes);
-    mostRecent.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+    mostRecent.sort(
+      (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
+    );
 
     // Limit to the top 5
     mostVotes.splice(5);
     mostRecent.splice(5);
 
     var endTime = performance.now();
-    console.log("Yes submissions, this query took " + (endTime - startTime) + " milliseconds.");
+    console.error(
+      "Yes submissions, this query took " +
+        (endTime - startTime) +
+        " milliseconds."
+    );
 
     res.json({
       uid: uid,
@@ -395,14 +387,72 @@ router.get("/users/:email/dashboard", async (req, res) => {
       mostVotes: mostVotes,
       mostRecent: mostRecent,
     });
-
-    console.log(res)
   } catch (error) {
-    console.log("Error:", error.message);
+    console.error("Error:", error.message);
     return res.status(500).send("Server error: " + error.message);
   }
 });
 
+// delete a submission
+router.delete("/submissions/:id/:uid", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const uid = req.params.uid;
 
+    // Check if the user is authenticated to delete the submission
+    const userRef = db.ref("users/" + uid);
+    const userSnapshot = await userRef.once("value");
+
+    if (!userSnapshot.exists()) {
+      return res.status(404).send("User not found");
+    }
+
+    const userSubmissionsRef = db.ref(`users/${uid}/submissions`);
+    const userSubmissionsSnapshot = await userSubmissionsRef.once("value");
+
+    if (!userSubmissionsSnapshot.exists()) {
+      console.error("User has no submissions");
+      return res.status(404).send("Submission not found");
+    }
+
+    const userSubmissionsData = userSubmissionsSnapshot.val();
+    const submissionKeys = Object.keys(userSubmissionsData);
+    const submissionKey = submissionKeys.find((key) => {
+      const submission = userSubmissionsData[key];
+      return submission.entry_id === id;
+    });
+
+    if (!submissionKey) {
+      return res.status(404).send("Submission not found");
+    }
+
+    // Count the submissions before deletion
+    const submissionCountBefore = Object.keys(userSubmissionsData).length;
+
+    // Remove the submission from the collections
+    const type = id.split("_")[1];
+    const collectionRef = db.ref(`collections/${type}/${id}`);
+    const collectionSnapshot = await collectionRef.once("value");
+
+    if (collectionSnapshot.exists()) {
+      await collectionRef.remove();
+    }
+
+    // Remove the submission from the user's submissions
+    await userSubmissionsRef.child(submissionKey).remove();
+
+    // Update the user's submission count and also make sure that the submissionCount doesn't change if the user has no submissions so it will be 0 and not passed 0 down so no negtaive
+    const submissionCountAfter = submissionCountBefore - 1;
+    const submissionCount = submissionCountAfter < 0 ? 0 : submissionCountAfter;
+
+    await userRef.update({ submissionCount: submissionCount });
+
+    res.json({
+      message: "Submission deleted!",
+    });
+  } catch (error) {
+    return res.status(500).send("Server error: " + error.message);
+  }
+});
 
 module.exports = router;

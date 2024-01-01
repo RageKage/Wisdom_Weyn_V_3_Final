@@ -116,7 +116,7 @@
               </button>
               <!-- TODO ADD DELETE LOGIC -->
               <button
-                @click="deleteSubmission(item)"
+                @click="deleteSubmission(item.id, user.uid)"
                 class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300 mr-4"
               >
                 <svg

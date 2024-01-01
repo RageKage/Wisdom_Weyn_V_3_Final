@@ -92,7 +92,7 @@
     }).then((result) => {
       if (result.isConfirmed) {
         // Redirect to login page
-        window.location.href = '/signin'
+        window.location.href = '/sign-in'
       }
     })
   }

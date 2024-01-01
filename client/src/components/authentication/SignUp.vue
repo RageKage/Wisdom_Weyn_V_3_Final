@@ -124,7 +124,7 @@
       <div class="mt-4 text-sm text-gray-600 text-center">
         <p>
           Already have an account?
-          <router-link to="/signin" class="text-black hover:underline"
+          <router-link to="/sign-in" class="text-black hover:underline"
             >Login here</router-link
           >
         </p>

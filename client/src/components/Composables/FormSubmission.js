@@ -48,6 +48,7 @@ export function submissionFunctions() {
       }
     } catch (error) {
       // check if error contains the msg "You must be logged in to create a submission"
+      console.log(error)
       if (error.includes('You must be logged in to create a submission')) {
         await Swal.fire({
           title: 'Login Required',

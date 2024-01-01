@@ -94,7 +94,7 @@
       <div class="mt-4 text-sm text-gray-600 text-center">
         <p>
           Don't have an account?
-          <router-link to="/signup" class="text-black hover:underline"
+          <router-link to="/sign-up" class="text-black hover:underline"
             >Sign up here</router-link
           >
         </p>
