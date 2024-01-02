@@ -38,7 +38,7 @@ router.post("/submissions", async (req, res) => {
 
     // now we need to add the submission to the user's submissions
     const userSubmissionRef = db.ref(
-      "users/" + formData.user_id + "/submissions"
+      "users/" + formData.user_id.uid + "/submissions"
     );
 
     const submissionRef = userSubmissionRef.push();
@@ -61,7 +61,7 @@ router.post("/submissions", async (req, res) => {
       await userSubmissionRef.update({
         [newEntryID]: {
           entry_id: submissionKey,
-          user_id: formData.user_id,
+          user_id: formData.user_id.uid,
         },
       });
     }
@@ -70,13 +70,13 @@ router.post("/submissions", async (req, res) => {
       await userSubmissionRef.set({
         [newEntryID]: {
           entry_id: submissionKey,
-          user_id: formData.user_id,
+          user_id: formData.user_id.uid,
         },
       });
     }
 
     // now we need to update the user's submission count
-    const updateUserCount = db.ref("users/" + formData.user_id);
+    const updateUserCount = db.ref("users/" + formData.user_id.uid);
 
     const userCountSnapshot = await updateUserCount.once("value");
 
@@ -97,7 +97,7 @@ router.post("/submissions", async (req, res) => {
 
     const collectionSnapshot = await userSubmissionRef.once("value");
 
-    const userRef = db.ref("users/" + formData.user_id);
+    const userRef = db.ref("users/" + formData.user_id.uid);
 
     const collectionsUserSnapshot = await userRef.once("value");
     const userData = collectionsUserSnapshot.val();

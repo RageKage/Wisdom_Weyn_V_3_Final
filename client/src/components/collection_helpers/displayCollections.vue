@@ -210,7 +210,7 @@
 
   const downvoteSubmisson = (id) => {
     if (isLoggedIn.value) {
-      downvote
+      downvote(id)
     } else {
       emits('loginRequired', id)
     }
