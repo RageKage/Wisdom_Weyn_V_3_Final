@@ -277,7 +277,6 @@ router.get("/submissions/:id", async (req, res) => {
 
 router.get("/users/:email/dashboard", async (req, res) => {
   try {
-    const startTime = performance.now();
     const email = req.params.email;
 
     const usersRef = db.ref("users");
@@ -299,12 +298,6 @@ router.get("/users/:email/dashboard", async (req, res) => {
     const userSubmissionsData = userSubmissionsSnapshot.val();
 
     if (!userSubmissionsData) {
-      var endTime = performance.now();
-      console.error(
-        "No submissions, this query took " +
-          (endTime - startTime) +
-          " milliseconds."
-      );
       return res.json({
         uid: uid,
         displayName: userObject.displayName,
@@ -368,13 +361,6 @@ router.get("/users/:email/dashboard", async (req, res) => {
     // Limit to the top 5
     mostVotes.splice(5);
     mostRecent.splice(5);
-
-    var endTime = performance.now();
-    console.error(
-      "Yes submissions, this query took " +
-        (endTime - startTime) +
-        " milliseconds."
-    );
 
     res.json({
       uid: uid,
@@ -456,7 +442,6 @@ router.delete("/submissions/:id/:uid", async (req, res) => {
     return res.status(500).send("Server error: " + error.message);
   }
 });
-
 
 // check server status
 router.get("/server/status", async (req, res) => {

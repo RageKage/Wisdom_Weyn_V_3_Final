@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col mb-4">
+      <!-- <div class="flex flex-col mb-4">
         <label v-if="user" for="username" class="label">
           <span
             class="label-text rounded-lg bg-gray-100 text-gray-600 p-2 hover:bg-gray-200 hover:text-gray-700 transition-all duration-300 mr-4"
@@ -47,7 +47,7 @@
             Your Name (for credit): {{ user.displayName }}
           </span>
         </label>
-      </div>
+      </div> -->
 
       <div v-if="picked === 'Poetry'" class="flex flex-col mb-4">
         <input
@@ -65,7 +65,7 @@
           id="content"
           v-model="content"
           :placeholder="
-            picked === 'poetry' ? 'Share the Poetry' : 'Share the Proverb'
+            picked === 'Poetry' ? 'Share the Poetry' : 'Share the Proverb'
           "
           rows="4"
           required
