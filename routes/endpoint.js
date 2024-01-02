@@ -235,7 +235,6 @@ const handleVote = async (req, res, voteType) => {
       });
     }
   } catch (error) {
-    // TODO COME BACK TO THIS ERROR
     console.error(`Error updating ${voteType}vote:`, error);
     res.status(500).send(`Server error: ${error.message}`);
   }
@@ -269,7 +268,6 @@ router.get("/submissions/:id", async (req, res) => {
       return res.status(404).send("Submission not found");
     }
   } catch (error) {
-    // TODO COME BACK TO THIS ERROR
     return res.status(500).send("Server error: " + error.message);
   }
 });
@@ -458,5 +456,42 @@ router.delete("/submissions/:id/:uid", async (req, res) => {
     return res.status(500).send("Server error: " + error.message);
   }
 });
+
+
+// check server status
+router.get("/server/status", async (req, res) => {
+  try {
+    res.json({
+      message: "Server is up!",
+    });
+  } catch (error) {
+    return res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// get user by id
+// router.get('/users/:id', async (req, res) => {
+//   try {
+//     const id = req.params.id;
+
+//     const userRef = db.ref('users/' + id);
+//     const userSnapshot = await userRef.once('value');
+
+//     if (!userSnapshot.exists()) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     const userData = userSnapshot.val();
+
+//     res.json({
+//       uid: userData.uid,
+//       displayName: userData.displayName,
+//       email: userData.email,
+//       submissionCount: userData.submissionCount,
+//     });
+//   } catch (error) {
+//     return res.status(500).send('Server error: ' + error.message);
+//   }
+// })
 
 module.exports = router;

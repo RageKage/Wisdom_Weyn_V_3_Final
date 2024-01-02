@@ -3,6 +3,10 @@
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { getDatabase, ref, onValue } from 'firebase/database'
 
+// import AppApiService from './index'
+
+// const service = AppApiService()
+
 // Get the current user
 export function currentUser() {
   return new Promise((resolve, reject) => {
@@ -54,6 +58,19 @@ export function getCurrentUser(Useruid) {
     }
   })
 }
+
+// service
+// .getUserDatabyuid(Useruid)
+// .then((response) => {
+//   if (response) {
+//     resolve(response)
+//   } else {
+//     resolve(null) // set to null if no user logged in
+//   }
+// })
+// .catch((error) => {
+//   reject(error)
+// })
 
 // Sign out the user
 export async function signout() {

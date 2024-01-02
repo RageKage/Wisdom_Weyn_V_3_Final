@@ -1,6 +1,11 @@
 <template>
   <div v-if="displayedItems.length === 0" class="text-center">
-    No results found.
+    <h2 class="text-2xl font-bold text-custom-purple-600 mb-2">
+      No Submissions Found
+    </h2>
+    <p class="text-gray-700 text-md leading-relaxed">
+      There are no submissions that match your search criteria.
+    </p>
   </div>
   <div
     v-if="!isLoading"
@@ -114,7 +119,6 @@
               >
                 Read
               </button>
-              <!-- TODO ADD DELETE LOGIC -->
               <button
                 @click="deleteSubmission(item.id, user.uid)"
                 class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300 mr-4"
@@ -182,7 +186,6 @@
         user.value = JSON.parse(storedUser)
         isLoggedIn.value = true
       } else {
-
         const currentUserData = await currentUser()
         if (currentUserData) {
           user.value = currentUserData

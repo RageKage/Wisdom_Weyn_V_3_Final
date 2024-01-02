@@ -58,16 +58,16 @@
             }}</span>
           </div>
           <ul
-            class="py-2 "
+            class="py-2"
             aria-labelledby="user-menu-button"
             @click="closeDropdown"
           >
             <li>
               <button
-              @click="userdashboard(user?.email)"
-              class="block w-full text-left  px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                @click="userdashboard(user?.email)"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-              Dashboard
+                Dashboard
               </button>
             </li>
             <li>
@@ -79,10 +79,10 @@
             </li>
             <li>
               <button
-              @click="signOutUser"
-              class="block w-full text-left  px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                @click="signOutUser"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-              Sign out
+                Sign out
               </button>
             </li>
           </ul>

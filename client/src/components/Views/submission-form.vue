@@ -3,32 +3,36 @@
     <Popup v-if="showPopup" />
 
     <div
-      class="rounded-lg bg-white-100 text-grey-600 p-4 transition-all duration-300 mx-auto max-w-[1200px]"
+      class="rounded-lg text-gray-600 p-4 transition-all duration-300 mx-auto max-w-[1200px]"
     >
-      <h2 class="text-2xl font-bold mb-4">Contribute a Proverb or Poetry</h2>
+      <h2 class="text-2xl font-bold mb-4 text-custom-purple-800">
+        Contribute a Proverb or Poetry
+      </h2>
 
       <div class="mb-4">
         <div class="container">
           <form>
-            <div class="flex flex-row">
-              <label>
+            <div class="flex flex-row space-x-4">
+              <label class="flex items-center">
                 <input
                   type="radio"
                   id="proverb"
                   value="proverb"
                   v-model="picked"
                   checked
+                  class="form-radio text-custom-purple-600"
                 />
-                <span>Proverb</span>
+                <span class="ml-2 text-gray-800">Proverb</span>
               </label>
-              <label>
+              <label class="flex items-center">
                 <input
                   type="radio"
-                  id="Poetry"
+                  id="poetry"
                   value="Poetry"
                   v-model="picked"
+                  class="form-radio text-custom-purple-600"
                 />
-                <span>Poetry</span>
+                <span class="ml-2 text-gray-800">Poetry</span>
               </label>
             </div>
           </form>
@@ -36,33 +40,27 @@
       </div>
 
       <div class="flex flex-col mb-4">
-        <label for="username" class="label">
-          <span class="label-text"
-            >Your Name (for credit): {{ currentUserDB?.displayName }}</span
+        <label v-if="user" for="username" class="label">
+          <span
+            class="label-text rounded-lg bg-gray-100 text-gray-600 p-2 hover:bg-gray-200 hover:text-gray-700 transition-all duration-300 mr-4"
           >
+            Your Name (for credit): {{ user.displayName }}
+          </span>
         </label>
       </div>
 
-      <!-- Conditional Title Field for Poetry -->
       <div v-if="picked === 'Poetry'" class="flex flex-col mb-4">
-        <!-- <label for="title" class="label">
-          <span class="label-text">Title (for Poetry)</span>
-        </label> -->
         <input
           type="text"
           id="title"
           v-model="title"
           placeholder="Title of the Poetry"
           required
-          class="form-input px-4 py-3 rounded-2xl"
+          class="form-input px-4 py-3 rounded-2xl focus:outline-none focus:ring focus:border-custom-purple-300"
         />
       </div>
 
-      <!-- Content and Meaning Textareas -->
       <div class="flex flex-col mb-4">
-        <!-- <label for="content" class="label">
-          <span class="label-text">Proverb or Poetry Text</span>
-        </label> -->
         <textarea
           id="content"
           v-model="content"
@@ -71,14 +69,11 @@
           "
           rows="4"
           required
-          class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72"
+          class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72 focus:outline-none focus:ring focus:border-custom-purple-300"
         ></textarea>
       </div>
 
       <div class="flex flex-col mb-6">
-        <!-- <label for="meaning" class="label">
-          <span class="label-text">Proverb or Poetry Explanation</span>
-        </label> -->
         <textarea
           id="meaning"
           v-model="meaning"
@@ -89,15 +84,14 @@
           "
           rows="4"
           required
-          class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72"
+          class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72 focus:outline-none focus:ring focus:border-custom-purple-300"
         ></textarea>
       </div>
 
-      <!-- Submit Button -->
       <button
         type="submit"
         @click="submitForm"
-        class="relative inline-flex text-sm sm:text-base rounded-full font-medium border-2 border-transparent transition-colors outline-transparent focus:outline-transparent disabled:pointer-events-none disabled:opacity-40 disabled:hover:opacity-40 disabled:cursor-not-allowed disabled:shadow-none text-white bg-[#4040F2] hover:bg-[#3333D1] focus:border-[#B3B3FD] focus:bg-[#4040F2] px-4 py-1 sm:py-1.5 sm:px-5"
+        class="bg-custom-purple-800 text-white px-4 py-2 rounded-full font-medium transition hover:bg-custom-purple-700 focus:outline-none focus:ring focus:border-custom-purple-300"
       >
         <span v-if="props.isLoading">
           <!-- Loading Icon -->
@@ -179,34 +173,34 @@
   const showPopup = ref(false)
 
   onMounted(async () => {
-  try {
-    const storedUser = localStorage.getItem('user')
-    const hasVisited = localStorage.getItem('visited')
+    try {
+      const storedUser = localStorage.getItem('user')
+      const hasVisited = localStorage.getItem('visited')
 
-    // If user data is found in localStorage, set it
-    if (storedUser) {
-      user.value = JSON.parse(storedUser)
-    } else {
-      // If user data is not found in localStorage, and the user hasn't visited before, show the popup
-      if (!hasVisited) {
-        const authUser = await currentUser()
+      // If user data is found in localStorage, set it
+      if (storedUser) {
+        user.value = JSON.parse(storedUser)
+      } else {
+        // If user data is not found in localStorage, and the user hasn't visited before, show the popup
+        if (!hasVisited) {
+          const authUser = await currentUser()
+          user.value = authUser
 
-        // If authUser exists, set user.value and fetch userDB
-        if (authUser) {
-          user.value = authUser.uid
-          const userDB = await getCurrentUser(authUser.uid)
-          currentUserDB.value = userDB
-        } else {
-          // Show the popup and mark the user as visited
-          showPopup.value = true
-          localStorage.setItem('visited', 'true')
+          // If authUser exists, set user.value and fetch userDB
+          if (authUser) {
+            const userDB = await getCurrentUser(authUser.uid)
+            currentUserDB.value = userDB
+          } else {
+            // Show the popup and mark the user as visited
+            showPopup.value = true
+            localStorage.setItem('visited', 'true')
+          }
         }
       }
+    } catch (error) {
+      console.error('Error getting current user:', error)
     }
-  } catch (error) {
-    console.error('Error getting current user:', error)
-  }
-})
+  })
 
   defineExpose({
     resetForm,

@@ -95,8 +95,7 @@ export function Actions() {
     }
   }
 
-  // TODO finish this delete logic
-
+  // delete a submission
   const deleteSubmission = async (id, uid) => {
     const data = {
       id,
