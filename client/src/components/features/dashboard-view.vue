@@ -14,21 +14,21 @@
         <div class="grid grid-cols-3 gap-4 mb-6">
           <div class="p-4 bg-teal-200 rounded-md text-center">
             <p class="text-xl font-bold text-teal-800">
-              {{ data.userStats ? data.userStats.totalSubmissions : 0 }}
+              {{ data.userStats ? data.userStats.totalSubmissions || 0 : 0 }}
             </p>
             <p class="text-sm text-teal-500">Submissions</p>
           </div>
 
           <div class="p-4 bg-purple-200 rounded-md text-center">
             <p class="text-xl font-bold text-purple-800">
-              {{ data.userStats ? data.userStats.proverbs : 0 }}
+              {{ data.userStats && data.userStats.proverbs ? data.userStats.proverbs : 0 }}
             </p>
             <p class="text-sm text-purple-500">Proverbs</p>
           </div>
 
           <div class="p-4 bg-yellow-200 rounded-md text-center">
             <p class="text-xl font-bold text-yellow-800">
-              {{ data.userStats ? data.userStats.poetrys : 0 }}
+              {{ data.userStats && data.userStats.Poetrys ? data.userStats.Poetrys : 0 }}
             </p>
             <p class="text-sm text-yellow-500">Poetry</p>
           </div>
