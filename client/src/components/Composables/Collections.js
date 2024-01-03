@@ -34,10 +34,10 @@ export function CollectionsFunctions() {
       typeCollection.forEach((item) => {
         // check if title isn't empty string
         if (item.title) {
-          item.title = truncateString(item.title, 5)
+          item.title = truncateString(item.title, 10)
         }
-        item.content = truncateString(item.content, 10)
-        item.meaning = truncateString(item.meaning, 10)
+        item.content = truncateString(item.content, 12)
+        item.meaning = truncateString(item.meaning, 12)
         allItems.push(item)
       })
     })

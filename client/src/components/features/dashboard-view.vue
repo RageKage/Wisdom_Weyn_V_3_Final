@@ -21,24 +21,31 @@
 
           <div class="p-4 bg-purple-200 rounded-md text-center">
             <p class="text-xl font-bold text-purple-800">
-              {{ data.userStats && data.userStats.proverbs ? data.userStats.proverbs : 0 }}
+              {{
+                data.userStats && data.userStats.proverbs
+                  ? data.userStats.proverbs
+                  : 0
+              }}
             </p>
             <p class="text-sm text-purple-500">Proverbs</p>
           </div>
 
           <div class="p-4 bg-yellow-200 rounded-md text-center">
             <p class="text-xl font-bold text-yellow-800">
-              {{ data.userStats && data.userStats.Poetrys ? data.userStats.Poetrys : 0 }}
+              {{
+                data.userStats && data.userStats.Poetrys
+                  ? data.userStats.Poetrys
+                  : 0
+              }}
             </p>
             <p class="text-sm text-yellow-500">Poetry</p>
           </div>
         </div>
-        <!-- check that  -->
         <div v-if="noSubmissions">
           <div class="mb-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-blue-600">
-                Most Popular Submissions
+                Gems That Illuminate
               </h2>
               <!-- <span class="text-sm text-indigo-500 cursor-pointer">See All</span> -->
             </div>
@@ -75,11 +82,16 @@
                           d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"
                         />
                       </svg>
-                      <span>{{ submission.upvotes }}</span>
+                      <span
+                        >{{ submission.upvotes }} hearts touched by this
+                        wisdom</span
+                      >
                     </div>
                   </div>
 
-                  <div class="flex justify-between mt-2">
+                  <div
+                    class="flex justify-between mt-2 rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+                  >
                     <button
                       class="text-sm text-gray-500 hover:text-gray-700 transition-all duration-300"
                       @click="showFullText(submission.id)"
@@ -90,15 +102,21 @@
                 </div>
               </div>
             </div>
-
-            <p v-else class="text-sm text-gray-500">No submissions yet.</p>
+            <div
+              class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+            >
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-md">
+                  Your verses are waiting to blossom. Keep sharing your poetry
+                  and proverbs, they hold beauty waiting to be discovered.
+                </h2>
+              </div>
+            </div>
           </div>
 
           <div>
             <div class="flex justify-between items-center mb-4">
-              <h2 class="text-xl font-bold text-blue-600">
-                Most Recent Submissions
-              </h2>
+              <h2 class="text-xl font-bold text-blue-600">See What's New</h2>
               <!-- <span class="text-sm text-indigo-500 cursor-pointer">See All</span> -->
             </div>
 
@@ -116,8 +134,9 @@
                       truncateText(submission.title || submission.content, 10)
                     }}
                   </p>
+                  <!-- when the submission was shred -->
                   <p class="text-xs text-gray-500">
-                    Submitted on: {{ readableDate(submission.creationDate) }}
+                    {{ readableDate(submission.creationDate) }}
                   </p>
                   <div class="flex justify-between mt-2">
                     <button
@@ -131,7 +150,17 @@
               </div>
             </div>
 
-            <p v-else class="text-sm text-gray-500">No submissions yet.</p>
+            <div
+              v-else
+              class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+            >
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-md">
+                  The ink is still fresh in {{ data.displayName }}'s pen. Stay
+                  tuned for their upcoming wisdom.
+                </h2>
+              </div>
+            </div>
           </div>
         </div>
         <div
@@ -143,9 +172,6 @@
           </div>
         </div>
       </div>
-      <!-- if the user uid makes that of the current user then we can show like 
-      their submissions or maybe redirect them to a page that will just show that , 
-      also I need to mode this current dashboard so if users uid matches it says Thank you -->
     </div>
     <div v-else>
       <Loader

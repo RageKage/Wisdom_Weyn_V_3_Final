@@ -1,12 +1,21 @@
 import axios from 'axios'
 import { currentUser } from '@/service/authService.js'
 
-// import router from '@/router'
+// see all of the env we have in our .
 
 const AppApiService = () => {
-  const handleResponse = (response) => response.data
+  // ngrok header to disable the popup
+  const headers = {
+    'ngrok-skip-browser-warning': 'true',
+  }
+
+  const handleResponse = (response) => {
+    // console.log(response)
+    return response.data
+  }
 
   const handleError = (error) => {
+    console.log(error)
     if (error.response) {
       // The request was made, but the server responded with a status code outside of the 2xx range
       const { status, data } = error.response
@@ -19,11 +28,22 @@ const AppApiService = () => {
       return Promise.reject('Unexpected error. Please try again.')
     }
   }
+  // const apiPath =
+  //   'https://4f68-2601-447-c004-bdc0-9195-82a8-86cf-a303.ngrok-free.app/api'
+  // router.get("/collections", function (req, res) {
+  // router.post("/collections", async (req, res) => {
+
+  // import NGROK_URL from our .env using dotenv , run on ngrok server
+  // ! const apiPath = import.meta.env.VITE_NGROK_URL + '/api'
+  // const apiPath = 'https://4407-2601-447-c004-bdc0-14a5-e544-e904-afeb.ngrok-free.app/api'
+
+  // run locally
+  const apiPath = '/api'
 
   return {
     getAllCollections() {
       return axios
-        .get('/api/collections')
+        .get(apiPath + '/collections', { headers })
         .then(handleResponse)
         .catch(handleError)
     },
@@ -36,7 +56,7 @@ const AppApiService = () => {
       }
 
       return axios
-        .post('/api/submissions', formData)
+        .post(apiPath + '/submissions', formData, { headers })
         .then(handleResponse)
         .catch(handleError)
     },
@@ -50,14 +70,16 @@ const AppApiService = () => {
 
       const uid = authUser.uid
       return axios
-        .delete(`/api/submissions/${data.id}/${uid}`)
+        .delete(apiPath + `/submissions/${data.id}/${uid}`, { headers })
         .then(handleResponse)
         .catch(handleError)
     },
 
     getSubmission(id) {
+      // this is the path it makes to the submission
+      console.log(apiPath + `/submissions/${id}`)
       return axios
-        .get(`/api/submissions/${id}`)
+        .get(apiPath + `/submissions/${id}`, { headers })
         .then(handleResponse)
         .catch(handleError)
     },
@@ -71,7 +93,7 @@ const AppApiService = () => {
 
       const uid = authUser.uid
       return axios
-        .put(`/api/submissions/${id}/upvote`, { uid })
+        .put(apiPath + `/submissions/${id}/upvote`, { uid }, { headers })
         .then(handleResponse)
         .catch(handleError)
     },
@@ -85,14 +107,14 @@ const AppApiService = () => {
 
       const uid = authUser.uid
       return axios
-        .put(`/api/submissions/${id}/downvote`, { uid })
+        .put(apiPath + `/submissions/${id}/downvote`, { uid }, { headers })
         .then(handleResponse)
         .catch(handleError)
     },
 
     getuserDashBoardAPI(email) {
       return axios
-        .get(`/api/users/${email}/dashboard`)
+        .get(apiPath + `/users/${email}/dashboard`, { headers })
         .then(handleResponse)
         .catch(handleError)
     },
@@ -104,10 +126,20 @@ const AppApiService = () => {
     //     .catch(handleError)
     // },
 
+    // checkServerStatus() {
+    //   return axios
+    //     .get(`${apiPath}/server/status`)
+    //     .then((res) => {
+    //       return res.data
+    //     })
+    //     .catch(handleError);
+    // },
     checkServerStatus() {
       return axios
-        .get('/api/server/status')
-        .then((res) => res.data)
+        .get(`${apiPath}/server/status`, { headers })
+        .then((res) => {
+          return res.data
+        })
         .catch(handleError)
     },
   }

@@ -1,5 +1,5 @@
 <template>
-  <div data-theme="light">
+  <div data-theme="light" class="scroll-smooth">
     <siteNavigation v-if="showHeader" />
 
     <transition name="fade" mode="out-in">

@@ -33,7 +33,7 @@
       <button
         @click="scrollToTop"
         v-show="showScrollToTopBtn"
-        class="fixed bottom-4 right-4 bg-custom-gold-500 text-custom-purple-600 p-3 rounded-full shadow-lg transition ease-in-out duration-300 hover:bg-custom-gold-600 focus:outline-none focus:ring-2 focus:ring-custom-gold-300 focus:ring-opacity-50"
+        class="fixed bottom-4 right-4 bg-custom-gold-500 text-custom-purple-600 shadow-lg ease-in-out hover:bg-custom-gold-600 focus:outline-none focus:ring-opacity-50 p-2 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-custom-purple-400 focus:border-custom-purple-400 transition-all duration-300"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

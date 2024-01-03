@@ -11,20 +11,25 @@ const { set, ref, update, remove } = require("firebase/database");
 
 // getting all of the data in my collections
 router.get("/collections", function (req, res) {
-  // set a reference to to my collection collections
-  const ref = db.ref("/collections");
+  try {
+    const ref = db.ref("/collections");
 
-  // now we get the collection
-  ref.once(
-    "value",
-    (snapshot) => {
-      let data = snapshot.val();
-      res.json(data); // send it to the client side
-    },
-    (errorObject) => {
-      res.status(500).send("Error reading from database: " + errorObject.name);
-    }
-  );
+    ref.once(
+      "value",
+      (snapshot) => {
+        let data = snapshot.val();
+        res.json(data);
+      },
+      (errorObject) => {
+        res
+          .status(500)
+          .send("Error reading from database: " + errorObject.name);
+      }
+    );
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).send("Server error: " + error.message);
+  }
 });
 
 // this is to add a new submission to the database
@@ -253,6 +258,7 @@ router.put("/submissions/:id/downvote", async (req, res) => {
 // this is to get one submission by id
 router.get("/submissions/:id", async (req, res) => {
   try {
+    console.log('get submission', req.params)
     const id = req.params.id;
 
     const type = id.split("_")[1];
@@ -450,6 +456,7 @@ router.get("/server/status", async (req, res) => {
       message: "Server is up!",
     });
   } catch (error) {
+    console.error("Error:", error);
     return res.status(500).send("Server error: " + error.message);
   }
 });

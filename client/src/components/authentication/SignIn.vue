@@ -26,7 +26,33 @@
       class="flex flex-col space-y-6 bg-white p-8 rounded shadow w-full max-w-md"
       @submit.prevent="signin"
     >
-      <h1 class="text-center text-2xl font-bold">Sign In</h1>
+      <button
+        @click="router.push('/')"
+        class="rounded-lg flex flex-row-reverse justify-between bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
+      >
+        <span> Home</span>
+        <span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+            />
+          </svg>
+        </span>
+      </button>
+
+      <h1 class="text-2xl font-semibold text-gray-900">Sign Up</h1>
+      <p class="text-gray-600 text-sm">
+        {{ options[randomIndex] }}
+      </p>
       <input
         type="email"
         v-model="email"
@@ -113,6 +139,33 @@
   const email = ref('')
   const password = ref('')
   const firebaseError = ref('')
+
+  const options = [
+    'soo dhawoow / Welcome!',
+    'Waan ku xiisaynaa / We missed you!',
+    "Discover what's new in the library. Sign in and explore.",
+    'Halkeen dib uga bilownaa maanta?',
+    'The words are calling... will you answer? Sign in and find out.',
+    'Sign up and contribute',
+    'Every contribution adds to the richness of our culture. Share yours today.',
+  ]
+
+  const randomIndex = ref(
+    localStorage.getItem('random-signUp-msg') ||
+      Math.floor(Math.random() * options.length),
+  )
+
+  const getRandomIndex = () => {
+    let newIndex = Math.floor(Math.random() * options.length)
+    while (newIndex === randomIndex.value) {
+      newIndex = Math.floor(Math.random() * options.length)
+    }
+    randomIndex.value = newIndex
+    localStorage.setItem('random-signUp-msg', newIndex)
+  }
+
+  // Change random index every 5 seconds
+  setInterval(getRandomIndex, 5000)
 
   async function signin() {
     try {

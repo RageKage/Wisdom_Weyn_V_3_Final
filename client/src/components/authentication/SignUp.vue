@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen w-screen flex flex-col items-center justify-center px-4 py-10"
+    class="min-h-screen w-screen flex flex-col justify-center items-center px-4 py-10"
   >
     <!-- Firebase Error Message -->
     <div
@@ -29,7 +29,34 @@
       class="flex flex-col space-y-6 bg-white p-8 rounded shadow w-full max-w-md"
       @submit.prevent="signup"
     >
-      <h1 class="text-center text-2xl font-bold">Sign Up</h1>
+      <button
+        @click="router.push('/')"
+        class="rounded-lg flex flex-row-reverse justify-between bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
+      >
+        <span> Home</span>
+        <span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+            />
+          </svg>
+        </span>
+      </button>
+
+      <!-- Be a part of something bigger. Sign up and contribute to the Somali literary landscape. -->
+      <h1 class="text-2xl font-semibold text-gray-900">Sign Up</h1>
+      <p class="text-gray-600 text-sm">
+        {{ options[randomIndex] }}
+      </p>
 
       <!-- Username Input -->
       <div>
@@ -147,6 +174,30 @@
   const emailError = ref('')
   const passwordError = ref('')
   const firebaseError = ref('')
+
+  const options = [
+    'Help us create the largest collection of Somali poetry. Sign up and contribute!',
+    "The library may be small, but it's growing every day. Join us and add your voice.",
+    "The collection is expanding, and we're just getting started. Join us on the journey.",
+    'Be a part of something bigger. Sign up and contribute to the Somali literary landscape.',
+  ]
+
+  // Random index for options to be used in the signup page,
+  const randomIndex = ref(
+    localStorage.getItem('random-signIn-msg') ||
+      Math.floor(Math.random() * options.length),
+  )
+
+  const getRandomIndex = () => {
+    let newIndex = Math.floor(Math.random() * options.length)
+    while (newIndex === randomIndex.value) {
+      newIndex = Math.floor(Math.random() * options.length)
+    }
+    randomIndex.value = newIndex
+    localStorage.setItem('random-signIn-msg', newIndex)
+  }
+
+  setInterval(getRandomIndex, 5000)
 
   const validateUsername = () => {
     // username validation

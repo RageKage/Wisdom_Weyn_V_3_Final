@@ -76,8 +76,8 @@ export function Actions() {
           id: itemId,
         },
       })
-    } catch (error) {
-      console.error(error)
+    } catch (err) {
+      console.error(err)
     }
   }
 

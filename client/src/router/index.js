@@ -69,6 +69,7 @@ const router = createRouter({
       meta: { title: '' },
     },
   ],
+
   // Change the active class name for <router-link> instances
   linkActiveClass: 'active',
 })
@@ -109,7 +110,7 @@ router.afterEach(() => {
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {
   // Hide the navbar for signIn and signUp routes
-  showHeader.value = !['signIn', 'signUp'].includes(to.name)
+  showHeader.value = !['SignIn', 'SignUp'].includes(to.name)
   next()
 })
 

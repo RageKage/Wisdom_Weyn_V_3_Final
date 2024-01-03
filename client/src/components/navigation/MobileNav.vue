@@ -53,6 +53,14 @@
             >
           </li>
           <li>
+            <router-link
+              to="/sign-in"
+              class="hidden lg:inline text-gray-900 hover:text-custom-purple-700"
+            >
+              Log in <span>&rarr;</span>
+            </router-link>
+          </li>
+          <li>
             <!-- <router-link to="/admin" @click="closeMenu" class="block text-lg font-medium text-gray-700 hover:text-gray-900">Admin</router-link> -->
           </li>
         </ul>
