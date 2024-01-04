@@ -14,6 +14,8 @@ const Collections = () => import('@/components/Views/collections-view.vue')
 const SubmissionPage = () => import('@/components/Views/submissionPage.vue')
 const ExpandedView = () => import('@/components/Views/ExpandedView.vue')
 const Dashboard = () => import('@/components/features/dashboard-view.vue')
+const CustomUsername = () =>
+  import('@/components/authentication/custom-username.vue')
 
 export const showHeader = ref(true)
 
@@ -63,6 +65,13 @@ const router = createRouter({
       meta: { title: 'User Dashboard' },
     },
     {
+      path: '/custom-username',
+      name: 'CustomUsername',
+      component: CustomUsername,
+      props: true,
+      meta: { title: 'Custom Username' },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: '',
       component: ErrorPage,
@@ -110,7 +119,7 @@ router.afterEach(() => {
 // Use beforeEach guard to toggle navbar visibility
 router.beforeEach((to, from, next) => {
   // Hide the navbar for signIn and signUp routes
-  showHeader.value = !['SignIn', 'SignUp'].includes(to.name)
+  showHeader.value = !['SignIn', 'SignUp', 'CustomUsername'].includes(to.name)
   next()
 })
 

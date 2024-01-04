@@ -191,7 +191,6 @@
   const fetchItem = async () => {
     try {
       item.value = await service.getSubmission(itemId.value)
-      console.log(item.value)
     } catch (error) {
       console.error('Error fetching item:', error)
     }
@@ -253,7 +252,7 @@
 
   const downvoteSubmisson = (id) => {
     if (isLoggedIn.value) {
-      upvote(id)
+      downvote(id)
     } else {
       Swal.fire({
         title: 'Login Required',

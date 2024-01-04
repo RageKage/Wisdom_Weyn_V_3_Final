@@ -73,10 +73,11 @@
     service
       .checkServerStatus()
       .then((response) => {
-        // if no response it means the server is running
+        // the server is running
+        serverStatus.value = response.data.message
       })
       .catch((error) => {
-        serverStatus.value = 'down'
+        serverStatus.value = error.message
       })
   }
 

@@ -43,15 +43,6 @@
             </svg>
             Sign In
           </button>
-          <button
-            @click="dismissPopup"
-            type="button"
-            class="text-blue-800 bg-transparent border border-blue-800 hover:bg-blue-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 text-center"
-            data-dismiss-target="#alert-additional-content-1"
-            aria-label="Close"
-          >
-            Dismiss
-          </button>
         </div>
       </div>
     </div>
@@ -61,10 +52,6 @@
 <script setup>
   import { ref } from 'vue'
   const showPopup = ref(true)
-
-  const dismissPopup = () => {
-    showPopup.value = false
-  }
 
   const login = () => {
     window.location.href = '/sign-in'

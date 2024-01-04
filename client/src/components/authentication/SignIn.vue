@@ -49,7 +49,7 @@
         </span>
       </button>
 
-      <h1 class="text-2xl font-semibold text-gray-900">Sign Up</h1>
+      <h1 class="text-2xl font-semibold text-gray-900">Sign In</h1>
       <p class="text-gray-600 text-sm">
         {{ options[randomIndex] }}
       </p>
@@ -204,16 +204,25 @@
   async function signinGoogle() {
     try {
       const userCredential = await signinWithGoogle()
-      await syncGoogleUserData(userCredential.user)
-      router.push('/') // Redirect to home after successful login
+      const user = userCredential.user
+      syncGoogleUserData(user) // Sync user data with the database
+      // save the user credentials to local storage
+      localStorage.setItem('user', JSON.stringify(user))
+
+      // Check if the user in the local storage
+      if (localStorage.getItem('user')) {
+        router.push('/custom-username') // Redirect to home after successful login
+      } else {
+        firebaseError.value = 'An unknown error occurred'
+      }
     } catch (error) {
       if (error) {
         switch (error.code) {
           case 'auth/invalid-email':
             firebaseError.value = 'Invalid email'
             break
-          default:
-            firebaseError.value = 'Email or password is incorrect'
+          case 'auth/user-not-found':
+            firebaseError.value = 'User not found'
             break
         }
       } else {

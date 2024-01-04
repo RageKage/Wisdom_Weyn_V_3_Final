@@ -10,12 +10,10 @@ const AppApiService = () => {
   }
 
   const handleResponse = (response) => {
-    // console.log(response)
     return response.data
   }
 
   const handleError = (error) => {
-    console.log(error)
     if (error.response) {
       // The request was made, but the server responded with a status code outside of the 2xx range
       const { status, data } = error.response
@@ -77,7 +75,6 @@ const AppApiService = () => {
 
     getSubmission(id) {
       // this is the path it makes to the submission
-      console.log(apiPath + `/submissions/${id}`)
       return axios
         .get(apiPath + `/submissions/${id}`, { headers })
         .then(handleResponse)

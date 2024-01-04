@@ -35,6 +35,29 @@
             </svg>
           </button>
         </div>
+        <div v-else-if="loading">
+          <button
+            type="button"
+            class="bg-custom-purple-600 p-1 rounded-full text-custom-gold-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-purple-500"
+            id="user-menu-button"
+          >
+            <span class="sr-only">Open user menu</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8 rounded-full"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+              />
+            </svg>
+          </button>
+        </div>
         <router-link
           v-else
           to="/sign-in"
@@ -50,9 +73,9 @@
           style="top: 100%; right: 0"
         >
           <div class="px-4 py-3">
-            <span class="block text-sm text-gray-900">{{
-              user?.displayName
-            }}</span>
+            <span class="block text-sm text-gray-900">
+              {{ user?.realName }}</span
+            >
             <span class="block text-sm text-gray-500 truncate">{{
               user?.email
             }}</span>
@@ -228,6 +251,8 @@
     emit('toggleMenu')
   }
 
+  const loading = ref(true)
+
   // this closes the dropdown menu when users clicks outside the dropdown menu
   const onClickOutside = (event) => {
     if (
@@ -250,6 +275,7 @@
         const dbUser = await getCurrentUser(authUser.uid)
         user.value = dbUser
       }
+      loading.value = false
     } catch (error) {
       console.error('Error getting current user:', error.message)
     }

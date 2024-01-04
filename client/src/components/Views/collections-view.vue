@@ -71,7 +71,6 @@
 
   // Composable collections function
   import { CollectionsFunctions } from '../Composables/Collections'
-  import { Actions } from '../Composables/actions'
 
   const showLoginPopup = () => {
     Swal.fire({
@@ -106,6 +105,4 @@
     scrollToTop,
     showScrollToTopBtn,
   } = CollectionsFunctions()
-
-  const { upvote, downvote } = Actions()
 </script>

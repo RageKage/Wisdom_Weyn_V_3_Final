@@ -7,7 +7,7 @@
       <div class="p-6 w-full">
         <div class="mb-6">
           <h1 class="text-2xl font-bold text-indigo-700">
-            {{ data.displayName }} Contributions
+            {{ data.username }} Contributions
           </h1>
         </div>
 
@@ -104,6 +104,7 @@
             </div>
             <div
               class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+              v-else
             >
               <div class="flex justify-between items-center mb-4">
                 <h2 class="text-md">
@@ -156,7 +157,7 @@
             >
               <div class="flex justify-between items-center mb-4">
                 <h2 class="text-md">
-                  The ink is still fresh in {{ data.displayName }}'s pen. Stay
+                  The ink is still fresh in {{ data.username }}'s pen. Stay
                   tuned for their upcoming wisdom.
                 </h2>
               </div>

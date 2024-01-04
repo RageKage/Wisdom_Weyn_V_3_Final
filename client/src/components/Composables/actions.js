@@ -35,19 +35,15 @@ export function Actions() {
     // twitter text
     let tweetText = `Check out this Somali ${itemType}: "${textToShare}"`
 
-    const viaText = ' - via [Wisdom Weyn]'
     const websiteLink = 'https://http://localhost:5173/' // after app hosted replace this with the actual URL of your website
     const fullTextLink = ` - View full text: ${websiteLink}/ExpandedView/${item.id}` // path to take the twitter user to the full text of the item in our site
 
-    const logoUrl = 'https://www.yourwebsite.com/logo.png'
-
-    const potentialTweet =
-      tweetText + fullTextLink + ` [${websiteLink}]` + viaText
+    const potentialTweet = tweetText + fullTextLink
 
     // 280 is the max length of a tweet
     let spaceForLogoUrl = 280 - potentialTweet.length - 24 // 24 chars for the URL shortening
     if (spaceForLogoUrl > 0) {
-      tweetText = potentialTweet + ` [${logoUrl}]`
+      tweetText = potentialTweet
     } else {
       tweetText = potentialTweet
     }
@@ -57,7 +53,7 @@ export function Actions() {
       const maxMeaningLength =
         280 - (tweetText.length - item.meaning.length) - 3 // 3 chars for the ellipsis
       const truncatedMeaning = item.meaning.slice(0, maxMeaningLength) + '...'
-      tweetText = `Check out this Somali${itemType}: "${textToShare}"\nMeaning: "${truncatedMeaning}"\n[${websiteLink}] - via ${viaText} [${logoUrl}]`
+      tweetText = `Check out this Somali${itemType}: "${textToShare}"\nMeaning: "${truncatedMeaning}"\n`
     }
 
     const shareToTwitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(

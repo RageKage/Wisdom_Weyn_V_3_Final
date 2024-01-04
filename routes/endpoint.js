@@ -38,6 +38,22 @@ router.post("/submissions", async (req, res) => {
     // this is the data that is being sent from the client side
     const formData = req.body;
 
+    if (!formData || Object.keys(formData).length === 0) {
+      return res.status(400).send("Please provide form data");
+    }
+
+    const requiredKeys = ["content", "meaning", "picked", "user_id"];
+    for (const key of requiredKeys) {
+      if (!formData.hasOwnProperty(key) || !formData[key]) {
+        return res.status(400).send(`Missing or empty value for key: ${key}`);
+      }
+    }
+
+    // check that their is data in formData
+    if (!formData) {
+      return res.status(400).send("Please provide submission data");
+    }
+
     const getisodate = new Date().toISOString();
     const date = new Date(getisodate);
 
@@ -95,20 +111,17 @@ router.post("/submissions", async (req, res) => {
       });
     }
 
+    // send client a success message
+    res.json({
+      message: "Submission successful!",
+    });
+
     // now we create make path to the collection find the type and add the submission key to it, this should create a path like this collections/Poetry/submission_Poetry_1
     const collectionRef = db.ref(
       "collections/" + formData.picked + "/" + submissionKey
     );
 
     const collectionSnapshot = await userSubmissionRef.once("value");
-
-    const userRef = db.ref("users/" + formData.user_id.uid);
-
-    const collectionsUserSnapshot = await userRef.once("value");
-    const userData = collectionsUserSnapshot.val();
-
-    const username = userData.displayName;
-    const email = userData.email;
 
     // we check if the collection exists if so we add to it if not we create it, this can we future edit the submission if needed
     if (collectionSnapshot.exists()) {
@@ -122,8 +135,8 @@ router.post("/submissions", async (req, res) => {
         upvotes: 0,
         downvotes: 0,
         flagged: false,
-        submittedBy: email,
-        username: username,
+        submittedBy: formData.user_id.email,
+        username: formData.user_id.username,
         type: formData.picked,
       });
     } else {
@@ -137,16 +150,11 @@ router.post("/submissions", async (req, res) => {
         upvotes: 0,
         downvotes: 0,
         flagged: false,
-        submittedBy: email,
-        username: username,
+        submittedBy: formData.user_id.email,
+        username: formData.user_id.username,
         type: formData.picked,
       });
     }
-
-    // send client a success message
-    res.json({
-      message: "Submission successful!",
-    });
   } catch (error) {
     return res.status(500).send("Server error: " + error.message);
   }
@@ -258,7 +266,6 @@ router.put("/submissions/:id/downvote", async (req, res) => {
 // this is to get one submission by id
 router.get("/submissions/:id", async (req, res) => {
   try {
-    console.log('get submission', req.params)
     const id = req.params.id;
 
     const type = id.split("_")[1];
@@ -295,6 +302,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
       return res.status(404).send("User not found");
     }
 
+
     const userData = usersSnapshot.val();
     const uid = Object.keys(userData)[0];
     const userObject = userData[uid];
@@ -306,11 +314,12 @@ router.get("/users/:email/dashboard", async (req, res) => {
     if (!userSubmissionsData) {
       return res.json({
         uid: uid,
-        displayName: userObject.displayName,
+        username: userObject.username,
         email: userObject.email,
         submissionCount: userObject.submissionCount,
       });
     }
+
 
     const userSubmissionData = {};
     const submissionsCount = {
@@ -332,10 +341,12 @@ router.get("/users/:email/dashboard", async (req, res) => {
       return submissionRef.once("value");
     });
 
+
     const submissionSnapshots = await Promise.all(submissionPromises);
 
     submissionSnapshots.forEach((submissionSnapshot, index) => {
       const submissionData = submissionSnapshot.val();
+
       const key = submissionKeys[index];
 
       userSubmissionData[key] = {
@@ -349,6 +360,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
       const type = submission.split("_")[1];
 
+
       submissionsCount[type] = (submissionsCount[type] || 0) + 1;
 
       if (userSubmissionData[key].upvotes >= 1) {
@@ -357,6 +369,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
       mostRecent.push(userSubmissionData[key]);
     });
+
 
     // Sort mostVotes and mostRecent and return the top 5
     mostVotes.sort((a, b) => b.upvotes - a.upvotes);
@@ -370,7 +383,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
     res.json({
       uid: uid,
-      displayName: userObject.displayName,
+      username: userObject.username,
       email: userObject.email,
       submissionCount: userObject.submissionCount,
       userStats: {

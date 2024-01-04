@@ -154,7 +154,7 @@
       content: content.value,
       meaning: meaning.value,
       picked: picked.value,
-      user_id: user.value,
+      user_id: currentUserDB.value,
     })
   }
 
@@ -174,26 +174,22 @@
 
   onMounted(async () => {
     try {
-      const storedUser = localStorage.getItem('user')
       const hasVisited = localStorage.getItem('visited')
-
       // If user data is found in localStorage, set it
-      if (storedUser) {
-        user.value = JSON.parse(storedUser)
-      } else {
-        // If user data is not found in localStorage, and the user hasn't visited before, show the popup
-        if (!hasVisited) {
-          const authUser = await currentUser()
-          user.value = authUser
 
-          // If authUser exists, set user.value and fetch userDB
-          if (authUser) {
-            const userDB = await getCurrentUser(authUser.uid)
-            currentUserDB.value = userDB
-          } else {
-            // Show the popup and mark the user as visited
-            showPopup.value = true
-            localStorage.setItem('visited', 'true')
+      // If user data is not found in localStorage, and the user hasn't visited before, show the popup
+      if (hasVisited) {
+        const authUser = await currentUser()
+        user.value = authUser
+
+        // If authUser exists, set user.value and fetch userDB
+        if (authUser) {
+          const userDB = await getCurrentUser(authUser.uid)
+          // store user realName and email in currentUserDB
+          currentUserDB.value = {
+            username: userDB.username,
+            email: user.value.email,
+            uid: user.value.uid,
           }
         }
       }

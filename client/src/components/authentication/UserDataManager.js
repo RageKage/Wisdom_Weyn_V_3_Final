@@ -1,8 +1,10 @@
-import { getDatabase, ref, set, get } from 'firebase/database'
+import { getDatabase, ref, set, get, update } from 'firebase/database'
 
 const db = getDatabase()
 
-async function CreateUserInDatabase(userData, username) {
+async function CreateUserInDatabase(userData, realName, username) {
+  // console.log("Creating user in database", displayName, name)
+  // Creating user in database CoolMaster Niman Ahmed
   const user = userData.user
   try {
     if (!user.uid || !user.email) {
@@ -10,7 +12,8 @@ async function CreateUserInDatabase(userData, username) {
     }
     await user?.reload()
     await set(ref(db, 'users/' + user.uid), {
-      displayName: username,
+      realName: realName,
+      username: username,
       email: user.email,
       createdAt: user.metadata.creationTime || null,
       lastLoginAt: user.metadata.lastSignInTime || null,
@@ -32,7 +35,6 @@ async function syncGoogleUserData(user) {
     const userData = {
       email: user.email,
       photoURL: user.photoURL,
-      displayName: user.displayName,
       createdAt: user.metadata.creationTime || null,
       lastLoginAt: user.metadata.lastSignInTime || null,
       submissionCount: 0,
@@ -53,4 +55,34 @@ async function syncGoogleUserData(user) {
   }
 }
 
-export { CreateUserInDatabase, syncGoogleUserData }
+async function updatesyncGoogleUserData(uid, realName, username) {
+  try {
+    if (!uid) {
+      throw new Error('Invalid user data: UID is missing.')
+    }
+
+    const usernamesRef = ref(db, 'usernames/' + username)
+
+    // check that the username is not taken
+    const usernamesSnapshot = await get(usernamesRef)
+    if (usernamesSnapshot.exists()) {
+      throw new Error('Username already taken.')
+    } else {
+      // Create the usernames collection if it doesn't exist
+      await set(usernamesRef, { uid: uid })
+    }
+
+    // Update user data
+    const userData = {
+      realName: realName,
+      username: username,
+    }
+    const userRef = ref(db, 'users/' + uid)
+    await update(userRef, userData)
+  } catch (error) {
+    console.error('Error adding user data:', error)
+    throw error
+  }
+}
+
+export { CreateUserInDatabase, syncGoogleUserData, updatesyncGoogleUserData }

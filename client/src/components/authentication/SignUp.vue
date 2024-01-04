@@ -58,6 +58,22 @@
         {{ options[randomIndex] }}
       </p>
 
+      <!-- Name Input -->
+      <div>
+        <input
+          type="text"
+          v-model="name"
+          name="name"
+          id="name"
+          placeholder="Full Name or First Name"
+          class="border border-gray-300 text-gray-900 rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+          @blur="validateName"
+        />
+        <p v-if="nameError" class="text-red-500 text-xs mt-1">
+          {{ nameError }}
+        </p>
+      </div>
+
       <!-- Username Input -->
       <div>
         <input
@@ -168,8 +184,10 @@
 
   const router = useRouter()
   const username = ref('')
+  const name = ref('')
   const email = ref('')
   const password = ref('')
+  const nameError = ref('')
   const usernameError = ref('')
   const emailError = ref('')
   const passwordError = ref('')
@@ -207,6 +225,12 @@
         : ''
   }
 
+  const validateName = () => {
+    // Name validation
+    nameError.value =
+      name.value.length < 2 ? 'Name must be at least 2 characters long.' : ''
+  }
+
   const validateEmail = () => {
     // email validation
     emailError.value = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
@@ -224,11 +248,17 @@
 
   async function signup() {
     // Validate fields before attempting to sign up
+    validateName()
     validateUsername()
     validateEmail()
     validatePassword()
 
-    if (usernameError.value || emailError.value || passwordError.value) {
+    if (
+      nameError.value ||
+      usernameError.value ||
+      emailError.value ||
+      passwordError.value
+    ) {
       return // if there are any errors then return the error
     }
 
@@ -237,7 +267,9 @@
       const addUsertoDB = await CreateUserInDatabase(
         userCredential,
         username.value,
+        name.value,
       )
+
       if (addUsertoDB) {
         router.push('/') // Redirect to home after successful login
       } else {
@@ -261,8 +293,17 @@
   async function signinGoogle() {
     try {
       const userCredential = await signinWithGoogle()
-      await syncGoogleUserData(userCredential.user)
-      router.push('/') // Redirect to home after successful login
+      const user = userCredential.user
+      syncGoogleUserData(user) // Sync user data with the database
+      // save the user credentials to local storage
+      localStorage.setItem('user', JSON.stringify(user))
+
+      // Check if the user in the local storage
+      if (localStorage.getItem('user')) {
+        router.push('/custom-username') // Redirect to home after successful login
+      } else {
+        firebaseError.value = 'An unknown error occurred'
+      }
     } catch (error) {
       if (error) {
         switch (error.code) {
