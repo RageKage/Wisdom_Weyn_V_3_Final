@@ -125,8 +125,8 @@
                   </svg>
                 </button>
                 <!-- TODO soon to be added -->
-
                 <button
+                  v-if="future_feature"
                   class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
                 >
                   <svg
@@ -144,8 +144,11 @@
                     />
                   </svg>
                 </button>
-                <!-- TODO soon to be added -->
+
+                <!-- delete submission -->
                 <button
+                  v-if="isLoggedIn && user.email === item.submittedBy"
+                  @click="deletessubmission(item.id, user.uid)"
                   class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300"
                 >
                   <svg
@@ -169,6 +172,25 @@
         </div>
       </div>
     </div>
+    <div v-if="submissionNotFound">
+      <div class="flex flex-col items-center justify-center text-center">
+        <h2 class="text-2xl font-bold text-custom-purple-600 mb-2">
+          Submission Not Found
+        </h2>
+        <p class="text-gray-700 text-lg leading-relaxed">
+          The submission you are looking for does not exist.
+        </p>
+      </div>
+      <!-- go back to collections button -->
+      <div class="flex justify-center mt-4">
+        <button
+          @click="goback"
+          class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
+        >
+          Go Back to Collection
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -183,15 +205,20 @@
   const service = AppApiService()
   const router = useRouter()
 
+  const user = ref(null)
+
   const itemId = computed(() => router.currentRoute.value.params.id)
   const item = ref(null)
 
   const isLoggedIn = ref(false)
 
+  const submissionNotFound = ref(false)
+
   const fetchItem = async () => {
     try {
       item.value = await service.getSubmission(itemId.value)
     } catch (error) {
+      submissionNotFound.value = true
       console.error('Error fetching item:', error)
     }
   }
@@ -206,17 +233,22 @@
     try {
       const storedUser = localStorage.getItem('user')
       if (storedUser) {
+        user.value = JSON.parse(storedUser)
         isLoggedIn.value = true
       } else {
-        isLoggedIn.value = (await currentUser()) !== null
-        if (isLoggedIn.value) {
-          localStorage.setItem('user', 'true')
+        const currentUserData = await currentUser()
+        if (currentUserData) {
+          user.value = currentUserData
+          isLoggedIn.value = true
+          localStorage.setItem('user', JSON.stringify(currentUserData))
         }
       }
     } catch (error) {
       console.error('Error getting current user:', error)
     }
   })
+
+  const future_feature = ref(false)
 
   const goback = () => {
     router.go(-1)
@@ -278,8 +310,77 @@
     }
   }
 
+  const deletessubmission = (id, uid) => {
+    if (isLoggedIn.value) {
+      // swal fire to delete
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this submission!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        customClass: {
+          popup: 'flex flex-col space-y-4',
+          header: 'flex items-center justify-between w-full',
+          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+          content: 'text-gray-700 prose',
+          actions: 'flex justify-end gap-4 mt-4',
+        },
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Your submission has been deleted.',
+              icon: 'success',
+              customClass: {
+                popup: 'flex flex-col space-y-4',
+                header: 'flex items-center justify-between w-full',
+                closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+                content: 'text-gray-700 prose',
+                actions: 'flex justify-end gap-4 mt-4',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                deleteSubmission(id, uid)
+                router.push('/collections')
+              }
+            })
+          } catch (e) {
+            console.error('Error deleting submission:', e)
+          }
+        }
+      })
+    } else {
+      Swal.fire({
+        title: 'Login Required',
+        text: 'You must be logged in to vote on collections!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        customClass: {
+          popup: 'flex flex-col space-y-4',
+          header: 'flex items-center justify-between w-full',
+          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+          content: 'text-gray-700 prose',
+          actions: 'flex justify-end gap-4 mt-4',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page
+          router.push('/sign-in')
+        }
+      })
+    }
+  }
+
   // eslint-disable-next-line no-unused-vars
-  const { upvote, downvote, ShareToTwitter, userdashboard } = Actions()
+  const { upvote, downvote, ShareToTwitter, userdashboard, deleteSubmission } =
+    Actions()
 
   onMounted(fetchItem)
 </script>

@@ -285,6 +285,7 @@
   const signOutUser = async () => {
     try {
       await signout()
+      localStorage.removeItem('isLoggedIn')
       dropdownOpen.value = false
       user.value = null
       router.push('/') // Redirect to home after successful login

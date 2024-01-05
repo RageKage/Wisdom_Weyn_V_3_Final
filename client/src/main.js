@@ -7,7 +7,6 @@ import './assets/css/input.css'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import AppApiService from './service/index'
-import 'flowbite'
 
 const app = createApp(App)
 AOS.init()

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Popup v-if="showPopup" />
+    <Popup v-if="!user" />
 
     <div
       class="rounded-lg text-gray-600 p-4 transition-all duration-300 mx-auto max-w-[1200px]"
@@ -174,23 +174,17 @@
 
   onMounted(async () => {
     try {
-      const hasVisited = localStorage.getItem('visited')
-      // If user data is found in localStorage, set it
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+      user.value = isLoggedIn ? await currentUser() : null
 
-      // If user data is not found in localStorage, and the user hasn't visited before, show the popup
-      if (hasVisited) {
-        const authUser = await currentUser()
-        user.value = authUser
-
-        // If authUser exists, set user.value and fetch userDB
-        if (authUser) {
-          const userDB = await getCurrentUser(authUser.uid)
-          // store user realName and email in currentUserDB
-          currentUserDB.value = {
-            username: userDB.username,
-            email: user.value.email,
-            uid: user.value.uid,
-          }
+      // If authUser exists, set user.value and fetch userDB
+      if (user.value) {
+        const userDB = await getCurrentUser(user.value.uid)
+        // store user realName and email in currentUserDB
+        currentUserDB.value = {
+          username: userDB.username,
+          email: user.value.email,
+          uid: user.value.uid,
         }
       }
     } catch (error) {

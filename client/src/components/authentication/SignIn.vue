@@ -132,7 +132,7 @@
 <script setup>
   import { ref } from 'vue'
   import { signinWithEmail, signinWithGoogle } from './Auth'
-  import { syncGoogleUserData } from './UserDataManager'
+  import { syncGoogleUserData, UsernameInDB } from './UserDataManager'
   import { useRouter } from 'vue-router'
 
   const router = useRouter()
@@ -205,18 +205,27 @@
     try {
       const userCredential = await signinWithGoogle()
       const user = userCredential.user
-      syncGoogleUserData(user) // Sync user data with the database
-      // save the user credentials to local storage
+
+      // Sync user data with the database first
+      await syncGoogleUserData(user)
+
+      // Store user data in localStorage
+      localStorage.setItem('isLoggedIn', 'true')
       localStorage.setItem('user', JSON.stringify(user))
 
-      // Check if the user in the local storage
-      if (localStorage.getItem('user')) {
-        router.push('/custom-username') // Redirect to home after successful login
+      // Check for existing username
+      const hasUsername = await UsernameInDB(user.uid)
+      console.log(hasUsername)
+      if (hasUsername) {
+        router.push('/') // Redirect to home if username exists
       } else {
-        firebaseError.value = 'An unknown error occurred'
+        router.push('/custom-username') // Redirect to username creation page
       }
     } catch (error) {
-      if (error) {
+      console.error('Error during sign-in:', error)
+
+      // Handle specific errors with appropriate messages
+      if (error.code) {
         switch (error.code) {
           case 'auth/invalid-email':
             firebaseError.value = 'Invalid email'

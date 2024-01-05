@@ -71,8 +71,7 @@
 
     try {
       await updatesyncGoogleUserData(uid, realName, username)
-
-      router.push('/') // Redirect to home after successful login
+      router.push('/')
     } catch (error) {
       usernameError.value = error.message
     }

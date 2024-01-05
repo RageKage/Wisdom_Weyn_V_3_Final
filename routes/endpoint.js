@@ -302,7 +302,6 @@ router.get("/users/:email/dashboard", async (req, res) => {
       return res.status(404).send("User not found");
     }
 
-
     const userData = usersSnapshot.val();
     const uid = Object.keys(userData)[0];
     const userObject = userData[uid];
@@ -319,7 +318,6 @@ router.get("/users/:email/dashboard", async (req, res) => {
         submissionCount: userObject.submissionCount,
       });
     }
-
 
     const userSubmissionData = {};
     const submissionsCount = {
@@ -341,7 +339,6 @@ router.get("/users/:email/dashboard", async (req, res) => {
       return submissionRef.once("value");
     });
 
-
     const submissionSnapshots = await Promise.all(submissionPromises);
 
     submissionSnapshots.forEach((submissionSnapshot, index) => {
@@ -360,7 +357,6 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
       const type = submission.split("_")[1];
 
-
       submissionsCount[type] = (submissionsCount[type] || 0) + 1;
 
       if (userSubmissionData[key].upvotes >= 1) {
@@ -369,7 +365,6 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
       mostRecent.push(userSubmissionData[key]);
     });
-
 
     // Sort mostVotes and mostRecent and return the top 5
     mostVotes.sort((a, b) => b.upvotes - a.upvotes);
@@ -453,6 +448,22 @@ router.delete("/submissions/:id/:uid", async (req, res) => {
     const submissionCount = submissionCountAfter < 0 ? 0 : submissionCountAfter;
 
     await userRef.update({ submissionCount: submissionCount });
+
+    // now remove it from the user's votes collection
+    const userVotesRef = db.ref(`users/${uid}/votes`);
+    const userVotesSnapshot = await userVotesRef.once("value");
+
+    if (userVotesSnapshot.exists()) {
+      const userVotesData = userVotesSnapshot.val();
+      const voteKeys = Object.keys(userVotesData);
+      const voteKey = voteKeys.find((key) => {
+        return key === id;
+      });
+
+      if (voteKey) {
+        await userVotesRef.child(voteKey).remove();
+      }
+    }
 
     res.json({
       message: "Submission deleted!",

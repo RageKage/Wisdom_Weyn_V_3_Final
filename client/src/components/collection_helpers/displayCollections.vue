@@ -1,14 +1,34 @@
 <template>
-  <div v-if="displayedItems.length === 0" class="text-center">
-    <h2 class="text-2xl font-bold text-custom-purple-600 mb-2">
+  <div class="text-center">
+    <h2
+      class="text-2xl font-bold text-custom-purple-600 mb-2"
+      v-if="displayedItems.length > 0"
+    >
+      {{ displayedItems.length }} Submissions Found
+    </h2>
+
+    <h2 class="text-2xl font-bold text-custom-purple-600 mb-2" v-else>
       No Submissions Found
     </h2>
-    <p class="text-gray-700 text-md leading-relaxed">
-      There are no submissions that match your search criteria.
-    </p>
+
+    <div v-if="activeFilter" class="text-sm text-gray-600">
+      <div v-if="displayedItems.length > 0">
+        Showing results for {{ activeFilter }}.
+      </div>
+
+      <div v-else>No data available for {{ activeFilter }}.</div>
+    </div>
+
+    <div v-else class="text-gray-700 text-md leading-relaxed">
+      <div v-if="displayedItems.length > 0">Showing all submissions.</div>
+
+      <div v-else>
+        There are no submissions that match your search criteria.
+      </div>
+    </div>
   </div>
+
   <div
-    v-if="!isLoading"
     class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-[1200px] mx-auto md:px-0"
   >
     <div v-for="item in displayedItems" :key="item.id">
@@ -140,7 +160,7 @@
               </button>
               <button
                 v-if="isLoggedIn && user.email === item.submittedBy"
-                @click="deleteSubmission(item.id, user.uid)"
+                @click="deletessubmission(item.id, user.uid)"
                 class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300 ml-4"
               >
                 <svg
@@ -171,7 +191,10 @@
   import { ref, onMounted } from 'vue'
   import { currentUser } from '@/service/authService.js'
   import { Actions } from '../Composables/actions'
+  import Swal from 'sweetalert2'
+  import { useRouter } from 'vue-router'
 
+  const router = useRouter()
   const isLoggedIn = ref(false)
   const user = ref(null)
 
@@ -219,6 +242,7 @@
       console.error('Error getting current user:', error)
     }
   })
+
   // we will now define what we are emitting to the parent
   const emits = defineEmits(['loginRequired'])
 
@@ -235,6 +259,74 @@
       downvote(id)
     } else {
       emits('loginRequired', id)
+    }
+  }
+
+  const deletessubmission = (id, uid) => {
+    if (isLoggedIn.value) {
+      // swal fire to delete
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this submission!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        customClass: {
+          popup: 'flex flex-col space-y-4',
+          header: 'flex items-center justify-between w-full',
+          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+          content: 'text-gray-700 prose',
+          actions: 'flex justify-end gap-4 mt-4',
+        },
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Your submission has been deleted.',
+              icon: 'success',
+              customClass: {
+                popup: 'flex flex-col space-y-4',
+                header: 'flex items-center justify-between w-full',
+                closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+                content: 'text-gray-700 prose',
+                actions: 'flex justify-end gap-4 mt-4',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                deleteSubmission(id, uid)
+                router.push('/collections')
+              }
+            })
+          } catch (e) {
+            console.error('Error deleting submission:', e)
+          }
+        }
+      })
+    } else {
+      Swal.fire({
+        title: 'Login Required',
+        text: 'You must be logged in to vote on collections!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        customClass: {
+          popup: 'flex flex-col space-y-4',
+          header: 'flex items-center justify-between w-full',
+          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
+          content: 'text-gray-700 prose',
+          actions: 'flex justify-end gap-4 mt-4',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page
+          router.push('/sign-in')
+        }
+      })
     }
   }
 
