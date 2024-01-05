@@ -87,25 +87,30 @@ async function updatesyncGoogleUserData(uid, realName, username) {
 
 async function UsernameInDB(uid) {
   try {
-    const usernamesRef = ref(db, 'usernames');
-    let exists = false;
+    const usernamesRef = ref(db, 'usernames')
+    let exists = false
 
-    const usernamesSnapshot = await get(usernamesRef);
+    const usernamesSnapshot = await get(usernamesRef)
     if (usernamesSnapshot.exists()) {
-      const usernamesData = usernamesSnapshot.val();
+      const usernamesData = usernamesSnapshot.val()
       for (const username in usernamesData) {
         if (usernamesData[username].uid === uid) {
-          exists = true;
-          break;
+          exists = true
+          break
         }
       }
     }
 
-    return exists;
+    return exists
   } catch (error) {
-    console.error('Error checking username:', error);
-    throw error;
+    console.error('Error checking username:', error)
+    throw error
   }
 }
 
-export { CreateUserInDatabase, syncGoogleUserData, updatesyncGoogleUserData, UsernameInDB }
+export {
+  CreateUserInDatabase,
+  syncGoogleUserData,
+  updatesyncGoogleUserData,
+  UsernameInDB,
+}

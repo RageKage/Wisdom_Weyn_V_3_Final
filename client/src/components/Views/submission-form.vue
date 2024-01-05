@@ -170,8 +170,6 @@
     window.location.href = '/sign-in'
   }
 
-  const showPopup = ref(false)
-
   onMounted(async () => {
     try {
       const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
