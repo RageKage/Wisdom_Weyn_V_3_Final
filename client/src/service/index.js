@@ -132,6 +132,7 @@ const AppApiService = () => {
     //     .catch(handleError);
     // },
     checkServerStatus() {
+      console.log('check server status')
       return axios
         .get(`${apiPath}/server/status`, { headers })
         .then((res) => {
