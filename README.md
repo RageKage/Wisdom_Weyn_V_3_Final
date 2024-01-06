@@ -9,7 +9,7 @@ Users can delete posts, with plans to add editing functionality soon. There is a
 Additionally, the project includes a dashboard allowing users to click on a profile and view stats on contributions. Future plans involve transitioning to Firestore, enabling image uploads, profile picture creation, and additional features. Current tests, however, rely on the Realtime Database.
 
 # front-end link
-https://wisdom-weyn.web.app/collections
+https://wisdom-weyn.web.app/
 
 ## Screenshots
 
