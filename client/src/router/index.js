@@ -16,6 +16,7 @@ const ExpandedView = () => import('@/components/Views/ExpandedView.vue')
 const Dashboard = () => import('@/components/features/dashboard-view.vue')
 const CustomUsername = () =>
   import('@/components/authentication/custom-username.vue')
+const Setting = () => import('@/components/features/settings-view.vue')
 
 export const showHeader = ref(true)
 
@@ -70,6 +71,12 @@ const router = createRouter({
       component: CustomUsername,
       props: true,
       meta: { title: 'Custom Username' },
+    },
+    {
+      path: '/setting',
+      name: 'Setting',
+      component: Setting,
+      meta: { title: 'Setting' },
     },
     {
       path: '/:pathMatch(.*)*',

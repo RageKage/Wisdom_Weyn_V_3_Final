@@ -18,11 +18,13 @@ export function currentUser() {
       (user) => {
         if (user) {
           // Save user data in localStorage
+          localStorage.setItem('isLoggedIn', 'true')
           localStorage.setItem('user', JSON.stringify(user))
           resolve(user)
         } else {
           // Remove user data from localStorage
           localStorage.removeItem('user')
+          localStorage.removeItem('isLoggedIn')
           resolve(null) // set to null if no user logged in
         }
 
@@ -35,7 +37,7 @@ export function currentUser() {
   })
 }
 
-// this is to get the current user from our db
+// this is to get the current user from our db, this should be return only the needed data so no submissions or votes data will be returned
 export function getCurrentUser(Useruid) {
   return new Promise((resolve, reject) => {
     const db = getDatabase()
@@ -45,8 +47,17 @@ export function getCurrentUser(Useruid) {
       onValue(
         userLocation,
         (snapshot) => {
-          const data = snapshot.val()
-          resolve(data) // return the data if the promise is resolved
+          const userData = {
+            createdAt: snapshot.val().createdAt,
+            email: snapshot.val().email,
+            lastLoginAt: snapshot.val().lastLoginAt,
+            photoURL: snapshot.val().photoURL,
+            realName: snapshot.val().realName,
+            submissionCount: snapshot.val().submissionCount,
+            username: snapshot.val().username,
+          }
+
+          resolve(userData)
         },
         (error) => {
           reject(error)

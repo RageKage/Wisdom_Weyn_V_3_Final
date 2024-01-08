@@ -90,10 +90,10 @@
                   </div>
 
                   <div
-                    class="flex justify-between mt-2 rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+                    class="flex justify-between mt-2 rounded-lg bg-gray-100 text-gray-700 pt-4 hover:text-gray-900 transition-all duration-300"
                   >
                     <button
-                      class="text-sm text-gray-500 hover:text-gray-700 transition-all duration-300"
+                      class="text-sm text-indigo-500 cursor-pointe"
                       @click="showFullText(submission.id)"
                     >
                       Read More
@@ -135,7 +135,7 @@
                       truncateText(submission.title || submission.content, 10)
                     }}
                   </p>
-                  <!-- when the submission was shred -->
+                  <!-- when the submission was shared -->
                   <p class="text-xs text-gray-500">
                     {{ readableDate(submission.creationDate) }}
                   </p>
@@ -200,6 +200,7 @@
   const fetchData = async () => {
     try {
       data.value = await service.getuserDashBoardAPI(id.value)
+      console.log(data.value)
 
       // Check if there are any submissions
       if (!data.value.mostRecent) {

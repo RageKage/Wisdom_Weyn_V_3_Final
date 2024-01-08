@@ -106,6 +106,19 @@ export function Actions() {
     }
   }
 
+  const updateUsername = async (username) => {
+    // pass
+
+    try {
+      const updateuser = await service.usernameUpdate(username)
+      if (updateuser && updateuser.message) {
+        return updateuser.message
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return {
     ShareToTwitter,
     upvote,
@@ -113,5 +126,6 @@ export function Actions() {
     showFullText,
     userdashboard,
     deleteSubmission,
+    updateUsername,
   }
 }

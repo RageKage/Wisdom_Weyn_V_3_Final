@@ -74,22 +74,6 @@
         </p>
       </div>
 
-      <!-- Username Input -->
-      <div>
-        <input
-          type="text"
-          v-model="username"
-          name="username"
-          id="username"
-          placeholder="Username"
-          class="border border-gray-300 text-gray-900 rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-          @blur="validateUsername"
-        />
-        <p v-if="usernameError" class="text-red-500 text-xs mt-1">
-          {{ usernameError }}
-        </p>
-      </div>
-
       <!-- Email Input -->
       <div>
         <input
@@ -187,12 +171,10 @@
   import { useRouter } from 'vue-router'
 
   const router = useRouter()
-  const username = ref('')
   const name = ref('')
   const email = ref('')
   const password = ref('')
   const nameError = ref('')
-  const usernameError = ref('')
   const emailError = ref('')
   const passwordError = ref('')
   const firebaseError = ref('')
@@ -221,14 +203,6 @@
 
   setInterval(getRandomIndex, 5000)
 
-  const validateUsername = () => {
-    // username validation
-    usernameError.value =
-      username.value.length < 5
-        ? 'Username must be at least 3 characters long.'
-        : ''
-  }
-
   const validateName = () => {
     // Name validation
     nameError.value =
@@ -253,16 +227,10 @@
   async function signup() {
     // Validate fields before attempting to sign up
     validateName()
-    validateUsername()
     validateEmail()
     validatePassword()
 
-    if (
-      nameError.value ||
-      usernameError.value ||
-      emailError.value ||
-      passwordError.value
-    ) {
+    if (nameError.value || emailError.value || passwordError.value) {
       return // if there are any errors then return the error
     }
 
@@ -270,14 +238,20 @@
       const userCredential = await signupWithEmail(email.value, password.value)
       localStorage.setItem('isLoggedIn', 'true')
 
-      const addUsertoDB = await CreateUserInDatabase(
-        userCredential,
-        username.value,
-        name.value,
-      )
+      const addUsertoDB = await CreateUserInDatabase(userCredential, name.value)
+
+      // Store user data in localStorage
+      localStorage.setItem('isLoggedIn', 'true')
+      localStorage.setItem('user', JSON.stringify(userCredential.user))
 
       if (addUsertoDB) {
-        router.push('/') // Redirect to home after successful login
+        const hasUsername = await UsernameInDB(userCredential.user.uid)
+        console.log(hasUsername)
+        if (hasUsername) {
+          router.push('/') // Redirect to home if username exists
+        } else {
+          router.push('/custom-username') // Redirect to username creation page
+        }
       } else {
         firebaseError.value = 'An unknown error occurred'
       }

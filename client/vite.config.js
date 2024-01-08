@@ -3,13 +3,12 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-
-import 'dotenv/config';
+import 'dotenv/config'
 
 // get the link to our server from our .env
 // eslint-disable-next-line no-undef
-const apiPath = process.env.VITE_NGROK_URL
-// const apiPath = 'https://4407-2601-447-c004-bdc0-14a5-e544-e904-afeb.ngrok-free.app'
+// const apiPath = process.env.VITE_NGROK_URL
+// const apiPath = 'https://0d80-2601-243-822-1e1a-98a0-a8bf-1d4b-3149.ngrok-free.app'
 
 export default defineConfig({
   plugins: [vue()],
@@ -18,7 +17,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  // ! use this when you wanna host it
+  // // ! use this when you wanna host it
   // server: {
   //   proxy: {
   //     '/api': {
@@ -29,10 +28,10 @@ export default defineConfig({
   //   },
   // },
 
-  // run locally
+  // ! run locally
   server: {
     proxy: {
-      '/api': 'http://localhost:3000'
+      '/api': 'http://localhost:3000',
     },
   },
 

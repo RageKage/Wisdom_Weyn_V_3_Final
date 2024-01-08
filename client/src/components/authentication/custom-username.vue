@@ -1,10 +1,14 @@
 <template>
-  <div class="min-h-screen w-screen flex items-center justify-center">
+  <div
+    class="min-h-screen w-screen flex items-center justify-center"
+    v-if="user"
+  >
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <h2 class="text-2xl font-semibold text-gray-900 mb-4">
         Welcome,
+        <!-- {{ user }} -->
         <span class="text-gray-600">
-          {{ user.displayName }}
+          {{ user.realName || userlocalStg.displayName }}
         </span>
       </h2>
 
@@ -36,12 +40,21 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import { updatesyncGoogleUserData } from './UserDataManager'
+  import { ref, onMounted } from 'vue'
+  import {
+    updatesyncGoogleUserData,
+    updatesyncUserData,
+  } from './UserDataManager'
+
+  import {
+    currentUser,
+    getCurrentUser,
+  } from '@/service/authService.js'
   import { useRouter } from 'vue-router'
 
   const router = useRouter()
   const user = ref(null)
+  const userlocalStg = ref(null)
   const chosenUsername = ref('')
   const usernameError = ref('')
 
@@ -53,9 +66,20 @@
         : ''
   }
 
-  // Access user information from params
-  //   user.value = JSON.parse(localStorage.getItem('user'))
-  user.value = JSON.parse(localStorage.getItem('user'))
+  onMounted(async () => {
+    try {
+      const authUser = await currentUser()
+
+      if (authUser) {
+        const dbUser = await getCurrentUser(authUser.uid)
+        user.value = dbUser
+      }
+    } catch (error) {
+      console.error('Error getting current user:', error.message)
+    }
+  })
+
+  userlocalStg.value = JSON.parse(localStorage.getItem('user'))
 
   const submitUsername = async () => {
     // Logging the cleaned JSON
@@ -65,12 +89,24 @@
       return // if there are any errors then return the error
     }
 
-    const uid = user.value.uid
-    const realName = user.value.displayName
+    const uid = userlocalStg.value.uid
+    const realName = userlocalStg.value.displayName
     const username = chosenUsername.value
 
     try {
-      await updatesyncGoogleUserData(uid, realName, username)
+      // Check if the user is a Google user
+      const isGoogleUser =
+        userlocalStg.value.displayName &&
+        userlocalStg.value.providerData.some(
+          (provider) => provider.providerId === 'google.com',
+        )
+
+      if (isGoogleUser) {
+        await updatesyncGoogleUserData(uid, realName, username)
+      } else {
+        await updatesyncUserData(uid, username)
+      }
+
       router.push('/')
     } catch (error) {
       usernameError.value = error.message

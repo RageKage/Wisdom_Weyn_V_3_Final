@@ -10,6 +10,7 @@ const AppApiService = () => {
   }
 
   const handleResponse = (response) => {
+    console.log(response.data)
     return response.data
   }
 
@@ -26,16 +27,13 @@ const AppApiService = () => {
       return Promise.reject('Unexpected error. Please try again.')
     }
   }
-  // const apiPath =
-  //   'https://4f68-2601-447-c004-bdc0-9195-82a8-86cf-a303.ngrok-free.app/api'
-  // router.get("/collections", function (req, res) {
-  // router.post("/collections", async (req, res) => {
 
   // import NGROK_URL from our .env using dotenv , run on ngrok server
-  // ! const apiPath = import.meta.env.VITE_NGROK_URL + '/api'
-  // const apiPath = 'https://4407-2601-447-c004-bdc0-14a5-e544-e904-afeb.ngrok-free.app/api'
+  // ! hosting server
+  // const apiPath = import.meta.env.VITE_NGROK_URL + '/api'
+  // const apiPath = 'https://0d80-2601-243-822-1e1a-98a0-a8bf-1d4b-3149.ngrok-free.app/api'
 
-  // run locally
+  // ! run locally
   const apiPath = '/api'
 
   return {
@@ -116,6 +114,24 @@ const AppApiService = () => {
         .catch(handleError)
     },
 
+    async usernameUpdate(username) {
+      const authUser = await currentUser()
+
+      if (!authUser) {
+        return Promise.reject(
+          'Sorry, you must be logged in to update the username',
+        )
+      }
+
+      const uid = authUser.uid
+      const data = { username } // Put the new username in the request body
+
+      return axios
+        .put(apiPath + `/users/${uid}`, data, { headers }) // Use PUT method to update data
+        .then(handleResponse)
+        .catch(handleError)
+    },
+
     // getUserDatabyuid(uid) {
     //   return axios
     //     .get(`/api/users/${uid}`)
@@ -131,8 +147,8 @@ const AppApiService = () => {
     //     })
     //     .catch(handleError);
     // },
+
     checkServerStatus() {
-      console.log('check server status')
       return axios
         .get(`${apiPath}/server/status`, { headers })
         .then((res) => {

@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white border-gray-200 dark:bg-gray-900">
+  <nav class="bg-white border-gray-200">
     <div
       class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
@@ -94,11 +94,12 @@
               </button>
             </li>
             <li>
-              <a
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >Settings</a
+              <button
+                @click="router.push('/setting')"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+                Settings
+              </button>
             </li>
             <li>
               <button

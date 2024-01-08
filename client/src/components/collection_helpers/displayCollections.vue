@@ -235,7 +235,7 @@
         if (currentUserData) {
           user.value = currentUserData
           isLoggedIn.value = true
-          localStorage.setItem('user', JSON.stringify(currentUserData))
+          // localStorage.setItem('user', JSON.stringify(currentUserData))
         }
       }
     } catch (error) {

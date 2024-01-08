@@ -3,7 +3,6 @@ let router = express.Router();
 router.use(express.json());
 
 // Import Firebase Admin
-// const functions = require("firebase-functions");
 let admin = require("firebase-admin");
 
 var db = admin.database();
@@ -38,10 +37,12 @@ router.post("/submissions", async (req, res) => {
     // this is the data that is being sent from the client side
     const formData = req.body;
 
+    // validate the form isn't empty
     if (!formData || Object.keys(formData).length === 0) {
       return res.status(400).send("Please provide form data");
     }
 
+    // make sure we have the right keys
     const requiredKeys = ["content", "meaning", "picked", "user_id"];
     for (const key of requiredKeys) {
       if (!formData.hasOwnProperty(key) || !formData[key]) {
@@ -49,19 +50,16 @@ router.post("/submissions", async (req, res) => {
       }
     }
 
-    // check that their is data in formData
-    if (!formData) {
-      return res.status(400).send("Please provide submission data");
-    }
-
+    // this is to get the date and time of the submission
     const getisodate = new Date().toISOString();
     const date = new Date(getisodate);
 
-    // now we need to add the submission to the user's submissions
+    // now we need to add the submission to the user's submissions, creating a path to the user's submissions
     const userSubmissionRef = db.ref(
       "users/" + formData.user_id.uid + "/submissions"
     );
 
+    // now we need to create a unique key for the submission
     const submissionRef = userSubmissionRef.push();
 
     const newEntryID = submissionRef.key;
@@ -69,6 +67,7 @@ router.post("/submissions", async (req, res) => {
     // create a unique key for the submission
     let submissionKey = "submission_" + newEntryID;
 
+    // now we need to check what type of submission it is and add the type to the key
     if (formData.picked === "proverb") {
       submissionKey = "submission_proverb_" + newEntryID;
     } else if (formData.picked === "Poetry") {
@@ -78,6 +77,7 @@ router.post("/submissions", async (req, res) => {
     // now we check if the user has any submissions if so we add to it if not we create it
     const userSnapshot = await userSubmissionRef.once("value");
 
+    // this for future use if we want to edit the submission
     if (userSnapshot.exists()) {
       await userSubmissionRef.update({
         [newEntryID]: {
@@ -160,6 +160,7 @@ router.post("/submissions", async (req, res) => {
   }
 });
 
+// function to handle upvoting and downvoting
 const handleVote = async (req, res, voteType) => {
   try {
     const id = req.params.id;
@@ -268,14 +269,17 @@ router.get("/submissions/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
+    // get the type of submission
     const type = id.split("_")[1];
 
+    // get the reference to the collection
     const ref = db.ref("collections/" + type + "/" + id);
 
     const snapshot = await ref.once("value");
 
     if (snapshot.exists()) {
       const data = snapshot.val();
+      // return the data
       res.json(data);
     } else {
       return res.status(404).send("Submission not found");
@@ -286,18 +290,19 @@ router.get("/submissions/:id", async (req, res) => {
 });
 
 // get user data by email this is for the dashboard feature
-// ... (other imports and code)
-
 router.get("/users/:email/dashboard", async (req, res) => {
   try {
     const email = req.params.email;
 
     const usersRef = db.ref("users");
+
+    // get the user by email
     const usersSnapshot = await usersRef
       .orderByChild("email")
       .equalTo(email)
       .once("value");
 
+    // if the user does not exist return a 404
     if (!usersSnapshot.exists()) {
       return res.status(404).send("User not found");
     }
@@ -310,6 +315,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
     const userSubmissionsSnapshot = await userSubmissionsRef.once("value");
     const userSubmissionsData = userSubmissionsSnapshot.val();
 
+    // If the user has no submissions, return the user object
     if (!userSubmissionsData) {
       return res.json({
         uid: uid,
@@ -320,13 +326,18 @@ router.get("/users/:email/dashboard", async (req, res) => {
     }
 
     const userSubmissionData = {};
+
+    // track the number of submissions
     const submissionsCount = {
       proverbs: 0,
       poetrys: 0,
     };
+
+    // track the most votes and most recent submissions
     const mostVotes = [];
     const mostRecent = [];
 
+    // get the keys of the submissions
     const submissionKeys = Object.keys(userSubmissionsData);
     const submissionPromises = submissionKeys.map((key) => {
       const submission = userSubmissionsData[key];
@@ -339,35 +350,41 @@ router.get("/users/:email/dashboard", async (req, res) => {
       return submissionRef.once("value");
     });
 
-    const submissionSnapshots = await Promise.all(submissionPromises);
+    const submissionSnapshots = await Promise.all(submissionPromises); // get all of the submissions
 
     submissionSnapshots.forEach((submissionSnapshot, index) => {
       const submissionData = submissionSnapshot.val();
-
       const key = submissionKeys[index];
 
+      // from the submission data we only need the title, content, creationDate, id, and upvotes, nothing else
       userSubmissionData[key] = {
         title: submissionData.title,
         content: submissionData.content,
         creationDate: submissionData.creationDate,
         id: submissionData.id,
+        upvotes: submissionData.upvotes,
       };
 
       const submission = submissionData.id;
 
       const type = submission.split("_")[1];
 
+      // increment the submission count
       submissionsCount[type] = (submissionsCount[type] || 0) + 1;
 
+      // Add the submission to mostVotes and mostRecent if it has at least 1 upvote
       if (userSubmissionData[key].upvotes >= 1) {
         mostVotes.push(userSubmissionData[key]);
       }
 
+      // Add the submission to mostRecent
       mostRecent.push(userSubmissionData[key]);
     });
 
     // Sort mostVotes and mostRecent and return the top 5
     mostVotes.sort((a, b) => b.upvotes - a.upvotes);
+
+    // Sort by creation date
     mostRecent.sort(
       (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
     );
@@ -376,6 +393,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
     mostVotes.splice(5);
     mostRecent.splice(5);
 
+    // return the data
     res.json({
       uid: uid,
       username: userObject.username,
@@ -479,6 +497,61 @@ router.get("/server/status", async (req, res) => {
     res.json({
       message: "Server is up!",
     });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// update username
+router.put("/users/:uid", async (req, res) => {
+  try {
+    // Get user reference
+    const userRef = db.ref("users/" + req.params.uid);
+    const userSnapshot = await userRef.once("value");
+
+    if (!userSnapshot.exists()) {
+      return res.status(404).send("User not found");
+    }
+
+    const userData = userSnapshot.val(); // get user data
+    const oldUsername = userData.username; // get old username
+    const newUsername = req.body.username; // the new one
+
+    // Update usernames in user collection
+    await userRef.update({ username: newUsername });
+
+    // Update username in submissions collection
+    for (const submission of Object.values(userData.submissions)) {
+      const type = submission.entry_id.split("_")[1];
+      const submissionRef = db.ref(
+        `collections/${type}/${submission.entry_id}`
+      );
+      await submissionRef.update({ username: newUsername });
+    }
+
+    // update the username in the usernames collection as well
+
+    const usernamesRef = db.ref("usernames/");
+
+    const usernamesSnapshot = await usernamesRef.once("value");
+
+    if (!usernamesSnapshot) {
+      res.status(404).send("Old username not found");
+      return;
+    }
+
+    const usernames = usernamesSnapshot.val();
+
+    if (usernames[oldUsername]) {
+      const uid = usernames[oldUsername].uid;
+
+      await usernamesRef.child(oldUsername).remove();
+
+      await usernamesRef.child(newUsername).set({ uid: uid });
+    }
+
+    res.status(200).json({ message: "Username updated successfully" });
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).send("Server error: " + error.message);

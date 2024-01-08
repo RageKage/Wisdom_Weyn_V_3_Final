@@ -2,18 +2,19 @@ import { getDatabase, ref, set, get, update } from 'firebase/database'
 
 const db = getDatabase()
 
-async function CreateUserInDatabase(userData, realName, username) {
+async function CreateUserInDatabase(userData, realName) {
   // console.log("Creating user in database", displayName, name)
   // Creating user in database CoolMaster Niman Ahmed
   const user = userData.user
+
   try {
     if (!user.uid || !user.email) {
       throw new Error('Invalid user data: UID or email is missing.')
     }
+
     await user?.reload()
     await set(ref(db, 'users/' + user.uid), {
       realName: realName,
-      username: username,
       email: user.email,
       createdAt: user.metadata.creationTime || null,
       lastLoginAt: user.metadata.lastSignInTime || null,
@@ -85,6 +86,65 @@ async function updatesyncGoogleUserData(uid, realName, username) {
   }
 }
 
+async function updatesyncUserData(uid, username) {
+  try {
+    if (!uid) {
+      throw new Error('Invalid user data: UID is missing.')
+    }
+
+    const usernamesRef = ref(db, 'usernames/' + username)
+
+    // check that the username is not taken
+    const usernamesSnapshot = await get(usernamesRef)
+    if (usernamesSnapshot.exists()) {
+      throw new Error('Username already taken.')
+    } else {
+      // Create the usernames collection if it doesn't exist
+      await set(usernamesRef, { uid: uid })
+    }
+
+    // Update user data
+    const userData = {
+      username: username,
+    }
+    const userRef = ref(db, 'users/' + uid)
+    await update(userRef, userData)
+  } catch (error) {
+    console.error('Error adding user data:', error)
+    throw error
+  }
+}
+
+// async function checkUsername(username) {
+//   const usernamesRef = ref(db, 'usernames/' + username)
+
+//   // check that the username is not taken
+//   const usernamesSnapshot = await get(usernamesRef)
+//   if (usernamesSnapshot.exists()) {
+//     throw new Error('Username already taken.')
+//   }
+// }
+
+async function checkUsername(username, userUid) {
+  const usernamesRef = ref(db, 'usernames/' + username)
+
+  // Check if the username is not taken
+  const usernamesSnapshot = await get(usernamesRef)
+
+  if (usernamesSnapshot.exists()) {
+    // Username is taken, check if it belongs to the current user
+    const existingUid = usernamesSnapshot.val().uid
+
+    if (existingUid === userUid) {
+      return true // Username exists but belongs to the current user
+    } else {
+      return false // Username already taken by another user
+    }
+  } else {
+    return true // Username is available
+  }
+}
+
 async function UsernameInDB(uid) {
   try {
     const usernamesRef = ref(db, 'usernames')
@@ -113,4 +173,6 @@ export {
   syncGoogleUserData,
   updatesyncGoogleUserData,
   UsernameInDB,
+  updatesyncUserData,
+  checkUsername,
 }
