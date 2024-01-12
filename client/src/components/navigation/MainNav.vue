@@ -3,7 +3,7 @@
     <div
       class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
-      <Logo class="flex items-center space-x-3 rtl:space-x-reverse" />
+      <Logo />
 
       <div
         class="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
@@ -144,10 +144,10 @@
           v-show="isMenuOpen || isLargeScreen"
           class="sm:hidden md:hidden lg:flex items-center space-x-6"
         >
-          <li>
+          <li class="p-2 rounded-lg">
             <router-link
               to="/"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-custom-purple-700 md:p-0"
+              class="block py-2 px-3 rounded md:p-0 router-link-exact-active"
               >Home</router-link
             >
           </li>
@@ -166,11 +166,11 @@
               />
             </svg>
           </li>
-          <li>
+          <li class="p-2 rounded-lg">
             <router-link
               to="/collections"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-custom-purple-700 md:p-0"
-              >Collections</router-link
+              class="block py-2 px-3 rounded md:p-0 router-link-exact-active"
+              >Wisdoms</router-link
             >
           </li>
           <li>
@@ -188,10 +188,10 @@
               />
             </svg>
           </li>
-          <li>
+          <li class="p-2 rounded-lg">
             <router-link
               to="/submissions/create"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-custom-purple-700 md:p-0"
+              class="block py-2 px-3 rounded md:p-0 router-link-exact-active"
               >Contribute</router-link
             >
           </li>

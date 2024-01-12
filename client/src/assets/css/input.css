@@ -3,10 +3,23 @@
 @tailwind utilities;
 
 
+/* Add these styles to your stylesheet or component */
+
 .router-link-exact-active.active {
-    @apply font-bold text-yellow-400 hover:text-custom-purple-700;
-    transition: none; /* This disables all transitions for the .active class */
+    @apply transition-none  text-custom-purple-500 border-b-2 border-custom-gold-500;
+    transition: none;
+    
+
+   
 }
+
+
+@layer base {
+  html {
+    font-family: "Proxima Nova", system-ui, sans-serif;
+  }
+}
+
 
 @keyframes fadeIn {
     from {

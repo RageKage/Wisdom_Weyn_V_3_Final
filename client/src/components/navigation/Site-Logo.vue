@@ -6,19 +6,21 @@
   >
     <img
       src="@/assets/images/Wisdom_weyn.svg"
-      class="h-12 md:h-16 lg:h-20 hover-img-scale hover-spin"
+      class="h-6 md:h-8 lg:h-10 hover-img"
       alt="Wisdom Weyn"
+      style="stroke: black; fill: none"
     />
   </router-link>
 </template>
 
 <style>
-  .hover-spin:hover {
-    transform: rotate(360deg);
-    transition: transform 0.6s ease-in-out;
+  /* icon animations on hover */
+  .hover-img {
+    transition: all 0.2s ease-in-out;
+  }
+  .hover-img:hover {
+    transform: scale(1.1);
   }
 
-  .hover-spin {
-    transition: transform 0.6s ease-in-out;
-  }
+  /* active class for router-link */
 </style>

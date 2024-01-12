@@ -6,7 +6,6 @@ router.use(express.json());
 let admin = require("firebase-admin");
 
 var db = admin.database();
-const { set, ref, update, remove } = require("firebase/database");
 
 // getting all of the data in my collections
 router.get("/collections", function (req, res) {
@@ -31,6 +30,7 @@ router.get("/collections", function (req, res) {
   }
 });
 
+// ! future update make this code more efficient and smaller using multi-path updates,
 // this is to add a new submission to the database
 router.post("/submissions", async (req, res) => {
   try {
@@ -159,7 +159,7 @@ router.post("/submissions", async (req, res) => {
     return res.status(500).send("Server error: " + error.message);
   }
 });
-
+// ! future update make this code more efficient and smaller using multi-path updates, also improve the error handling and also redo the upvote and downvote code, instead of downvote create a report this way we can keep track of the number of reports and if it reaches a certain number we can delete the submission
 // function to handle upvoting and downvoting
 const handleVote = async (req, res, voteType) => {
   try {
@@ -264,6 +264,7 @@ router.put("/submissions/:id/downvote", async (req, res) => {
   handleVote(req, res, "downvotes");
 });
 
+// ! future update make this code more efficient and smaller using multi-path updates
 // this is to get one submission by id
 router.get("/submissions/:id", async (req, res) => {
   try {
@@ -289,6 +290,7 @@ router.get("/submissions/:id", async (req, res) => {
   }
 });
 
+// ! future update make this code more efficient and smaller using multi-path updates
 // get user data by email this is for the dashboard feature
 router.get("/users/:email/dashboard", async (req, res) => {
   try {
@@ -413,6 +415,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
   }
 });
 
+// ! future update make this code more efficient and smaller using multi-path updates
 // delete a submission
 router.delete("/submissions/:id/:uid", async (req, res) => {
   try {
@@ -446,9 +449,6 @@ router.delete("/submissions/:id/:uid", async (req, res) => {
       return res.status(404).send("Submission not found");
     }
 
-    // Count the submissions before deletion
-    const submissionCountBefore = Object.keys(userSubmissionsData).length;
-
     // Remove the submission from the collections
     const type = id.split("_")[1];
     const collectionRef = db.ref(`collections/${type}/${id}`);
@@ -461,11 +461,14 @@ router.delete("/submissions/:id/:uid", async (req, res) => {
     // Remove the submission from the user's submissions
     await userSubmissionsRef.child(submissionKey).remove();
 
-    // Update the user's submission count and also make sure that the submissionCount doesn't change if the user has no submissions so it will be 0 and not passed 0 down so no negtaive
-    const submissionCountAfter = submissionCountBefore - 1;
-    const submissionCount = submissionCountAfter < 0 ? 0 : submissionCountAfter;
+    // update the user's submission count, decrement by 1
+    const newSubmissionCount = Object.keys(userSubmissionsData).length;
 
-    await userRef.update({ submissionCount: submissionCount });
+    if (newSubmissionCount <= 0) {
+      await userRef.update({ submissionCount: 0 });
+    }
+
+    await userRef.update({ submissionCount: newSubmissionCount });
 
     // now remove it from the user's votes collection
     const userVotesRef = db.ref(`users/${uid}/votes`);
@@ -518,37 +521,31 @@ router.put("/users/:uid", async (req, res) => {
     const oldUsername = userData.username; // get old username
     const newUsername = req.body.username; // the new one
 
+    // the updates object
+    let updates = {};
+
     // Update usernames in user collection
-    await userRef.update({ username: newUsername });
+    updates[`/users/${req.params.uid}/username`] = newUsername;
 
     // Update username in submissions collection
-    for (const submission of Object.values(userData.submissions)) {
-      const type = submission.entry_id.split("_")[1];
-      const submissionRef = db.ref(
-        `collections/${type}/${submission.entry_id}`
-      );
-      await submissionRef.update({ username: newUsername });
+    if (userData.submissions) {
+      for (const submission of Object.values(userData.submissions)) {
+        const type = submission.entry_id.split("_")[1];
+        updates[`/collections/${type}/${submission.entry_id}/username`] =
+          newUsername;
+      }
     }
 
-    // update the username in the usernames collection as well
+    // Update the username in the usernames collection as well
+    updates[`/usernames/${oldUsername}`] = null; // remove old username
+    updates[`/usernames/${newUsername}`] = { uid: req.params.uid }; // add new username
 
-    const usernamesRef = db.ref("usernames/");
-
-    const usernamesSnapshot = await usernamesRef.once("value");
-
-    if (!usernamesSnapshot) {
-      res.status(404).send("Old username not found");
-      return;
-    }
-
-    const usernames = usernamesSnapshot.val();
-
-    if (usernames[oldUsername]) {
-      const uid = usernames[oldUsername].uid;
-
-      await usernamesRef.child(oldUsername).remove();
-
-      await usernamesRef.child(newUsername).set({ uid: uid });
+    // now we update the database with the new username all at once using multi-path updates and also error handling
+    try {
+      await db.ref().update(updates);
+    } catch (error) {
+      console.error("Error:", error);
+      return res.status(500).send("Server error: " + error.message);
     }
 
     res.status(200).json({ message: "Username updated successfully" });

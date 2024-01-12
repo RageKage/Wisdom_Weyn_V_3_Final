@@ -1,13 +1,9 @@
 <template>
   <div :class="{ 'h-screen': isLoading }" class="container mx-auto">
     <div v-if="!isLoading">
-      <h1 class="text-center text-3xl font-bold text-custom-purple-600 mb-6">
-        Collections
-      </h1>
-
       <!-- filter and search row -->
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mx-auto max-w-[1200px]"
+        class="grid grid-cols-1 md:grid-cols-2 px-4 sm:px-5 max-w-full mx-auto sm:max-w-[1500px] py-4"
       >
         <CollectionFilter
           :activeFilter="activeFilter"

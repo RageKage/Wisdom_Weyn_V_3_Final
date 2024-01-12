@@ -46,10 +46,7 @@
     updatesyncUserData,
   } from './UserDataManager'
 
-  import {
-    currentUser,
-    getCurrentUser,
-  } from '@/service/authService.js'
+  import { currentUser, getCurrentUser } from '@/service/authService.js'
   import { useRouter } from 'vue-router'
 
   const router = useRouter()

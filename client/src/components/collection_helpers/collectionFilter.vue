@@ -28,8 +28,8 @@
   // filter types
   const filters = [
     { label: 'All', value: 'all' },
-    { label: 'Poetry', value: 'Poetry' },
-    { label: 'Proverb', value: 'proverb' },
+    { label: 'Gabay', value: 'Poetry' },
+    { label: 'Maahmaahyo', value: 'proverb' },
   ]
 
   // emits

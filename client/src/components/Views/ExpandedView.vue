@@ -25,6 +25,7 @@
           </svg>
         </button>
       </div>
+      <!-- post view -->
       <div
         class="container px-4 bg-white shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[800px] py-4 m-4"
       >
@@ -85,7 +86,7 @@
                 <span class="text-gray-700">{{ item.upvotes }}</span>
                 <button
                   @click="downvoteSubmisson(item.id)"
-                  class="rounded-lg bg-custom-gold-100 text-custom-gold-600 p-2 hover:bg-custom-gold-200 hover:text-custom-gold-700 transition-all duration-300 ml-2 mr-3"
+                  class="rounded-lg bg-slate-100 text-slate-600 p-2 hover:bg-slate-200 hover:text-slate-700 transition-all duration-300 ml-2 mr-3"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +108,7 @@
               <div>
                 <button
                   @click="ShareToTwitter(item)"
-                  class="text-custom-gold-600 hover:text-custom-gold-700 transition p-2 rounded-full bg-custom-gold-100 ml-4 mr-4"
+                  class="rounded-lg bg-custom-gold-200 text-custom-gold-800 p-2 transition-all duration-300 ml-2 mr-3"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -172,6 +173,7 @@
         </div>
       </div>
     </div>
+    <!-- looking for a post that doesn't exist -->
     <div v-if="submissionNotFound">
       <div class="flex flex-col items-center justify-center text-center">
         <h2 class="text-2xl font-bold text-custom-purple-600 mb-2">
@@ -209,6 +211,10 @@
 
   const itemId = computed(() => router.currentRoute.value.params.id)
   const item = ref(null)
+
+  const goback = () => {
+    router.push('/collections')
+  }
 
   const isLoggedIn = ref(false)
 
@@ -249,10 +255,6 @@
   })
 
   const future_feature = ref(false)
-
-  const goback = () => {
-    router.go(-1)
-  }
 
   const upvoteSubmisson = (id) => {
     if (isLoggedIn.value) {

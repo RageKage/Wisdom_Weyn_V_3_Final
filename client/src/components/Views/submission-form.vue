@@ -3,51 +3,43 @@
     <Popup v-if="!user" />
 
     <div
-      class="rounded-lg text-gray-600 p-4 transition-all duration-300 mx-auto max-w-[1200px]"
+      class="rounded-lg text-gray-600 transition-all duration-300 max-w-[1200px] mx-auto md:px-0"
     >
-      <h2 class="text-2xl font-bold mb-4 text-custom-purple-800">
-        Contribute a Proverb or Poetry
-      </h2>
+      <div class="flex flex-col md:flex-row md:justify-between mb-4">
+        <h2 class="text-2xl font-bold mb-4 text-custom-purple-800">
+          Contribute a Proverb or Poetry
+        </h2>
 
-      <div class="mb-4">
-        <div class="container">
-          <form>
-            <div class="flex flex-row space-x-4">
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  id="proverb"
-                  value="proverb"
-                  v-model="picked"
-                  checked
-                  class="form-radio text-custom-purple-600"
-                />
-                <span class="ml-2 text-gray-800">Proverb</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  id="poetry"
-                  value="Poetry"
-                  v-model="picked"
-                  class="form-radio text-custom-purple-600"
-                />
-                <span class="ml-2 text-gray-800">Poetry</span>
-              </label>
-            </div>
-          </form>
+        <div>
+          <div class="container">
+            <form>
+              <div class="flex flex-col md:flex-row">
+                <label class="flex items-center">
+                  <input
+                    type="radio"
+                    id="proverb"
+                    value="proverb"
+                    v-model="picked"
+                    checked
+                    class="form-radio text-custom-purple-600"
+                  />
+                  <span class="text-gray-800">Proverb</span>
+                </label>
+                <label class="flex items-center">
+                  <input
+                    type="radio"
+                    id="poetry"
+                    value="Poetry"
+                    v-model="picked"
+                    class="form-radio text-custom-purple-600"
+                  />
+                  <span class="text-gray-800">Poetry</span>
+                </label>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-
-      <!-- <div class="flex flex-col mb-4">
-        <label v-if="user" for="username" class="label">
-          <span
-            class="label-text rounded-lg bg-gray-100 text-gray-600 p-2 hover:bg-gray-200 hover:text-gray-700 transition-all duration-300 mr-4"
-          >
-            Your Name (for credit): {{ user.displayName }}
-          </span>
-        </label>
-      </div> -->
 
       <div v-if="picked === 'Poetry'" class="flex flex-col mb-4">
         <input
@@ -60,32 +52,34 @@
         />
       </div>
 
-      <div class="flex flex-col mb-4">
-        <textarea
-          id="content"
-          v-model="content"
-          :placeholder="
-            picked === 'Poetry' ? 'Share the Poetry' : 'Share the Proverb'
-          "
-          rows="4"
-          required
-          class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72 focus:outline-none focus:ring focus:border-custom-purple-300"
-        ></textarea>
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div class="flex flex-col mb-4">
+          <textarea
+            id="content"
+            v-model="content"
+            :placeholder="
+              picked === 'Poetry' ? 'Share the Poetry' : 'Share the Proverb'
+            "
+            rows="4"
+            required
+            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:border-custom-purple-300"
+          ></textarea>
+        </div>
 
-      <div class="flex flex-col mb-6">
-        <textarea
-          id="meaning"
-          v-model="meaning"
-          :placeholder="
-            picked === 'Poetry'
-              ? 'Meaning or Interpretation of the Gabay'
-              : 'Meaning or Interpretation of the Proverb'
-          "
-          rows="4"
-          required
-          class="form-textarea px-4 py-3 rounded-2xl h-44 max-h-72 focus:outline-none focus:ring focus:border-custom-purple-300"
-        ></textarea>
+        <div class="flex flex-col mb-6">
+          <textarea
+            id="meaning"
+            v-model="meaning"
+            :placeholder="
+              picked === 'Poetry'
+                ? 'Meaning or Interpretation of the Gabay'
+                : 'Meaning or Interpretation of the Proverb'
+            "
+            rows="4"
+            required
+            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:border-custom-purple-300"
+          ></textarea>
+        </div>
       </div>
 
       <button

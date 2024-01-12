@@ -1,36 +1,61 @@
 <template>
   <div class="text-center">
-    <h2
-      class="text-2xl font-bold text-custom-purple-600 mb-2"
-      v-if="displayedItems.length > 0"
-    >
-      {{ displayedItems.length }} Submissions Found
-    </h2>
-
-    <h2 class="text-2xl font-bold text-custom-purple-600 mb-2" v-else>
-      No Submissions Found
-    </h2>
-
-    <div v-if="activeFilter" class="text-sm text-gray-600">
+    <div v-if="activeFilter" class="text-white leading-relaxed">
       <div v-if="displayedItems.length > 0">
-        Showing results for {{ activeFilter }}.
+        <div
+          class="flex flex-row justify-center items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
+        >
+          <div class="flex items-center">
+            <div>
+              <div
+                v-if="displayedItems.length > 0"
+                class="rounded-lg bg-white text-gray-600 p-2 hover:bg-gray-100 hover:text-gray-600 transition-all duration-300 mr-3"
+              >
+                {{ displayedItems.length }}
+              </div>
+            </div>
+          </div>
+          <div>
+            <span
+              class="rounded-lg bg-custom-purple-600 p-2 hover:bg-custom-purple-700 transition-all duration-300"
+            >
+              {{ activeFilter }}
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div v-else>No data available for {{ activeFilter }}.</div>
+      <div
+        v-else
+        class="flex flex-row justify-center items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
+      >
+        <div class="flex items-center">
+          <div>
+            <div
+              class="rounded-lg bg-white text-gray-600 p-2 hover:bg-gray-100 hover:text-gray-600 transition-all duration-300 mr-3"
+            >
+              No data available for
+            </div>
+          </div>
+        </div>
+        <div>
+          <span
+            class="rounded-lg bg-custom-purple-600 p-2 hover:bg-custom-purple-700 transition-all duration-300"
+          >
+            {{ activeFilter }}
+          </span>
+        </div>
+      </div>
     </div>
 
     <div v-else class="text-gray-700 text-md leading-relaxed">
-      <div v-if="displayedItems.length > 0">Showing all submissions.</div>
-
-      <div v-else>
+      <div v-if="displayedItems.length <= 0">
         There are no submissions that match your search criteria.
       </div>
     </div>
   </div>
 
-  <div
-    class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-[1200px] mx-auto md:px-0"
-  >
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
     <div v-for="item in displayedItems" :key="item.id">
       <!-- Flex Container -->
       <div
@@ -39,14 +64,14 @@
         <div class="flex-1">
           <div class="pr-2">
             <div>
-              <div class="flex flex-col items-start">
-                <h2 class="text-lg font-bold text-custom-purple-600 mb-2">
+              <div class="flex flex-col items-start text-md">
+                <h2 class="font-bold text-custom-purple-600 mb-2">
                   {{ item.title || item.proverb }}
                 </h2>
               </div>
 
               <div
-                class="text-gray-700 text-md leading-relaxed flex justify-between items-center"
+                class="text-gray-700 leading-relaxed flex justify-between items-center"
               >
                 {{ item.content }}
               </div>
@@ -56,7 +81,7 @@
           <div
             role="alert"
             v-show="item.showMeaning"
-            class="mt-2 p-2 bg-custom-purple-100 text-custom-purple-600 rounded"
+            class="mt-2 p-2 bg-custom-purple-100 text-custom-purple-600 rounded text-sm"
           >
             <span>{{ item.meaning }}</span>
           </div>
@@ -64,12 +89,12 @@
           <!-- toggle meaning -->
           <button
             @click="toggleMeaning(item)"
-            class="mt-2 text-custom-purple-600 text-md hover:text-custom-purple-700 transition"
+            class="mt-2 text-custom-purple-600 hover:text-custom-purple-700 transition text-sm"
           >
             {{ item.showMeaning ? 'Hide Meaning' : 'See Meaning' }}
           </button>
-          <p class="text-sm text-gray-500 mt-2">
-            <span class="flex justify-between items-center">
+          <p class="text-gray-500 mt-2">
+            <span class="flex justify-between items-center text-sm">
               <span
                 >Submitted by:
                 <span
@@ -87,7 +112,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-6 h-6 text-custom-purple-600 hover:text-custom-purple-700 transition-all duration-300"
+                    class="w-5 h-5 text-custom-purple-600 hover:text-custom-purple-700 transition-all duration-300"
                   >
                     <path
                       stroke-linecap="round"
@@ -100,13 +125,13 @@
             </span>
           </p>
 
-          <p class="text-sm text-gray-500">
+          <p class="text-gray-500 text-sm">
             Date Added:
             <span class="font-medium">{{ formatDate(item.creationDate) }}</span>
           </p>
 
           <!-- voting -->
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between text-sm">
             <div class="flex items-center mt-4">
               <button
                 @click="upvoteSubmisson(item.id)"
@@ -130,7 +155,7 @@
               <span class="text-gray-700">{{ item.upvotes }}</span>
               <button
                 @click="downvoteSubmisson(item.id)"
-                class="rounded-lg bg-custom-gold-100 text-custom-gold-600 p-2 hover:bg-custom-gold-200 hover:text-custom-gold-700 transition-all duration-300 ml-2 mr-3"
+                class="rounded-lg bg-slate-100 text-slate-600 p-2 hover:bg-slate-200 hover:text-slate-700 transition-all duration-300 ml-2 mr-3"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -151,12 +176,30 @@
             </div>
 
             <!-- sharing and full text -->
-            <div class="flex items-center mt-4">
+            <div class="flex items-center mt-4 text-sm">
               <button
                 @click="showFullText(item.id)"
                 class="rounded-lg bg-blue-100 text-blue-600 p-2 hover:bg-blue200 hover:text-blue-700 transition-all duration-300"
               >
-                Read
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
               </button>
               <button
                 v-if="isLoggedIn && user.email === item.submittedBy"
@@ -169,7 +212,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                 >
                   <path
                     stroke-linecap="round"

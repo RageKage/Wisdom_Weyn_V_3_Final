@@ -90,10 +90,9 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
   body {
-    font-family: 'Lora', serif;
+    font-family: 'Varela Round', sans-serif;
   }
 
   @keyframes fadeIn {
