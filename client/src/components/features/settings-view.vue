@@ -20,16 +20,14 @@
               Member Since: {{ isotimeValueConvert(user.createdAt) }}
             </p>
           </div>
+
           <div
             v-if="user.photoURL"
-            class="w-16 h-16 rounded-full overflow-hidden"
+            class="weave w-8 h-8 rounded-full overflow-hidden"
           >
-            <img
-              :src="user.photoURL"
-              alt="User Photo"
-              class="w-full h-full object-cover"
-            />
+            <img :src="user.photoURL" alt="User Photo" />
           </div>
+
           <div v-else class="w-16 h-16 rounded-full overflow-hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -136,10 +134,21 @@
       const authUser = await currentUser()
 
       if (authUser) {
-        // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
-        // also this is better encase the provider doesn't provide that data
-        const dbUser = await getCurrentUser(authUser.uid)
-        user.value = dbUser
+        // Try to get user data from local storage
+        const localUserData = localStorage.getItem('user-data')
+
+        if (localUserData) {
+          console.log('Getting current user via local storage')
+          user.value = JSON.parse(localUserData)
+        } else {
+          console.log('Getting current user via API')
+          const dbUser = await getCurrentUser(authUser.uid)
+
+          // Save the data to local storage for future use
+          localStorage.setItem('user-data', JSON.stringify(dbUser))
+
+          user.value = dbUser
+        }
       }
     } catch (error) {
       console.error('Error getting current user:', error.message)
@@ -212,3 +221,43 @@
 
   const { updateUsername } = Actions()
 </script>
+
+<style lang="sass" scoped>
+  @mixin transform($properties)
+    -webkit-transform: $properties
+    -ms-transform: $properties
+    transform: $properties
+
+  $size: 80px
+  $line: 2px
+  $color: lighten(tomato, 90%)
+  $back: tomato
+
+  body
+    background: $back
+
+  =star
+    display: block
+    width: $size
+    height: $size
+    border: $line solid $color
+    border-radius: $size/3 - $line
+
+  .weave
+    @include star
+    position: relative
+    color: $color
+    text-align: center
+    font: 700 $size/4/$size 'Quicksand', sans-serif
+    &:before,
+    &:after
+      @include star
+      content: ""
+      position: absolute
+      top: -$line
+      left: -$line
+    &:before
+      @include transform(rotate(30deg))
+    &:after
+      @include transform(rotate(60deg))
+</style>

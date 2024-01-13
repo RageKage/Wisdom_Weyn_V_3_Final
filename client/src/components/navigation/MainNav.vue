@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white border-gray-200">
+  <nav class="bg-white">
     <div
       class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
@@ -271,12 +271,22 @@
       const authUser = await currentUser()
 
       if (authUser) {
-        // get the data in the user data, displayName is available in the authUser but not for if the account was created via email and password,
-        // also this is better encase the provider doesn't provide that data
-        const dbUser = await getCurrentUser(authUser.uid)
-        user.value = dbUser
+        // get user data from local storage
+        const localUserData = localStorage.getItem('user-data')
+
+        if (localUserData) {
+          console.log('Getting current user via local storage')
+          user.value = JSON.parse(localUserData)
+        } else {
+          console.log('Getting current user via API')
+          const dbUser = await getCurrentUser(authUser.uid)
+
+          // Save the data to local storage for future use
+          localStorage.setItem('user-data', JSON.stringify(dbUser))
+
+          user.value = dbUser
+        }
       }
-      loading.value = false
     } catch (error) {
       console.error('Error getting current user:', error.message)
     }

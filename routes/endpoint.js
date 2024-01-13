@@ -22,7 +22,7 @@ router.get("/collections", function (req, res) {
         res
           .status(500)
           .send("Error reading from database: " + errorObject.name);
-      }
+      },
     );
   } catch (error) {
     console.error("Error:", error);
@@ -56,7 +56,7 @@ router.post("/submissions", async (req, res) => {
 
     // now we need to add the submission to the user's submissions, creating a path to the user's submissions
     const userSubmissionRef = db.ref(
-      "users/" + formData.user_id.uid + "/submissions"
+      "users/" + formData.user_id.uid + "/submissions",
     );
 
     // now we need to create a unique key for the submission
@@ -118,7 +118,7 @@ router.post("/submissions", async (req, res) => {
 
     // now we create make path to the collection find the type and add the submission key to it, this should create a path like this collections/Poetry/submission_Poetry_1
     const collectionRef = db.ref(
-      "collections/" + formData.picked + "/" + submissionKey
+      "collections/" + formData.picked + "/" + submissionKey,
     );
 
     const collectionSnapshot = await userSubmissionRef.once("value");
@@ -347,7 +347,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
       const type = submission.entry_id.split("_")[1];
 
       const submissionRef = db.ref(
-        `collections/${type}/${submission.entry_id}`
+        `collections/${type}/${submission.entry_id}`,
       );
       return submissionRef.once("value");
     });
@@ -388,7 +388,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
     // Sort by creation date
     mostRecent.sort(
-      (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
+      (a, b) => new Date(b.creationDate) - new Date(a.creationDate),
     );
 
     // Limit to the top 5

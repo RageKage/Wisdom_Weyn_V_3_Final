@@ -1,6 +1,6 @@
 <template>
   <div
-    class="container p-6 sm:px-5 max-w-full mx-auto sm:max-w-[800px] py-4 m-4"
+    class="container p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4"
   >
     <div v-if="item">
       <!-- back button  -->
@@ -27,7 +27,7 @@
       </div>
       <!-- post view -->
       <div
-        class="container px-4 bg-white shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[800px] py-4 m-4"
+        class="container px-4 bg-white shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4"
       >
         <div class="flex flex-col space-y-4">
           <div class="flex flex-col items-start">
@@ -35,15 +35,17 @@
               {{ item.title }}
             </h2>
 
-            <div class="text-gray-700 text-lg leading-relaxed">
-              {{ item.content }}
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 py-4 w-full">
+              <div class="text-gray-700 text-lg leading-relaxed md:mr-6">
+                {{ item.content }}
+              </div>
 
-            <div
-              role="alert"
-              class="mt-2 p-2 bg-custom-purple-100 text-custom-purple-600 rounded"
-            >
-              <span>{{ item.meaning }}</span>
+              <div
+                role="alert"
+                class="mt-2 sm:mt-0 p-2 bg-custom-purple-100 text-custom-purple-600 rounded"
+              >
+                <span>{{ item.meaning }}</span>
+              </div>
             </div>
 
             <p class="text-sm text-gray-500 mt-2">
