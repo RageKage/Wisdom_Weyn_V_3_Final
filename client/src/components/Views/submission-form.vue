@@ -86,7 +86,7 @@
         type="submit"
         @click="submitForm"
         class="rounded-lg bg-saffron-200 text-saffron-700 p-2 transition-all duration-300"
-        >
+      >
         <span v-if="props.isLoading">
           <!-- Loading Icon -->
           <div role="status" class="animate-spin">
@@ -109,9 +109,7 @@
             <span class="sr-only">Loading...</span>
           </div>
         </span>
-        <span
-          v-else
-        >
+        <span v-else>
           <span v-if="user"> Contribute </span>
           <span v-else @click="login">Sign in</span></span
         >

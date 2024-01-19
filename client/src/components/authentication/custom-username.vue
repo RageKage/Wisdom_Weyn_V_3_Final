@@ -1,9 +1,9 @@
 <template>
   <div
-    class="min-h-screen w-screen flex items-center justify-center "
+    class="min-h-screen w-screen flex items-center justify-center"
     v-if="user"
   >
-    <div class=" p-8 rounded-lg shadow-md w-full max-w-md bg-seashell-50 ">
+    <div class="p-8 rounded-lg shadow-md w-full max-w-md bg-seashell-50">
       <h2 class="text-2xl font-semibold text-seashell-900 mb-4">
         Welcome,
         <!-- {{ user }} -->
@@ -12,7 +12,9 @@
         </span>
       </h2>
 
-      <p class="text-seashell-700 mb-6">To continue, please choose a username:</p>
+      <p class="text-seashell-700 mb-6">
+        To continue, please choose a username:
+      </p>
 
       <div class="mb-4">
         <input

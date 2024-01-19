@@ -4,7 +4,9 @@
   >
     <div v-if="item">
       <!-- post view -->
-      <div class="container px-4 shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4 bg-seashell-50 text-seashell-900">
+      <div
+        class="container px-4 shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4 bg-seashell-50 text-seashell-900"
+      >
         <!-- back button  -->
         <div class="flex mt-4">
           <button

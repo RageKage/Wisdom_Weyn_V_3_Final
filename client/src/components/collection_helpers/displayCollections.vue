@@ -59,13 +59,13 @@
     <div v-for="item in displayedItems" :key="item.id">
       <!-- Flex Container -->
       <div
-        class="flex flex-row md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 shadow-lg rounded-lg p-6 bg-seashell-50 "
+        class="flex flex-row md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 shadow-lg rounded-lg p-6 bg-seashell-50"
       >
         <div class="flex-1">
           <div class="pr-2">
             <div>
               <div class="flex flex-col items-start text-md">
-                <h2 class="font-bold  mb-2">
+                <h2 class="font-bold mb-2">
                   {{ item.title || item.proverb }}
                 </h2>
               </div>

@@ -6,9 +6,7 @@
           class="fixed top-0 inset-x-0 px-4 py-6 pointer-events-none"
           v-if="isSent"
         >
-          <div
-            class="max-w-md mx-auto rounded-lg  shadow-md overflow-hidden"
-          >
+          <div class="max-w-md mx-auto rounded-lg shadow-md overflow-hidden">
             <div
               class="bg-indigo-500 text-white p-4 flex items-center justify-between"
             >
