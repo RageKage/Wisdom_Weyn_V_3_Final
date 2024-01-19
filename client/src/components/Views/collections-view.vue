@@ -3,18 +3,16 @@
     <div v-if="!isLoading">
       <!-- filter and search row -->
       <div
-        class="grid grid-cols-1 md:grid-cols-2 px-4 sm:px-5 max-w-full mx-auto sm:max-w-[1500px] py-4"
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-between mb-6"
       >
         <CollectionFilter
           :activeFilter="activeFilter"
           @filterType="filterType"
-          class="p-2 rounded-lg outline-none"
         />
 
         <SearchBarVue
           :searchQuery="searchQuery"
           @update:searchQuery="searchQuery = $event"
-          class="p-2 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-custom-purple-400 focus:border-custom-purple-400 transition-all duration-300"
         />
       </div>
 
@@ -29,11 +27,11 @@
       <button
         @click="scrollToTop"
         v-show="showScrollToTopBtn"
-        class="fixed bottom-4 right-4 bg-custom-gold-500 text-custom-purple-600 shadow-lg ease-in-out hover:bg-custom-gold-600 focus:outline-none focus:ring-opacity-50 p-2 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-custom-purple-400 focus:border-custom-purple-400 transition-all duration-300"
+        class="fixed bottom-4 right-4 bg-cinnabar-500 hover:bg-cinnabar-600 shadow-lg ease-in-out focus:outline-none focus:ring-opacity-50 p-2 rounded-lg outline-none focus: focus:ring-2 focus:ring-seashell-500 transition-all duration-300"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
+          class="h-6 w-6 text-seashell-900"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

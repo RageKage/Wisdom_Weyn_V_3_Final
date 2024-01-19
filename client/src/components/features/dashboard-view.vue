@@ -57,7 +57,7 @@
                 class="mb-4"
               >
                 <div
-                  class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+                  class="rounded-lg bg-seashell-50 text-seashell-700 p-4 hover:text-seashell-900 transition-all duration-300"
                 >
                   <p class="text-sm mb-2">
                     {{
@@ -67,7 +67,7 @@
 
                   <div class="flex gap-2">
                     <div
-                      class="py-1.5 px-3 text-custom-purple-500 text-center border rounded-md border-custom-purple-400 h-8 text-sm flex items-center gap-1 lg:gap-2"
+                      class="py-1.5 px-3 -500 text-center border rounded-md -400 h-8 text-sm flex items-center gap-1 lg:gap-2"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +87,7 @@
                   </div>
 
                   <div
-                    class="flex justify-between mt-2 rounded-lg bg-gray-100 text-gray-700 pt-4 hover:text-gray-900 transition-all duration-300"
+                    class="flex justify-between mt-2 rounded-lg bg-seashell-50 text-seashell-700 pt-4 hover:text-seashell-900 transition-all duration-300"
                   >
                     <button
                       class="text-sm text-indigo-500 cursor-pointe"
@@ -100,7 +100,7 @@
               </div>
             </div>
             <div
-              class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+              class="rounded-lg bg-seashell-50 text-seashell-700 p-4 hover:text-seashell-900 transition-all duration-300"
               v-else
             >
               <div class="flex justify-between items-center mb-4">
@@ -125,7 +125,7 @@
                 class="mb-4"
               >
                 <div
-                  class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+                  class="rounded-lg bg-seashell-50 text-seashell-700 p-4 hover:text-seashell-900 transition-all duration-300"
                 >
                   <p class="text-sm mb-2">
                     {{
@@ -133,12 +133,12 @@
                     }}
                   </p>
                   <!-- when the submission was shared -->
-                  <p class="text-xs text-gray-500">
+                  <p class="text-xs text-seashell-500">
                     {{ readableDate(submission.creationDate) }}
                   </p>
                   <div class="flex justify-between mt-2">
                     <button
-                      class="text-sm text-gray-500 hover:text-gray-700 transition-all duration-300"
+                      class="text-sm text-seashell-500 hover:text-seashell-700 transition-all duration-300"
                       @click="showFullText(submission.id)"
                     >
                       Read More
@@ -150,7 +150,7 @@
 
             <div
               v-else
-              class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+              class="rounded-lg bg-seashell-100 text-seashell-700 p-4 hover:text-seashell-900 transition-all duration-300"
             >
               <div class="flex justify-between items-center mb-4">
                 <h2 class="text-md">
@@ -163,10 +163,10 @@
         </div>
         <div
           v-else
-          class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+          class="rounded-lg bg-seashell-50 text-seashell-700 p-4 hover:text-seashell-900 transition-all duration-300"
         >
           <div class="flex justify-center items-center">
-            <p class="text-sm text-gray-500">No submissions yet.</p>
+            <p class="text-sm text-seashell-500">No submissions yet.</p>
           </div>
         </div>
       </div>

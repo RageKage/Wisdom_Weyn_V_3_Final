@@ -3,35 +3,33 @@
     class="container p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4"
   >
     <div v-if="item">
-      <!-- back button  -->
-      <div class="flex mt-4">
-        <button
-          @click="goback"
-          class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-5 h-5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
-            />
-          </svg>
-        </button>
-      </div>
       <!-- post view -->
-      <div
-        class="container px-4 bg-white shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4"
-      >
+      <div class="container px-4 shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4 bg-seashell-50 text-seashell-900">
+        <!-- back button  -->
+        <div class="flex mt-4">
+          <button
+            @click="goback"
+            class="rounded-lg -100 -600 p-2 bg-redDamask-500 transition-all duration-300 mr-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+              />
+            </svg>
+          </button>
+        </div>
         <div class="flex flex-col space-y-4">
           <div class="flex flex-col items-start">
-            <h2 class="text-xl font-bold text-custom-purple-600 mb-2">
+            <h2 class="text-xl font-bold -600 mb-2">
               {{ item.title }}
             </h2>
 
@@ -42,7 +40,7 @@
 
               <div
                 role="alert"
-                class="mt-2 sm:mt-0 p-2 bg-custom-purple-100 text-custom-purple-600 rounded"
+                class="mt-2 sm:mt-0 p-2 -100 -600 rounded bg-saffron-300 text-seashell-900"
               >
                 <span>{{ item.meaning }}</span>
               </div>
@@ -51,7 +49,7 @@
             <p class="text-sm text-gray-500 mt-2">
               Submitted by:
               <span
-                class="font-medium hover:underline hover:cursor-pointer"
+                class="font-medium text-cinnabar-500 hover:text-cinnabar-600 transition-all duration-300 cursor-pointer"
                 @click="userdashboard(item.submittedBy)"
                 >{{ item.username }}</span
               >
@@ -68,7 +66,7 @@
               <div class="flex items-center mt-4">
                 <button
                   @click="upvoteSubmisson(item.id)"
-                  class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-3"
+                  class="rounded-lg bg-carrotOrange-300 text-seashell-900 p-2 hover:bg-carrotOrange-400 transition-all duration-300 mr-3"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +86,7 @@
                 <span class="text-gray-700">{{ item.upvotes }}</span>
                 <button
                   @click="downvoteSubmisson(item.id)"
-                  class="rounded-lg bg-slate-100 text-slate-600 p-2 hover:bg-slate-200 hover:text-slate-700 transition-all duration-300 ml-2 mr-3"
+                  class="rounded-lg bg-seashell-100 text-seashell-600 p-2 hover:bg-seashell-200 hover:text-seashell-700 transition-all duration-300 ml-2 mr-3"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +108,7 @@
               <div>
                 <button
                   @click="ShareToTwitter(item)"
-                  class="rounded-lg bg-custom-gold-200 text-custom-gold-800 p-2 transition-all duration-300 ml-2 mr-3"
+                  class="rounded-lg -200 -800 p-2 transition-all duration-300 ml-2 mr-3"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +128,7 @@
                 <!-- TODO soon to be added -->
                 <button
                   v-if="future_feature"
-                  class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
+                  class="rounded-lg -100 -600 p-2 hover:-200 hover:-700 transition-all duration-300 mr-4"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -178,9 +176,7 @@
     <!-- looking for a post that doesn't exist -->
     <div v-if="submissionNotFound">
       <div class="flex flex-col items-center justify-center text-center">
-        <h2 class="text-2xl font-bold text-custom-purple-600 mb-2">
-          Submission Not Found
-        </h2>
+        <h2 class="text-2xl font-bold -600 mb-2">Submission Not Found</h2>
         <p class="text-gray-700 text-lg leading-relaxed">
           The submission you are looking for does not exist.
         </p>
@@ -189,7 +185,7 @@
       <div class="flex justify-center mt-4">
         <button
           @click="goback"
-          class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
+          class="rounded-lg -100 -600 p-2 hover:-200 hover:-700 transition-all duration-300 mr-4"
         >
           Go Back to Collection
         </button>

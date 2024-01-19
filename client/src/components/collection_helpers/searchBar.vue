@@ -6,11 +6,11 @@
       placeholder="Search for proverb or Gabay"
       :value="searchQuery"
       @input="handleInput"
-      class="flex-grow hover:cursor-pointer placeholder:text-slate-900 rounded-lg outline-none border-custom-purple-100 focus:bg-white focus:ring-2 focus:ring-custom-purple-400 focus:border-custom-purple-400 transition-all duration-300"
+      class="flex-grow hover:cursor-pointer placeholder:text-seashell-900 rounded-xl transition-all duration-300"
     />
 
     <span
-      class="flex items-center hover:cursor-pointer rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-3"
+      class="flex items-center hover:cursor-pointer rounded-lg bg-cinnabar-400 text-seashell-700 p-2 hover:bg-cinnabar-300 transition-all duration-300 mr-3"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

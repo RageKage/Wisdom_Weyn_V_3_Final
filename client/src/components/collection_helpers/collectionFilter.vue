@@ -6,11 +6,11 @@
       v-for="filter in filters"
       :key="filter.value"
       :class="[
-        'rounded-lg p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300',
-        'bg-custom-purple-100 text-custom-purple-600',
+        'rounded-lg p-2 hover:bg-cinnabar-300 transition-all duration-300',
+        'bg-cinnabar-400 text-seashell-800',
         activeFilter === filter.value
-          ? 'bg-custom-purple-600 text-white'
-          : 'bg-custom-purple-50 text-custom-purple-700 ',
+          ? 'bg-saffron-400 hover:bg-saffron-300 text-seashell-800'
+          : 'bg-cinnabar-400 text-seashell-800',
       ]"
       @click="filterType(filter.value)"
     >

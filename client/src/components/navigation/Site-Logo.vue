@@ -1,26 +1,9 @@
 <template>
   <router-link
     to="/"
-    class="text-3xl font-bold leading-none hover-img"
     active-class="active-img"
+    class="flex items-center justify-center w-16 h-16 md:w-16 md:h-16 lg:w-20 lg:h-20"
   >
-    <img
-      src="@/assets/images/Wisdom_weyn.svg"
-      class="h-6 md:h-8 lg:h-10 hover-img"
-      alt="Wisdom Weyn"
-      style="stroke: black; fill: none"
-    />
+    <span class="text-4xl font-Kalam">W</span>
   </router-link>
 </template>
-
-<style>
-  /* icon animations on hover */
-  .hover-img {
-    transition: all 0.2s ease-in-out;
-  }
-  .hover-img:hover {
-    transform: scale(1.1);
-  }
-
-  /* active class for router-link */
-</style>

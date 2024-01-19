@@ -94,15 +94,15 @@
         </svg>
         <div class="tracking-widest mt-4">
           <div class="text-center">
-            <span class="text-custom-gold-500 font-bold text-9xl">404</span>
-            <p class="text-custom-gold-600 text-2xl mt-6">
+            <span class="-500 font-bold text-9xl">404</span>
+            <p class="-600 text-2xl mt-6">
               Sorry, we couldn't find what you're looking for.
             </p>
           </div>
           <div class="flex justify-center mt-6">
             <router-link
               to="/"
-              class="text-custom-purple-500 font-semibold text-lg p-4 rounded-full border border-custom-purple-500 hover:bg-custom-purple-500 hover:text-white transition-colors duration-300"
+              class="-500 font-semibold text-lg p-4 rounded-full border -500 hover:-500 hover:text-white transition-colors duration-300"
               >Go Back</router-link
             >
           </div>

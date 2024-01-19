@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <div v-if="activeFilter" class="text-white leading-relaxed">
+    <div v-if="activeFilter" class="text-seashell-900 leading-relaxed mb-4">
       <div v-if="displayedItems.length > 0">
         <div
           class="flex flex-row justify-center items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
@@ -9,7 +9,7 @@
             <div>
               <div
                 v-if="displayedItems.length > 0"
-                class="rounded-lg bg-white text-gray-600 p-2 hover:bg-gray-100 hover:text-gray-600 transition-all duration-300 mr-3"
+                class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
               >
                 {{ displayedItems.length }}
               </div>
@@ -17,7 +17,7 @@
           </div>
           <div>
             <span
-              class="rounded-lg bg-custom-purple-600 p-2 hover:bg-custom-purple-700 transition-all duration-300"
+              class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
             >
               {{ activeFilter }}
             </span>
@@ -32,7 +32,7 @@
         <div class="flex items-center">
           <div>
             <div
-              class="rounded-lg bg-white text-gray-600 p-2 hover:bg-gray-100 hover:text-gray-600 transition-all duration-300 mr-3"
+              class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
             >
               No data available for
             </div>
@@ -40,7 +40,7 @@
         </div>
         <div>
           <span
-            class="rounded-lg bg-custom-purple-600 p-2 hover:bg-custom-purple-700 transition-all duration-300"
+            class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
           >
             {{ activeFilter }}
           </span>
@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <div v-else class="text-gray-700 text-md leading-relaxed">
+    <div v-else class="text-seashell-900 text-md leading-relaxed">
       <div v-if="displayedItems.length <= 0">
         There are no submissions that match your search criteria.
       </div>
@@ -59,19 +59,19 @@
     <div v-for="item in displayedItems" :key="item.id">
       <!-- Flex Container -->
       <div
-        class="flex flex-row md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 bg-white shadow-lg rounded-lg p-6"
+        class="flex flex-row md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 shadow-lg rounded-lg p-6 bg-seashell-50 "
       >
         <div class="flex-1">
           <div class="pr-2">
             <div>
               <div class="flex flex-col items-start text-md">
-                <h2 class="font-bold text-custom-purple-600 mb-2">
+                <h2 class="font-bold  mb-2">
                   {{ item.title || item.proverb }}
                 </h2>
               </div>
 
               <div
-                class="text-gray-700 leading-relaxed flex justify-between items-center"
+                class="text-seashell-900 leading-relaxed flex justify-between items-center"
               >
                 {{ item.content }}
               </div>
@@ -81,7 +81,7 @@
           <div
             role="alert"
             v-show="item.showMeaning"
-            class="mt-2 p-2 bg-custom-purple-100 text-custom-purple-600 rounded text-sm"
+            class="mt-2 p-2 bg-saffron-300 text-seashell-900 rounded text-sm"
           >
             <span>{{ item.meaning }}</span>
           </div>
@@ -89,16 +89,16 @@
           <!-- toggle meaning -->
           <button
             @click="toggleMeaning(item)"
-            class="mt-2 text-custom-purple-600 hover:text-custom-purple-700 transition text-sm"
+            class="mt-2 text-cinnabar-500 hover:text-cinnabar-600 transition text-sm"
           >
             {{ item.showMeaning ? 'Hide Meaning' : 'See Meaning' }}
           </button>
-          <p class="text-gray-500 mt-2">
+          <p class="text-seashell-900 mt-2">
             <span class="flex justify-between items-center text-sm">
               <span
                 >Submitted by:
                 <span
-                  class="font-medium text-custom-purple-600 hover:text-custom-purple-700 transition-all duration-300 cursor-pointer"
+                  class="font-medium text-cinnabar-500 hover:text-cinnabar-600 transition-all duration-300 cursor-pointer"
                   @click="userdashboard(item.submittedBy)"
                 >
                   {{ item.username }}
@@ -112,7 +112,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-5 h-5 text-custom-purple-600 hover:text-custom-purple-700 transition-all duration-300"
+                    class="w-5 h-5 text-seashell-500 hover:text-seashell-600 transition-all duration-300"
                   >
                     <path
                       stroke-linecap="round"
@@ -125,7 +125,7 @@
             </span>
           </p>
 
-          <p class="text-gray-500 text-sm">
+          <p class="text-seashell-900 text-sm">
             Date Added:
             <span class="font-medium">{{ formatDate(item.creationDate) }}</span>
           </p>
@@ -135,7 +135,7 @@
             <div class="flex items-center mt-4">
               <button
                 @click="upvoteSubmisson(item.id)"
-                class="rounded-lg bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-3"
+                class="rounded-lg bg-carrotOrange-300 text-seashell-900 p-2 hover:bg-carrotOrange-400 transition-all duration-300 mr-3"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -155,7 +155,7 @@
               <span class="text-gray-700">{{ item.upvotes }}</span>
               <button
                 @click="downvoteSubmisson(item.id)"
-                class="rounded-lg bg-slate-100 text-slate-600 p-2 hover:bg-slate-200 hover:text-slate-700 transition-all duration-300 ml-2 mr-3"
+                class="rounded-lg bg-seashell-100 text-seashell-600 p-2 hover:bg-seashell-200 hover:text-seashell-700 transition-all duration-300 ml-2 mr-3"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +179,7 @@
             <div class="flex items-center mt-4 text-sm">
               <button
                 @click="showFullText(item.id)"
-                class="rounded-lg bg-blue-100 text-blue-600 p-2 hover:bg-blue200 hover:text-blue-700 transition-all duration-300"
+                class="rounded-lg bg-redDamask-100 text-redDamask-600 p-2 hover:bg-redDamask-200 hover:text-redDamask-700 transition-all duration-300"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +204,7 @@
               <button
                 v-if="isLoggedIn && user.email === item.submittedBy"
                 @click="deletessubmission(item.id, user.uid)"
-                class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300 ml-4"
+                class="rounded-lg bg-cinnabar-100 text-cinnabar-600 p-2 hover:bg-cinnabar-200 hover:text-cinnabar-700 transition-all duration-300 ml-4"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

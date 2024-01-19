@@ -1,18 +1,18 @@
 <template>
   <div
-    class="min-h-screen w-screen flex items-center justify-center"
+    class="min-h-screen w-screen flex items-center justify-center "
     v-if="user"
   >
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+    <div class=" p-8 rounded-lg shadow-md w-full max-w-md bg-seashell-50 ">
+      <h2 class="text-2xl font-semibold text-seashell-900 mb-4">
         Welcome,
         <!-- {{ user }} -->
-        <span class="text-gray-600">
+        <span class="text-seashell-600">
           {{ user.realName || userlocalStg.displayName }}
         </span>
       </h2>
 
-      <p class="text-gray-700 mb-6">To continue, please choose a username:</p>
+      <p class="text-seashell-700 mb-6">To continue, please choose a username:</p>
 
       <div class="mb-4">
         <input
@@ -21,17 +21,17 @@
           name="chosenUsername"
           id="chosenUsername"
           placeholder="Username"
-          class="border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 rounded-md"
+          class="border border-seashell-300 text-seashell-900 rounded-lg focus:ring-saffron-500 focus:border-saffron-500 block w-full p-2.5"
           @blur="validateUsername"
         />
-        <p v-if="usernameError" class="text-red-600 text-sm">
+        <p v-if="usernameError" class="text-cinnabar-600 text-sm">
           {{ usernameError }}
         </p>
       </div>
 
       <button
         @click="submitUsername"
-        class="w-full px-4 py-2 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 transition-all duration-300"
+        class="w-full px-4 py-2 bg-carrotOrange-500 text-white font-bold rounded-md hover:bg-carrotOrange-600 transition-all duration-300"
       >
         Continue
       </button>

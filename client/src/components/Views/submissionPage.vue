@@ -7,7 +7,7 @@
           v-if="isSent"
         >
           <div
-            class="max-w-md mx-auto rounded-lg bg-white shadow-md overflow-hidden"
+            class="max-w-md mx-auto rounded-lg  shadow-md overflow-hidden"
           >
             <div
               class="bg-indigo-500 text-white p-4 flex items-center justify-between"

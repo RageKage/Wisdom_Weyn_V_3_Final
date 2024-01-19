@@ -3,17 +3,17 @@
     <Popup v-if="!user" />
 
     <div
-      class="rounded-lg text-gray-600 transition-all duration-300 max-w-[1200px] mx-auto md:px-0"
+      class="rounded-lg text-seashell-600 transition-all duration-300 max-w-[1200px] mx-auto md:px-0"
     >
       <div class="flex flex-col md:flex-row md:justify-between mb-4">
-        <h2 class="text-2xl font-bold mb-4 text-custom-purple-800">
+        <h2 class="text-2xl font-bold mb-4 text-seashell-800">
           Contribute a Proverb or Poetry
         </h2>
 
         <div>
           <div class="container">
             <form>
-              <div class="flex flex-col md:flex-row">
+              <div class="flex flex-row justify-center md:flex-row">
                 <label class="flex items-center">
                   <input
                     type="radio"
@@ -21,19 +21,19 @@
                     value="proverb"
                     v-model="picked"
                     checked
-                    class="form-radio text-custom-purple-600"
+                    class="form-radio"
                   />
-                  <span class="text-gray-800">Proverb</span>
+                  <span class="text-seashell-800">Proverb</span>
                 </label>
-                <label class="flex items-center">
+                <label class="flex items-center ml-2">
                   <input
                     type="radio"
                     id="poetry"
                     value="Poetry"
                     v-model="picked"
-                    class="form-radio text-custom-purple-600"
+                    class="form-radio"
                   />
-                  <span class="text-gray-800">Poetry</span>
+                  <span class="text-seashell-800">Poetry</span>
                 </label>
               </div>
             </form>
@@ -48,7 +48,7 @@
           v-model="title"
           placeholder="Title of the Poetry"
           required
-          class="form-input px-4 py-3 rounded-2xl focus:outline-none focus:ring focus:border-custom-purple-300"
+          class="form-input px-4 py-3 rounded-2xl focus:outline-none focus:ring focus:-300"
         />
       </div>
 
@@ -62,7 +62,7 @@
             "
             rows="4"
             required
-            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:border-custom-purple-300"
+            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:-300"
           ></textarea>
         </div>
 
@@ -77,7 +77,7 @@
             "
             rows="4"
             required
-            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:border-custom-purple-300"
+            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:-300"
           ></textarea>
         </div>
       </div>
@@ -85,14 +85,14 @@
       <button
         type="submit"
         @click="submitForm"
-        class="bg-custom-purple-800 text-white px-4 py-2 rounded-full font-medium transition hover:bg-custom-purple-700 focus:outline-none focus:ring focus:border-custom-purple-300"
-      >
+        class="rounded-lg bg-saffron-200 text-saffron-700 p-2 transition-all duration-300"
+        >
         <span v-if="props.isLoading">
           <!-- Loading Icon -->
           <div role="status" class="animate-spin">
             <svg
               aria-hidden="true"
-              class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-200 fill-blue-600"
+              class="w-8 h-8 text-seashell-200 animate-spin dark:text-seashell-200 fill-blue-600"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,9 @@
             <span class="sr-only">Loading...</span>
           </div>
         </span>
-        <span v-else>
+        <span
+          v-else
+        >
           <span v-if="user"> Contribute </span>
           <span v-else @click="login">Sign in</span></span
         >
@@ -211,7 +213,7 @@
   }
 
   .container label input:checked + span {
-    background-color: #ab49ff;
+    background-color: #eb932e;
     color: white;
   }
 
@@ -220,16 +222,17 @@
   }
 
   .container label span {
+    border: #fff solid;
     display: flex;
     align-items: center;
     padding: 0.375em 0.75em 0.375em 0.375em;
     border-radius: 99em;
     transition: 0.25s ease;
-    color: #ab49ff;
+    color: #6c3a17;
   }
 
   .container label span:hover {
-    background-color: #ead2ff;
+    background-color: #f3cf51;
   }
 
   .container label span:before {
@@ -242,6 +245,7 @@
     border-radius: 50%;
     margin-right: 0.375em;
     transition: 0.25s ease;
-    box-shadow: inset 0 0 0 0.125em #ab49ff;
+    border: none;
+    box-shadow: inset 0 0 0 0.125em #fff;
   }
 </style>

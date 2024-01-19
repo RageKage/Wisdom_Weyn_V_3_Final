@@ -1,23 +1,14 @@
+@import url('https://api.fontshare.com/v2/css?f[]=kalam@400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 /* Add these styles to your stylesheet or component */
 
 .router-link-exact-active.active {
-    @apply transition-none  text-custom-purple-500 border-b-2 border-custom-gold-500;
+    @apply transition-none border-b-2 border-redDamask-500 ;
     transition: none;
-    
-
-   
-}
-
-
-@layer base {
-  html {
-    font-family: "Proxima Nova", system-ui, sans-serif;
-  }
 }
 
 

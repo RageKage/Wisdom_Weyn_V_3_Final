@@ -10,20 +10,20 @@
         <span class="font-medium">Username updated successfully!</span>
       </div>
     </div>
-    <div class="bg-white shadow rounded-lg p-6">
+    <div class="shadow rounded-lg p-6 bg-seashell-50">
       <div v-if="user">
         <div class="flex items-center justify-between mb-6">
           <div>
             <h2 class="text-2xl font-semibold">Hello, {{ user.username }}</h2>
 
-            <p class="text-gray-500">
+            <p class="text-seashell-500">
               Member Since: {{ isotimeValueConvert(user.createdAt) }}
             </p>
           </div>
 
           <div
             v-if="user.photoURL"
-            class="weave w-8 h-8 rounded-full overflow-hidden"
+            class="p-1 rounded-3xl overflow-hidden w-16 h-16"
           >
             <img :src="user.photoURL" alt="User Photo" />
           </div>
@@ -35,7 +35,7 @@
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="bg-custom-purple-600 p-1 rounded-full text-custom-gold-500 dark:bg-custom-purple-500 dark:text-custom-gold-400 w-full h-full"
+              class="bg-redDamask-600 p-1 rounded-full text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
             >
               <path
                 stroke-linecap="round"
@@ -47,13 +47,13 @@
         </div>
 
         <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2"
+          <label class="block text-sm font-medium text-seashell-700 mb-2"
             >Username</label
           >
           <div class="flex items-center space-x-4">
             <input
               type="text"
-              class="p-2 leading-normal block w-full text-gray-800 border-none rounded-lg text-left appearance-none outline-none border bg-gray-200 focus:bg-white"
+              class="p-2 leading-normal block w-full text-seashell-800 border-none rounded-lg text-left appearance-none outline-none border bg-seashell-100 focus:"
               v-model="user.username"
             />
             <div
@@ -83,10 +83,10 @@
         </div>
 
         <div
-          class="rounded-lg bg-gray-100 text-gray-700 p-4 hover:text-gray-900 transition-all duration-300"
+          class="rounded-lg bg-seashell-100 text-seashell-700 p-4 hover:text-seashell-900 transition-all duration-300"
         >
           <div class="mb-4">
-            <p class="text-gray-500">Information</p>
+            <p class="text-seashell-500">Information</p>
             <p class="mb-2">
               <span class="font-semibold">Email:</span> {{ user.email }}
             </p>
@@ -97,7 +97,7 @@
           </div>
 
           <div class="border-t pt-4">
-            <p class="text-gray-500 mb-2">Recent Activity</p>
+            <p class="text-seashell-500 mb-2">Recent Activity</p>
             <div class="flex justify-between items-center">
               <h2 class="text-md">
                 More settings options will be available soon
@@ -221,43 +221,3 @@
 
   const { updateUsername } = Actions()
 </script>
-
-<style lang="sass" scoped>
-  @mixin transform($properties)
-    -webkit-transform: $properties
-    -ms-transform: $properties
-    transform: $properties
-
-  $size: 80px
-  $line: 2px
-  $color: lighten(tomato, 90%)
-  $back: tomato
-
-  body
-    background: $back
-
-  =star
-    display: block
-    width: $size
-    height: $size
-    border: $line solid $color
-    border-radius: $size/3 - $line
-
-  .weave
-    @include star
-    position: relative
-    color: $color
-    text-align: center
-    font: 700 $size/4/$size 'Quicksand', sans-serif
-    &:before,
-    &:after
-      @include star
-      content: ""
-      position: absolute
-      top: -$line
-      left: -$line
-    &:before
-      @include transform(rotate(30deg))
-    &:after
-      @include transform(rotate(60deg))
-</style>

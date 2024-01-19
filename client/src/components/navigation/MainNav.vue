@@ -1,21 +1,22 @@
 <template>
-  <nav class="bg-white">
+  <nav class="bg-seashell-100">
     <div
       class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
-      <Logo />
+      <Logo
+        class="bg-cinnabar-200 text-cinnabar-500 rounded-3xl sm:rounded-3xl"
+      />
 
       <div
         class="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
       >
         <div
-          v-if="user"
+          v-if="loading"
           class="flex items-center space-x-3 sm:pr-4 md:pr-4 lg:pr-0"
         >
           <button
-            @click="toggleDropdown"
             type="button"
-            class="bg-custom-purple-600 p-1 rounded-full text-custom-gold-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-purple-500"
+            class="bg-redDamask-600 p-1 rounded-full text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
             id="user-menu-button"
           >
             <span class="sr-only">Open user menu</span>
@@ -35,10 +36,14 @@
             </svg>
           </button>
         </div>
-        <div v-else-if="loading">
+        <div
+          v-else-if="user"
+          class="flex items-center space-x-3 sm:pr-4 md:pr-4 lg:pr-0"
+        >
           <button
+            @click="toggleDropdown"
             type="button"
-            class="bg-custom-purple-600 p-1 rounded-full text-custom-gold-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-purple-500"
+            class="bg-redDamask-600 p-1 rounded-full text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
             id="user-menu-button"
           >
             <span class="sr-only">Open user menu</span>
@@ -48,7 +53,7 @@
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="w-8 h-8 rounded-full"
+              class="w-8 h-8"
             >
               <path
                 stroke-linecap="round"
@@ -61,22 +66,22 @@
         <router-link
           v-else
           to="/sign-in"
-          class="hidden lg:inline text-gray-900 hover:text-custom-purple-700"
+          class="hidden lg:inline text-gray-900 hover:-700"
         >
           Log in <span>&rarr;</span>
         </router-link>
         <!-- Dropdown menu -->
         <div
           v-show="dropdownOpen"
-          class="z-50 absolute mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow-lg"
+          class="z-50 absolute mt-2 w-48 bg-seashell-50 divide-y divide-gray-200 rounded-lg shadow-lg"
           id="user-dropdown"
           style="top: 100%; right: 0"
         >
           <div class="px-4 py-3">
-            <span class="block text-sm text-gray-900">
+            <span class="block text-sm text-carrotOrange-500">
               {{ user?.realName }}</span
             >
-            <span class="block text-sm text-gray-500 truncate">{{
+            <span class="block text-sm text-carrotOrange-500 truncate">{{
               user?.email
             }}</span>
           </div>
@@ -88,7 +93,7 @@
             <li>
               <button
                 @click="userdashboard(user?.email)"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                class="block w-full text-left px-4 py-2 text-sm text-carrotOrange-500 hover:bg-seashell-100"
               >
                 Dashboard
               </button>
@@ -96,7 +101,7 @@
             <li>
               <button
                 @click="router.push('/setting')"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                class="block w-full text-left px-4 py-2 text-sm text-carrotOrange-500 hover:bg-seashell-100"
               >
                 Settings
               </button>
@@ -104,7 +109,7 @@
             <li>
               <button
                 @click="signOutUser"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                class="block w-full text-left px-4 py-2 text-sm text-cinnabar-500 hover:bg-cinnabar-100"
               >
                 Sign out
               </button>
@@ -115,7 +120,7 @@
         <div class="lg:hidden flex justify-between">
           <button
             @click="toggleMenu"
-            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-custom-gold-500 rounded-lg md:inline-flex lg:hidden hover:bg-custom-gold-100 focus:outline-none focus:ring-2 focus:ring-custom-gold-200"
+            class="inline-flex items-center p-2 w-10 h-10 justify-center text-seashell-900 bg-cinnabar-500 rounded-lg md:inline-flex lg:hidden hover:bg-cinnabar-600 focus:outline-none focus:ring-2 focus:ring-seashell-500"
           >
             <svg
               class="w-5 h-5"
@@ -144,7 +149,7 @@
           v-show="isMenuOpen || isLargeScreen"
           class="sm:hidden md:hidden lg:flex items-center space-x-6"
         >
-          <li class="p-2 rounded-lg">
+          <!-- <li class="p-2 rounded-lg">
             <router-link
               to="/"
               class="block py-2 px-3 rounded md:p-0 router-link-exact-active"
@@ -165,7 +170,7 @@
                 d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
               />
             </svg>
-          </li>
+          </li> -->
           <li class="p-2 rounded-lg">
             <router-link
               to="/collections"
@@ -252,7 +257,7 @@
     emit('toggleMenu')
   }
 
-  const loading = ref(true)
+  const loading = ref(false)
 
   // this closes the dropdown menu when users clicks outside the dropdown menu
   const onClickOutside = (event) => {
@@ -265,6 +270,7 @@
   }
 
   onMounted(async () => {
+    loading.value = true
     document.addEventListener('click', onClickOutside)
 
     try {
@@ -287,6 +293,7 @@
           user.value = dbUser
         }
       }
+      loading.value = false
     } catch (error) {
       console.error('Error getting current user:', error.message)
     }

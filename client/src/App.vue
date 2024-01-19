@@ -17,7 +17,7 @@
           </router-view>
         </div>
         <div v-else class="flex flex-col items-center justify-center h-screen">
-          <div class="max-w-md p-4 rounded-lg shadow-md bg-white text-center">
+          <div class="max-w-md p-4 rounded-lg shadow-md  text-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

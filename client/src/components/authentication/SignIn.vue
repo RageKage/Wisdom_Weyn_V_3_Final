@@ -4,7 +4,7 @@
   >
     <!-- Firebase Error Message -->
     <div
-      class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+      class="flex items-center p-4 mb-4 text-sm text-cinnabar-500 rounded-lg bg-redDamask-50 w-full max-w-md"
       role="alert"
       v-if="firebaseError"
     >
@@ -20,15 +20,18 @@
         />
       </svg>
       <span class="sr-only">Error</span>
-      <div><span class="font-medium">Error!</span> {{ firebaseError }}</div>
+      <div>
+        <span class="font-medium">Danger alert!</span> {{ firebaseError }}
+      </div>
     </div>
+
     <form
-      class="flex flex-col space-y-6 bg-white p-8 rounded shadow w-full max-w-md"
+      class="flex flex-col space-y-6 p-8 rounded shadow w-full max-w-md bg-seashell-50"
       @submit.prevent="signin"
     >
       <button
         @click="router.push('/')"
-        class="rounded-lg flex flex-row-reverse justify-between bg-custom-purple-100 text-custom-purple-600 p-2 hover:bg-custom-purple-200 hover:text-custom-purple-700 transition-all duration-300 mr-4"
+        class="rounded-lg flex flex-row-reverse justify-between bg-saffron-200 text-saffron-700 p-2 transition-all duration-300 mr-4"
       >
         <span> Home</span>
         <span>
@@ -49,8 +52,8 @@
         </span>
       </button>
 
-      <h1 class="text-2xl font-semibold text-gray-900">Sign In</h1>
-      <p class="text-gray-600 text-sm">
+      <h1 class="text-2xl font-semibold text-seashell-900">Sign In</h1>
+      <p class="text-seashell-600 text-sm">
         {{ options[randomIndex] }}
       </p>
       <input
@@ -59,7 +62,7 @@
         name="email"
         id="email"
         placeholder="Email"
-        class="border border-gray-300 text-gray-900 rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+        class="border border-seashell-300 text-seashell-900 rounded-lg focus:ring-saffron-500 focus:border-saffron-500 block w-full p-2.5"
         required
         aria-required="true"
         autocomplete="email"
@@ -70,26 +73,26 @@
         name="password"
         id="password"
         placeholder="Password"
-        class="border border-gray-300 text-gray-900 rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+        class="border border-seashell-300 text-seashell-900 rounded-lg focus:ring-saffron-500 focus:border-saffron-500 block w-full p-2.5"
         required
         aria-required="true"
         autocomplete="current-password"
       />
       <button
         type="submit"
-        class="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+        class="text-white bg-carrotOrange-600 hover:bg-carrotOrange-700 focus:ring-4 focus:outline-none focus:ring-carrotOrange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
       >
         Sign In
       </button>
       <div class="flex items-center justify-between">
         <hr class="w-full" />
-        <span class="p-2 text-gray-400 bg-white">OR</span>
+        <span class="p-2 text-seashell-400">OR</span>
         <hr class="w-full" />
       </div>
       <button
         type="button"
         @click="signinGoogle"
-        class="w-full flex justify-center items-center gap-2 bg-white text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300"
+        class="w-full flex justify-center items-center gap-2 text-sm text-seashell-600 p-2 rounded-md hover:bg-seashell-50 border border-seashell-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-seashell-200 transition-colors duration-300"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +120,7 @@
         Sign In with Google
       </button>
 
-      <div class="mt-4 text-sm text-gray-600 text-center">
+      <div class="mt-4 text-sm text-seashell-600 text-center">
         <p>
           Don't have an account?
           <router-link to="/sign-up" class="text-black hover:underline"
