@@ -156,7 +156,9 @@
                   />
                 </svg>
               </button>
-              <span class="text-gray-700">{{ item.votes.upvote.count || 0 }}</span>
+              <span class="text-gray-700">{{
+                item.votes.upvote.count || 0
+              }}</span>
               <button
                 @click="downvoteSubmisson(item.id)"
                 :class="{
@@ -180,7 +182,9 @@
                   />
                 </svg>
               </button>
-              <span class="text-gray-700">{{ item.votes.downvote.count || 0 }}</span>
+              <span class="text-gray-700">{{
+                item.votes.downvote.count || 0
+              }}</span>
             </div>
 
             <!-- sharing and full text -->
@@ -331,27 +335,32 @@
   }
 
   const deletessubmission = (id, uid) => {
-  if (!isLoggedIn.value) {
-    Swal.fire('Login Required', 'You must be logged in to delete submissions!', 'warning');
-    return;
-  }
-
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'You will not be able to recover this submission!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, delete it!',
-    cancelButtonText: 'No, cancel!',
-  }).then((result) => {
-    if (result.isConfirmed) {
-      deleteSubmission(id, uid);
-      Swal.fire('Deleted!', 'Your submission has been deleted.', 'success');
-      router.push('/collections');
+    if (!isLoggedIn.value) {
+      Swal.fire(
+        'Login Required',
+        'You must be logged in to delete submissions!',
+        'warning',
+      )
+      return
     }
-  }).catch(e => console.error('Error deleting submission:', e));
-}
 
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this submission!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          deleteSubmission(id, uid)
+          Swal.fire('Deleted!', 'Your submission has been deleted.', 'success')
+          router.push('/collections')
+        }
+      })
+      .catch((e) => console.error('Error deleting submission:', e))
+  }
 
   const { userdashboard, showFullText, upvote, downvote, deleteSubmission } =
     Actions()

@@ -22,7 +22,7 @@ router.get("/collections", function (req, res) {
         res
           .status(500)
           .send("Error reading from database: " + errorObject.name);
-      }
+      },
     );
   } catch (error) {
     console.error("Error:", error);
@@ -58,7 +58,7 @@ router.post("/submissions", async (req, res) => {
 
     // get the reference to the user's submissions
     const userSubmissionRef = db.ref(
-      `users/${formData.user_id.uid}/submissions`
+      `users/${formData.user_id.uid}/submissions`,
     );
 
     // create a new entry id using firebase push
@@ -260,7 +260,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
     // get the top 5 most voted submissions
     const mostVotes = Object.values(userSubmissionData).filter(
-      (submission) => submission.upvotes >= 1
+      (submission) => submission.upvotes >= 1,
     );
     const mostRecent = Object.values(userSubmissionData);
 
@@ -269,7 +269,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
     mostVotes.splice(5);
 
     mostRecent.sort(
-      (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
+      (a, b) => new Date(b.creationDate) - new Date(a.creationDate),
     );
     mostRecent.splice(5);
 

@@ -3,9 +3,7 @@
     <div
       class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
-
-        <Logo class="rounded-3xl sm:rounded-3xl logo-animation" />
-
+      <Logo class="rounded-3xl sm:rounded-3xl logo-animation" />
 
       <div
         class="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
@@ -303,7 +301,7 @@
   const signOutUser = async () => {
     try {
       await signout()
-      localStorage.clear();
+      localStorage.clear()
 
       dropdownOpen.value = false
       user.value = null
