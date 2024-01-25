@@ -206,6 +206,14 @@
           showSuccessPopup.value = true
 
           console.log('Username updated successfully!')
+          // localStorage.setItem('user-data')
+
+          // this just makes a call to the API to get the updated user data in the local storage
+          const authUser = await currentUser()
+          const dbUser = await getCurrentUser(authUser.uid)
+
+          // Save the data to local storage for future use
+          localStorage.setItem('user-data', JSON.stringify(dbUser))
 
           // Hide the success popup after 3000 milliseconds (adjust as needed)
           setTimeout(() => {

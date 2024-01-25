@@ -68,7 +68,11 @@
               <div class="flex items-center mt-4">
                 <button
                   @click="upvoteSubmisson(item.id)"
-                  class="rounded-lg bg-carrotOrange-300 text-seashell-900 p-2 hover:bg-carrotOrange-400 transition-all duration-300 mr-3"
+                  :class="{
+                    'text-carrotOrange-400':
+                      item.userVote === 'upvote' || isUserUpvoted(item),
+                  }"
+                  class="bg-seashell-50"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +80,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-5 h-5"
+                    class="w-8 h-8 mr-3 hover:text-carrotOrange-600 transition-all duration-300"
                   >
                     <path
                       stroke-linecap="round"
@@ -85,10 +89,14 @@
                     />
                   </svg>
                 </button>
-                <span class="text-gray-700">{{ item.upvotes }}</span>
+                <span class="text-gray-700">{{ item.votes.upvote.count }}</span>
                 <button
                   @click="downvoteSubmisson(item.id)"
-                  class="rounded-lg bg-seashell-100 text-seashell-600 p-2 hover:bg-seashell-200 hover:text-seashell-700 transition-all duration-300 ml-2 mr-3"
+                  :class="{
+                    'text-red-400':
+                      item.userVote === 'downvote' || isUserDownvoted(item),
+                  }"
+                  class="bg-seashell-50"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +104,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-5 h-5"
+                    class="w-8 h-8 ml-2 mr-3 hover:text-carrotOrange-600 transition-all duration-300"
                   >
                     <path
                       stroke-linecap="round"
@@ -105,7 +113,9 @@
                     />
                   </svg>
                 </button>
-                <span class="text-gray-700">{{ item.downvotes }}</span>
+                <span class="text-gray-700">{{
+                  item.votes.downvote.count
+                }}</span>
               </div>
               <div>
                 <button
@@ -235,6 +245,23 @@
     return new Date(date).toLocaleDateString('en-US', options)
   }
 
+  const isUserUpvoted = (item) => {
+    // Check if user's UID is in the item's upvote user list
+
+    if (user.value) {
+      return item.votes.upvote.users && item.votes.upvote.users[user.value.uid]
+    }
+  }
+
+  const isUserDownvoted = (item) => {
+    // Check if user's UID is in the item's downvote user list
+    if (user.value) {
+      return (
+        item.votes.downvote.users && item.votes.downvote.users[user.value.uid]
+      )
+    }
+  }
+
   onMounted(async () => {
     try {
       const storedUser = localStorage.getItem('user')
@@ -256,31 +283,27 @@
 
   const future_feature = ref(false)
 
+  const requireLogin = () => {
+    Swal.fire({
+      title: 'Login Required',
+      text: 'You must be logged in to vote on collections!',
+      icon: 'warning',
+      confirmButtonText: 'Login',
+      cancelButtonText: 'Cancel',
+      showCancelButton: true,
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '/sign-in'
+      }
+    })
+  }
+
   const upvoteSubmisson = (id) => {
     if (isLoggedIn.value) {
       upvote(id)
     } else {
-      Swal.fire({
-        title: 'Login Required',
-        text: 'You must be logged in to vote on collections!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Login',
-        cancelButtonText: 'Cancel',
-        reverseButtons: true,
-        customClass: {
-          popup: 'flex flex-col space-y-4',
-          header: 'flex items-center justify-between w-full',
-          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
-          content: 'text-gray-700 prose',
-          actions: 'flex justify-end gap-4 mt-4',
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Redirect to login page
-          window.location.href = '/sign-in'
-        }
-      })
+      requireLogin()
     }
   }
 
@@ -288,96 +311,32 @@
     if (isLoggedIn.value) {
       downvote(id)
     } else {
-      Swal.fire({
-        title: 'Login Required',
-        text: 'You must be logged in to vote on collections!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Login',
-        cancelButtonText: 'Cancel',
-        reverseButtons: true,
-        customClass: {
-          popup: 'flex flex-col space-y-4',
-          header: 'flex items-center justify-between w-full',
-          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
-          content: 'text-gray-700 prose',
-          actions: 'flex justify-end gap-4 mt-4',
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Redirect to login page
-          window.location.href = '/sign-in'
-        }
-      })
+      requireLogin()
     }
   }
 
   const deletessubmission = (id, uid) => {
-    if (isLoggedIn.value) {
-      // swal fire to delete
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will not be able to recover this submission!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel',
-        reverseButtons: true,
-        customClass: {
-          popup: 'flex flex-col space-y-4',
-          header: 'flex items-center justify-between w-full',
-          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
-          content: 'text-gray-700 prose',
-          actions: 'flex justify-end gap-4 mt-4',
-        },
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            Swal.fire({
-              title: 'Deleted!',
-              text: 'Your submission has been deleted.',
-              icon: 'success',
-              customClass: {
-                popup: 'flex flex-col space-y-4',
-                header: 'flex items-center justify-between w-full',
-                closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
-                content: 'text-gray-700 prose',
-                actions: 'flex justify-end gap-4 mt-4',
-              },
-            }).then((result) => {
-              if (result.isConfirmed) {
-                deleteSubmission(id, uid)
-                router.push('/collections')
-              }
-            })
-          } catch (e) {
-            console.error('Error deleting submission:', e)
-          }
-        }
-      })
-    } else {
-      Swal.fire({
-        title: 'Login Required',
-        text: 'You must be logged in to vote on collections!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Login',
-        cancelButtonText: 'Cancel',
-        reverseButtons: true,
-        customClass: {
-          popup: 'flex flex-col space-y-4',
-          header: 'flex items-center justify-between w-full',
-          closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
-          content: 'text-gray-700 prose',
-          actions: 'flex justify-end gap-4 mt-4',
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Redirect to login page
-          router.push('/sign-in')
-        }
-      })
+    if (!isLoggedIn.value) {
+      requireLogin()
+      return
     }
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this submission!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          deleteSubmission(id, uid)
+          Swal.fire('Deleted!', 'Your submission has been deleted.', 'success')
+          router.push('/collections')
+        }
+      })
+      .catch((e) => console.error('Error deleting submission:', e))
   }
 
   // eslint-disable-next-line no-unused-vars

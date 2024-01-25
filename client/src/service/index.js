@@ -10,7 +10,6 @@ const AppApiService = () => {
   }
 
   const handleResponse = (response) => {
-    console.log(response.data)
     return response.data
   }
 

@@ -9,7 +9,9 @@ export function Actions() {
   // upvote a submission
   const upvote = async (itemId) => {
     try {
-      await service.upvoteSubmission(itemId)
+      const response = await service.upvoteSubmission(itemId);
+      return response.data;
+
     } catch (error) {
       console.error(error)
     }

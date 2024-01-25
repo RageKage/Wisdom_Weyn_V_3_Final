@@ -12,7 +12,7 @@
           class="mr-auto text-3xl font-bold leading-none px-2 py-4 md:py-3 text-seashell-900"
           href="#"
         >
-          <Logo class="text-cinnabar-700 pb-4"></Logo>
+          <Logo class="pb-4"></Logo>
         </a>
         <button class="navbar-close" @click="closeMenu">
           <svg

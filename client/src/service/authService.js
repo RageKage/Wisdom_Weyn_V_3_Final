@@ -23,8 +23,7 @@ export function currentUser() {
           resolve(user)
         } else {
           // Remove user data from localStorage
-          localStorage.removeItem('user')
-          localStorage.removeItem('isLoggedIn')
+          localStorage.clear()
           resolve(null) // set to null if no user logged in
         }
 
@@ -86,7 +85,8 @@ export function getCurrentUser(Useruid) {
 // Sign out the user
 export async function signout() {
   const auth = getAuth()
-  localStorage.removeItem('user')
+  localStorage.clear()
+
   try {
     await signOut(auth)
   } catch (error) {

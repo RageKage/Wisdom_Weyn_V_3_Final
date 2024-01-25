@@ -3,9 +3,9 @@
     <div
       class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
-      <Logo
-        class="bg-cinnabar-200 text-cinnabar-500 rounded-3xl sm:rounded-3xl"
-      />
+
+        <Logo class="rounded-3xl sm:rounded-3xl logo-animation" />
+
 
       <div
         class="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
@@ -303,7 +303,8 @@
   const signOutUser = async () => {
     try {
       await signout()
-      localStorage.removeItem('isLoggedIn')
+      localStorage.clear();
+
       dropdownOpen.value = false
       user.value = null
       router.push('/') // Redirect to home after successful login
@@ -318,26 +319,3 @@
 
   const { userdashboard } = Actions()
 </script>
-
-<style scoped>
-  .hamburger .line {
-    display: block;
-    width: 30px;
-    height: 2px;
-    background-color: #b794f4;
-    margin: 5px 0;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  #hamburger-10.is-active {
-    transform: rotate(90deg);
-  }
-
-  #hamburger-10.is-active .line:nth-child(1) {
-    transform: translateY(10px) rotate(0deg);
-  }
-
-  #hamburger-10.is-active .line:nth-child(3) {
-    transform: translateY(-10px) rotate(0deg);
-  }
-</style>

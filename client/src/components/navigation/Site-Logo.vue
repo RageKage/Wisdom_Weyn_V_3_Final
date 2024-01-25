@@ -4,6 +4,6 @@
     active-class="active-img"
     class="flex items-center justify-center w-16 h-16 md:w-16 md:h-16 lg:w-20 lg:h-20"
   >
-    <span class="text-4xl font-Kalam">W</span>
+    <img src="../../assets/images/icon_template.svg" alt="logo" />
   </router-link>
 </template>
