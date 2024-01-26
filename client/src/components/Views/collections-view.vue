@@ -10,17 +10,16 @@
           @filterType="filterType"
         />
 
-        <SearchBarVue
-          :searchQuery="searchQuery"
-          @update:searchQuery="searchQuery = $event"
-        />
+        <SearchBarVue @update:searchQuery="updateSearchQuery" />
       </div>
 
       <!-- collections -->
       <DisplayCollections
+        :errorMessage="errorMessage"
         :displayedItems="displayedItems"
         :activeFilter="activeFilter"
         @loginRequired="showLoginPopup"
+        @closeErrorMessage="closeError"
       ></DisplayCollections>
 
       <!-- Scroll to Top Button -->
@@ -91,6 +90,8 @@
   }
 
   const {
+    errorMessage,
+    updateSearchQuery,
     displayedItems,
     activeFilter,
     searchQuery,
@@ -98,5 +99,6 @@
     filterType,
     scrollToTop,
     showScrollToTopBtn,
+    closeError,
   } = CollectionsFunctions()
 </script>

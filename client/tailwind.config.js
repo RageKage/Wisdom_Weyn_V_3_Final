@@ -81,7 +81,7 @@ module.exports = {
         128: '32rem',
       },
       fontFamily: {
-        'Kalam': ['Kalam', 'sans-serif'],
+        Kalam: ['Kalam', 'sans-serif'],
       },
     },
   },

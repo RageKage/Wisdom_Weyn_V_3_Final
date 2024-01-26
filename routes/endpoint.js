@@ -1,5 +1,6 @@
 let express = require("express");
 let router = express.Router();
+let Fuse = require("fuse.js");
 router.use(express.json());
 
 // Import Firebase Admin
@@ -16,6 +17,9 @@ router.get("/collections", function (req, res) {
       "value",
       (snapshot) => {
         let data = snapshot.val();
+        if (!data || Object.keys(data).length === 0) {
+          return res.status(404).send("No data found");
+        }
         res.json(data);
       },
       (errorObject) => {
@@ -428,6 +432,47 @@ router.put("/users/:uid", (req, res) => {
     });
   });
 });
+
+// search for a submission by proverbs or poetry, or title
+//         .get(apiPath + `/search/${query}`, { headers })
+
+router.get("/search/:query", async (req, res) => {
+  try {
+    const query = req.params.query.toLowerCase();
+    const results = await searchDatabase(query);
+
+    if (results.length > 0) {
+      res.json(results);
+    } else {
+      res.status(404).send("No matches found");
+    }
+  } catch (error) {
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+async function searchDatabase(query) {
+  const ref = db.ref("/collections");
+  const snapshot = await ref.once("value");
+  const data = snapshot.val();
+
+  const allSubmissions = [];
+  for (const key in data) {
+    allSubmissions.push(...Object.values(data[key]));
+  }
+
+  const options = {
+    includeScore: true,
+    threshold: 0.3,
+    minMatchCharLength: 2,
+    keys: ["title", "content", "meaning"],
+  };
+
+  const fuse = new Fuse(allSubmissions, options);
+  const results = fuse.search(query);
+
+  return results.map((result) => result.item);
+}
 
 // check server status
 router.get("/server/status", async (req, res) => {

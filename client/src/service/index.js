@@ -131,6 +131,12 @@ const AppApiService = () => {
         .catch(handleError)
     },
 
+    async searchCollection(query) {
+      return axios
+        .get(apiPath + `/search/${query}`, { headers })
+        .then(handleResponse)
+        .catch(handleError)
+    },
     // getUserDatabyuid(uid) {
     //   return axios
     //     .get(`/api/users/${uid}`)

@@ -47,11 +47,50 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div v-else class="text-seashell-900 text-md leading-relaxed">
-      <div v-if="displayedItems.length <= 0">
-        There are no submissions that match your search criteria.
+  <div v-if="errorMessage" class="p-2">
+    <div
+      class="bg-red-100 text-red-800 font-medium py-2 px-4 rounded-lg flex items-center justify-between"
+    >
+      <div class="flex flex-row">
+        <span class="bg-red-500 text-white rounded-full mr-2"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+            />
+          </svg>
+        </span>
+        {{ errorMessage }}
       </div>
+
+      <span
+        class="bg-red-500 text-white rounded-full px-1 mr-1 cursor-pointer"
+        @click="closeError"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
+        </svg>
+      </span>
     </div>
   </div>
 
@@ -263,6 +302,7 @@
       default: '',
     },
     isLoading: Boolean,
+    errorMessage: String,
   })
 
   // TODO only users that are logged in can see the @click="deleteSubmission(item)" no other users should see this
@@ -315,8 +355,13 @@
     }
   })
 
+  const closeError = () => {
+    // emit the close to the parent
+    emits('closeErrorMessage')
+  }
+
   // we will now define what we are emitting to the parent
-  const emits = defineEmits(['loginRequired'])
+  const emits = defineEmits(['loginRequired', 'closeErrorMessage'])
 
   const upvoteSubmisson = (id) => {
     if (isLoggedIn.value) {

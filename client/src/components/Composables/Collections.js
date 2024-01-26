@@ -1,5 +1,4 @@
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import AppApiService from '../../service/index'
 
 export function CollectionsFunctions() {
@@ -7,12 +6,13 @@ export function CollectionsFunctions() {
   const showScrollToTopBtn = ref(false)
   const activeFilter = ref(null)
   const isLoading = ref(false)
-  const searchQuery = ref('')
-  const searchResults = ref([])
+  const errorMessage = ref(null)
 
   const service = AppApiService()
 
   const truncateString = (text, limit) => {
+    if (!text) return '' // Return empty string if text is undefined
+
     text = text.trim()
     const words = text.split(' ')
 
@@ -29,7 +29,7 @@ export function CollectionsFunctions() {
   const filteredCollection = computed(() => {
     let allItems = []
 
-    // Loop through the collection data and push all the items into the allItems array and trucate the content and meaning
+    // Loop through the collection data and push all the items into the allItems array and truncate the content and meaning
     Object.values(collectionData.value).forEach((typeCollection) => {
       typeCollection.forEach((item) => {
         // check if title isn't empty string
@@ -49,31 +49,8 @@ export function CollectionsFunctions() {
     return allItems
   })
 
-  // Display the items based on the search query
-  const displayedItems = computed(() => {
-    if (searchQuery.value) {
-      return searchResults.value
-    }
-
-    return filteredCollection.value
-  })
-
-  // Search the items based on the search query
-  const searchItems = () => {
-    searchResults.value = filteredCollection.value.filter(
-      (item) =>
-        item.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        item.content.toLowerCase().includes(searchQuery.value.toLowerCase()),
-    )
-  }
-
-  // Watch the search query and call the searchItems function when it changes
-  watch(searchQuery, searchItems)
-
-  // Filter the collection data based on the active filter
   const filterType = (type) => {
     activeFilter.value = type !== 'all' ? type : null
-    searchQuery.value = ''
   }
 
   const formatDate = (timestamp) => {
@@ -90,6 +67,7 @@ export function CollectionsFunctions() {
   // Fetch the collection data from the database
   const fetchCollectionData = async () => {
     isLoading.value = true
+
     const tempArray = {}
 
     try {
@@ -102,6 +80,9 @@ export function CollectionsFunctions() {
       collectionData.value = tempArray
     } catch (error) {
       console.error('Error fetching collections:', error)
+      errorMessage.value = error.toString().includes('404')
+        ? `No data found `
+        : 'Server Error'
     } finally {
       isLoading.value = false // Set isLoading to false immediately after fetching data
     }
@@ -126,13 +107,65 @@ export function CollectionsFunctions() {
     window.removeEventListener('scroll', checkScroll)
   })
 
+  const isSearching = ref(false)
+  const searchResults = ref([])
+
+  const updateSearchQuery = async (query) => {
+    try {
+      errorMessage.value = null
+      isLoading.value = true
+      const data = await service.searchCollection(query)
+      if (data) {
+        searchResults.value = data // Store search results
+        isSearching.value = true // Set isSearching to true to display search results
+      }
+    } catch (error) {
+      console.error('Error fetching collections:', error)
+      // Display error message
+      errorMessage.value = error.toString().includes('404')
+        ? `'${query}' not found`
+        : 'Server Error'
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const displayedItems = computed(() => {
+    // If isSearching is true, display the search results, otherwise display the filtered collection
+    return isSearching.value
+      ? processedSearchResults.value
+      : filteredCollection.value
+  })
+
+  const processedSearchResults = computed(() => {
+    // Loop through the search results and push all the items into the allItems array and truncate the content and meaning
+    const allItems = []
+    searchResults.value.forEach((item) => {
+      // check if title isn't empty string
+      if (item.title) {
+        item.title = truncateString(item.title, 10)
+      }
+      item.content = truncateString(item.content, 12)
+      item.meaning = truncateString(item.meaning, 12)
+      allItems.push(item)
+    })
+
+    return allItems
+  })
+
+  const closeError = () => {
+    errorMessage.value = null
+  }
+
   // Return all the functions so they can be used globally
   return {
+    updateSearchQuery,
     collectionData,
-    isLoading,
-    searchQuery,
     searchResults,
+    processedSearchResults,
     displayedItems,
+    isSearching,
+    isLoading,
     filterType,
     activeFilter,
     formatDate,
@@ -141,5 +174,7 @@ export function CollectionsFunctions() {
     showScrollToTopBtn,
     scrollToTop,
     checkScroll,
+    errorMessage,
+    closeError,
   }
 }

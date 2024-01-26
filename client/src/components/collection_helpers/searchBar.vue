@@ -4,13 +4,13 @@
       type="text"
       id="searchInput"
       placeholder="Search for proverb or Gabay"
-      :value="searchQuery"
-      @input="handleInput"
+      v-model="searchQuery"
       class="flex-grow hover:cursor-pointer placeholder:text-seashell-900 rounded-xl transition-all duration-300"
     />
 
     <span
       class="flex items-center hover:cursor-pointer rounded-lg bg-cinnabar-400 text-seashell-700 p-2 hover:bg-cinnabar-300 transition-all duration-300 mr-3"
+      @click="searchItems()"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -32,21 +32,14 @@
 </template>
 
 <script setup>
-  const props = defineProps({
-    isLoading: Boolean,
-    searchQuery: String,
-    searchItems: Function,
-    fetchCollectionData: Function,
-  })
+  import { ref, defineEmits } from 'vue'
 
-  const emits = defineEmits([
-    'update:searchQuery',
-    'searchItems',
-    'fetchCollectionData',
-  ])
+  const emit = defineEmits(['update:searchQuery'])
+  const searchQuery = ref('')
 
-  // emit event to parent component
-  const handleInput = (event) => {
-    emits('update:searchQuery', event.target.value)
+  const searchItems = () => {
+    if (searchQuery.value.length > 0) {
+      emit('update:searchQuery', searchQuery.value)
+    }
   }
 </script>
