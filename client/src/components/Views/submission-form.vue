@@ -1,119 +1,184 @@
 <template>
-  <div>
+  <div class="min-h-screen">
     <Popup v-if="!user" />
 
-    <div
-      class="rounded-lg text-seashell-600 transition-all duration-300 max-w-[1200px] mx-auto md:px-0"
-    >
-      <div class="flex flex-col md:flex-row md:justify-between mb-4">
-        <h2 class="text-2xl font-bold mb-4 text-seashell-800">
-          Contribute a Proverb or Poetry
+    <div class="mx-auto">
+      <div class="shadow-lg mt-4 bg-white rounded-2xl p-4 sm:p-8">
+        <h2 class="text-xl font-semibold text-center text-gray-800">
+          Share Your Wisdom
         </h2>
+        <p class="text-center text-sm text-gray-500 mt-2">
+          Contribute your favorite Somali proverbs or poetry
+        </p>
 
-        <div>
-          <div class="container">
-            <form>
-              <div class="flex flex-row justify-center md:flex-row">
-                <label class="flex items-center">
-                  <input
-                    type="radio"
-                    id="proverb"
-                    value="proverb"
-                    v-model="picked"
-                    checked
-                    class="form-radio"
-                  />
-                  <span class="text-seashell-800">Proverb</span>
-                </label>
-                <label class="flex items-center ml-2">
-                  <input
-                    type="radio"
-                    id="poetry"
-                    value="Poetry"
-                    v-model="picked"
-                    class="form-radio"
-                  />
-                  <span class="text-seashell-800">Poetry</span>
-                </label>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="picked === 'Poetry'" class="flex flex-col mb-4">
-        <input
-          type="text"
-          id="title"
-          v-model="title"
-          placeholder="Title of the Poetry"
-          required
-          class="form-input px-4 py-3 rounded-2xl focus:outline-none focus:ring focus:-300"
-        />
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <div class="flex flex-col mb-4">
-          <textarea
-            id="content"
-            v-model="content"
-            :placeholder="
-              picked === 'Poetry' ? 'Share the Poetry' : 'Share the Proverb'
-            "
-            rows="4"
-            required
-            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:-300"
-          ></textarea>
-        </div>
-
-        <div class="flex flex-col mb-6">
-          <textarea
-            id="meaning"
-            v-model="meaning"
-            :placeholder="
-              picked === 'Poetry'
-                ? 'Meaning or Interpretation of the Gabay'
-                : 'Meaning or Interpretation of the Proverb'
-            "
-            rows="4"
-            required
-            class="form-textarea px-4 py-3 rounded-2xl h-56 max-h-full min-h-28 focus:outline-none focus:ring focus:-300"
-          ></textarea>
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        @click="submitForm"
-        class="rounded-lg bg-saffron-200 text-saffron-700 p-2 transition-all duration-300"
-      >
-        <span v-if="props.isLoading">
-          <!-- Loading Icon -->
-          <div role="status" class="animate-spin">
-            <svg
-              aria-hidden="true"
-              class="w-8 h-8 text-seashell-200 animate-spin dark:text-seashell-200 fill-blue-600"
-              viewBox="0 0 100 101"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+        <form class="mt-4">
+          <div class="flex justify-center space-x-4">
+            <label
+              class="flex items-center space-x-2 text-sm font-semibold text-gray-800"
             >
-              <path
-                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                fill="currentColor"
+              <input
+                type="radio"
+                id="proverb"
+                value="proverb"
+                v-model="picked"
+                checked
+                class="p-3 border border-gray-300 bg-white rounded-xl"
               />
-              <path
-                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                fill="currentFill"
+              <span>Proverb</span>
+            </label>
+            <label
+              class="flex items-center space-x-2 text-sm font-semibold text-gray-800"
+            >
+              <input
+                type="radio"
+                id="poetry"
+                value="Poetry"
+                v-model="picked"
+                class="p-3 border border-gray-300 bg-white rounded-xl"
               />
-            </svg>
-            <span class="sr-only">Loading...</span>
+              <span>Poetry</span>
+            </label>
           </div>
-        </span>
-        <span v-else>
-          <span v-if="user"> Contribute </span>
-          <span v-else @click="login">Sign in</span></span
-        >
-      </button>
+
+          <div v-if="picked === 'Poetry'" class="mt-4">
+            <input
+              type="text"
+              id="title"
+              v-model="title"
+              placeholder="Title of the Poetry"
+              required
+              class="w-full p-3 border border-gray-300 bg-white rounded-xl"
+            />
+          </div>
+
+          <div class="mt-4">
+            <textarea
+              id="content"
+              v-model="content"
+              :placeholder="
+                picked === 'Poetry' ? 'Your Poetry' : 'Your Proverb'
+              "
+              rows="4"
+              required
+              class="w-full p-3 border border-gray-300 h-56 max-h-full min-h-28 bg-white rounded-xl"
+            ></textarea>
+          </div>
+
+          <div class="mt-4">
+            <textarea
+              id="meaning"
+              v-model="meaning"
+              :placeholder="picked === 'Poetry' ? 'Interpretation' : 'Meaning'"
+              rows="2"
+              required
+              class="w-full p-3 border border-gray-300 h-56 max-h-full min-h-28 bg-white rounded-xl"
+            ></textarea>
+          </div>
+
+          <div
+            v-if="picked == 'Poetry' && !isOriginal"
+            class="flex flex-col space-y-2 text-sm font-semibold text-gray-800 mb-4"
+          >
+            <input
+              type="text"
+              id="author"
+              v-model="author"
+              placeholder="Author's Name (if known)"
+              class="w-full p-3 border border-gray-300 bg-white rounded-xl mt-4"
+            />
+            <label>
+              <input
+                type="checkbox"
+                id="unknownAuthor"
+                v-model="unknownAuthor"
+                class="h-6 w-6 p-3 border border-gray-300 bg-white rounded-xl"
+              />
+              <span class="text-sm font-semibold text-gray-800 ml-2"
+                >Author Unknown</span
+              >
+            </label>
+          </div>
+
+          <!-- ! Future implement -->
+
+          <div
+            v-if="picked == 'Poetry'"
+            class="flex items-center space-x-2 text-sm font-semibold text-gray-800 mt-4"
+          >
+            <label>
+              <input
+                type="checkbox"
+                id="original"
+                v-model="isOriginal"
+                class="h-6 w-6 p-3 border border-gray-300 bg-white rounded-xl"
+              />
+              <span class="text-sm font-semibold text-gray-800 ml-2"
+                >This is my original work</span
+              >
+            </label>
+          </div>
+        </form>
+        <div class="mt-6">
+          <button
+            type="submit"
+            @click="submitForm"
+            class="w-full sm:w-auto px-4 py-2 text-base font-semibold text-center text-white transition duration-200 ease-in bg-[#007a5e] rounded-md hover:shadow-md flex items-center justify-center"
+          >
+            <span v-if="props.isLoading" class="flex items-center">
+              <div role="status">
+                <svg
+                  aria-hidden="true"
+                  class="w-8 h-8 animate-spin text-center fill-gray-300"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill"
+                  />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+            <span v-else>
+              <span v-if="user">Contribute</span>
+              <span v-else @click="login">Sign in</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="mt-4 bg-white rounded-2xl shadow p-4 sm:p-8 text-gray-800 space-y-4"
+      >
+        <h3 class="text-lg font-semibold text-gray-800">
+          How to Share Your Work
+        </h3>
+        <p class="text-sm text-gray-500 mt-2">
+          Hey there! We're excited to see what you've got. Just a few things to
+          keep in mind to make sure everything's cool and respectful.
+        </p>
+        <ul class="list-disc list-inside mt-4">
+          <li class="text-sm text-gray-500">
+            Share original content or time-honored proverbs and poetry.
+          </li>
+          <li class="text-sm text-gray-500">
+            If you're sharing someone else's work, please give credit where it's
+            due.
+          </li>
+          <li class="text-sm text-gray-500">
+            Ensure content is respectful and culturally sensitive.
+          </li>
+          <li class="text-sm text-gray-500">
+            Fill out the submission form with all the deets – it helps a lot!
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -129,6 +194,9 @@
   const meaning = ref('')
   const user = ref('')
   const currentUserDB = ref('')
+
+  const isOriginal = ref(false)
+  const unknownAuthor = ref(false)
 
   // prop
   const props = defineProps({
@@ -188,62 +256,3 @@
     resetForm,
   })
 </script>
-
-<style scoped>
-  .container form {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-  }
-
-  .container label {
-    display: flex;
-    cursor: pointer;
-    font-weight: 500;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 0.375em;
-  }
-
-  .container label input {
-    position: absolute;
-    left: -9999px;
-  }
-
-  .container label input:checked + span {
-    background-color: #eb932e;
-    color: white;
-  }
-
-  .container label input:checked + span:before {
-    box-shadow: inset 0 0 0 0.4375em #ffd700;
-  }
-
-  .container label span {
-    border: #fff solid;
-    display: flex;
-    align-items: center;
-    padding: 0.375em 0.75em 0.375em 0.375em;
-    border-radius: 99em;
-    transition: 0.25s ease;
-    color: #6c3a17;
-  }
-
-  .container label span:hover {
-    background-color: #f3cf51;
-  }
-
-  .container label span:before {
-    display: flex;
-    flex-shrink: 0;
-    content: '';
-    background-color: #fff;
-    width: 1.5em;
-    height: 1.5em;
-    border-radius: 50%;
-    margin-right: 0.375em;
-    transition: 0.25s ease;
-    border: none;
-    box-shadow: inset 0 0 0 0.125em #fff;
-  }
-</style>

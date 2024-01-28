@@ -1,6 +1,9 @@
 <template>
   <div data-theme="light" class="scroll-smooth">
-    <siteNavigation v-if="showHeader" />
+    <siteNavigation
+      v-if="showHeader"
+      class="px-4 sm:px-5 max-w-full mx-auto sm:max-w-[1500px] py-4"
+    />
 
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">

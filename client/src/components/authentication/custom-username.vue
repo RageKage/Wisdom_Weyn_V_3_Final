@@ -3,10 +3,9 @@
     class="min-h-screen w-screen flex items-center justify-center"
     v-if="user"
   >
-    <div class="p-8 rounded-lg shadow-md w-full max-w-md bg-seashell-50">
+    <div class="p-8 rounded-3xl shadow-md w-full max-w-md bg-seashell-50">
       <h2 class="text-2xl font-semibold text-seashell-900 mb-4">
         Welcome,
-        <!-- {{ user }} -->
         <span class="text-seashell-600">
           {{ user.realName || userlocalStg.displayName }}
         </span>

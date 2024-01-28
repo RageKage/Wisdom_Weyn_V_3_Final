@@ -1,34 +1,23 @@
 <template>
-  <div
-    class="container sm:px-5 max-w-full sm:max-w-[800px] py-4 m-4 flex flex-col justify-center items-center"
-  >
+  <div class="p-4">
     <div
       v-if="showSuccessPopup"
-      class="rounded-lg bg-green-200 text-green-700 p-2 transition-all duration-300 m-4 animate-fadeIn"
+      class="bg-green-200 text-green-800 p-2 rounded"
     >
-      <div class="flex justify-between">
-        <span class="font-medium">Username updated successfully!</span>
-      </div>
+      <span>Username updated successfully!</span>
     </div>
-    <div class="shadow rounded-lg p-6 bg-seashell-50">
-      <div v-if="user">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-2xl font-semibold">Hello, {{ user.username }}</h2>
 
-            <p class="text-seashell-500">
-              Member Since: {{ isotimeValueConvert(user.createdAt) }}
-            </p>
+    <div v-if="user" class="mt-4 bg-white rounded-2xl shadow mx-auto max-w-2xl">
+      <div class="p-4 border-b">
+        <div class="flex items-center space-x-4">
+          <div v-if="user.photoURL">
+            <img
+              :src="user.photoURL"
+              alt="User Photo"
+              class="w-12 h-12 rounded-full"
+            />
           </div>
-
-          <div
-            v-if="user.photoURL"
-            class="p-1 rounded-3xl overflow-hidden w-16 h-16"
-          >
-            <img :src="user.photoURL" alt="User Photo" />
-          </div>
-
-          <div v-else class="w-16 h-16 rounded-full overflow-hidden">
+          <div v-else>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -44,73 +33,72 @@
               />
             </svg>
           </div>
-        </div>
-
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-seashell-700 mb-2"
-            >Username</label
-          >
-          <div class="flex items-center space-x-4">
-            <input
-              type="text"
-              class="p-2 leading-normal block w-full text-seashell-800 border-none rounded-lg text-left appearance-none outline-none border bg-seashell-100 focus:"
-              v-model="user.username"
-            />
-            <div
-              class="flex flex-row rounded-lg bg-blue-100 text-blue-600 p-2 group hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 cursor-pointer"
-            >
-              <svg
-                @click="validateAndUpdateUsername"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 hover-spin"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                />
-              </svg>
-            </div>
+          <div>
+            <h2 class="font-bold">Hello, {{ user.username }}</h2>
+            <p class="text-sm">
+              Member Since: {{ isotimeValueConvert(user.createdAt) }}
+            </p>
           </div>
+        </div>
+      </div>
 
-          <p v-if="usernameError" class="text-red-600 text-sm mt-2">
-            {{ usernameError }}
+      <div class="p-4 border-b">
+        <label class="block font-bold mb-2">Username</label>
+        <div class="flex items-center space-x-2">
+          <input
+            type="text"
+            v-model="user.username"
+            class="flex-grow p-2 border bg-white rounded-xl"
+          />
+          <div class="ml-2 hover:animate-spin">
+            <svg
+              @click="validateAndUpdateUsername"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="h-6 w-6 text-seashell-500 cursor-pointer hover:text-seashell-700"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+              />
+            </svg>
+          </div>
+        </div>
+        <p v-if="usernameError" class="text-red-500">{{ usernameError }}</p>
+      </div>
+      <div class="cursor-not-allowed">
+        <div class="p-4 border-b">
+          <p class="font-bold">Contact Information</p>
+          <p>
+            Email: <span>{{ user.email }}</span>
+          </p>
+          <p>Email Verified: <span>No</span></p>
+          <p v-if="user.lastLoginDate">
+            Last Login: {{ isotimeValueConvert(user.lastLoginAt) }}
           </p>
         </div>
 
-        <div
-          class="rounded-lg bg-seashell-100 text-seashell-700 p-4 hover:text-seashell-900 transition-all duration-300"
-        >
-          <div class="mb-4">
-            <p class="text-seashell-500">Information</p>
-            <p class="mb-2">
-              <span class="font-semibold">Email:</span> {{ user.email }}
-            </p>
-            <p v-if="user.lastLoginDate" class="mb-2">
-              <span class="font-semibold">Last Login:</span>
-              {{ isotimeValueConvert(user.lastLoginAt) }}
-            </p>
-          </div>
+        <div class="p-4 border-b">
+          <p class="text-sm font-semibold">Settings</p>
 
-          <div class="border-t pt-4">
-            <p class="text-seashell-500 mb-2">Recent Activity</p>
-            <div class="flex justify-between items-center">
-              <h2 class="text-md">
+          <p>Recent Activity</p>
+          <div class="mt-6">
+            <div class="mt-2">
+              <h2 class="text-lg">
                 More settings options will be available soon
               </h2>
             </div>
           </div>
         </div>
-        <div class="flex justify-center items-center h-full">
-          <div
-            class="flex flex-row rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300 py-2 m-4 cursor-none"
-          >
-            Delete Account
-          </div>
+
+        <div class="p-4 border-b">
+          <p class="font-bold text-red-600">Danger Zone</p>
+          <p>Delete all posts</p>
+          <p>Delete your account</p>
         </div>
       </div>
     </div>

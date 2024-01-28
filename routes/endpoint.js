@@ -20,7 +20,23 @@ router.get("/collections", function (req, res) {
         if (!data || Object.keys(data).length === 0) {
           return res.status(404).send("No data found");
         }
-        res.json(data);
+
+        // Sort data by creationDate in descending order
+        const sortedData = {};
+        Object.keys(data).forEach((type) => {
+          sortedData[type] = Object.values(data[type]).reverse();
+        });
+
+        // Now sort the sortedData by up votes in descending order
+        const sortedDataByVotes = {};
+        Object.keys(sortedData).forEach((type) => {
+          sortedDataByVotes[type] = Object.values(sortedData[type]).sort(
+            (a, b) => a.votes.upvote.count - b.votes.upvote.count,
+          );
+        });
+
+        // Return the data
+        res.json(sortedDataByVotes);
       },
       (errorObject) => {
         res
@@ -252,7 +268,9 @@ router.get("/users/:email/dashboard", async (req, res) => {
     const userSubmissionData = {};
     submissionSnapshots.forEach((snapshot) => {
       const data = snapshot.val();
-      userSubmissionData[data.id] = data;
+      if (data !== null && data.id !== undefined) {
+        userSubmissionData[data.id] = data;
+      }
     });
 
     // get the user's submission count
@@ -264,12 +282,12 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
     // get the top 5 most voted submissions
     const mostVotes = Object.values(userSubmissionData).filter(
-      (submission) => submission.upvotes >= 1,
+      (submission) => submission.votes.upvote.count > 0,
     );
     const mostRecent = Object.values(userSubmissionData);
 
     // sort the submissions by most votes and most recent
-    mostVotes.sort((a, b) => b.upvotes - a.upvotes);
+    mostVotes.sort((a, b) => b.votes.upvote.count - a.votes.upvote.count);
     mostVotes.splice(5);
 
     mostRecent.sort(

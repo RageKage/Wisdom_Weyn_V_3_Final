@@ -4,9 +4,9 @@
   >
     <!-- Firebase Error Message -->
     <div
-      class="flex items-center p-4 mb-4 text-sm text-cinnabar-500 rounded-lg bg-redDamask-50 w-full max-w-md"
+      class="flex items-center p-4 mb-4 text-sm text-white rounded-3xl bg-red-500 w-full max-w-md"
       role="alert"
-      v-if="!firebaseError"
+      v-if="firebaseError"
     >
       <svg
         class="flex-shrink-0 inline w-4 h-4 me-3"
@@ -21,19 +21,20 @@
       </svg>
       <span class="sr-only">Error</span>
       <div>
-        <span class="font-medium">Danger alert!</span> {{ firebaseError }}
+        <span>
+          {{ firebaseError }}
+        </span>
       </div>
     </div>
 
     <form
-      class="flex flex-col space-y-6 p-8 rounded shadow w-full max-w-md bg-seashell-50"
+      class="flex flex-col space-y-6 p-8 rounded-3xl shadow w-full max-w-md bg-seashell-50"
       @submit.prevent="signup"
     >
       <button
         @click="router.push('/')"
-        class="rounded-lg flex flex-row-reverse justify-between bg-saffron-200 text-saffron-700 p-2 transition-all duration-300 mr-4"
+        class="text-seashell-900 hover:text-seashell-700 focus:outline-none"
       >
-        <span> Home</span>
         <span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +42,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-5 h-5"
+            class="text-seashell-900 w-6 h-6"
           >
             <path
               stroke-linecap="round"

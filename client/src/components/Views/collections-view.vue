@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'h-screen': isLoading }" class="container mx-auto">
+  <div :class="{ 'h-screen': isLoading }" class="mx-auto">
     <div v-if="!isLoading">
       <!-- filter and search row -->
       <div
@@ -8,6 +8,7 @@
         <CollectionFilter
           :activeFilter="activeFilter"
           @filterType="filterType"
+          v-if="updateSearchQuery"
         />
 
         <SearchBarVue @update:searchQuery="updateSearchQuery" />

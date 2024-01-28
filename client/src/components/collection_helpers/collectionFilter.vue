@@ -1,16 +1,16 @@
 <template>
   <div
-    class="space-x-2 md:space-x-4 flex flex-wrap justify-center md:justify-start"
+    class="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 p-4"
   >
     <button
       v-for="filter in filters"
       :key="filter.value"
       :class="[
-        'rounded-lg p-2 hover:bg-cinnabar-300 transition-all duration-300',
-        'bg-cinnabar-400 text-seashell-800',
+        ' p-2 rounded-2xl hover:bg-saffron-400 transition-all duration-300',
+        ,
         activeFilter === filter.value
-          ? 'bg-saffron-400 hover:bg-saffron-300 text-seashell-800'
-          : 'bg-cinnabar-400 text-seashell-800',
+          ? 'bg-saffron-300 hover:bg-saffron-400 text-seashell-800 shadow-lg outline-none ring-2 ring-offset-2 ring-saffron-300'
+          : 'bg-saffron-300 text-seashell-800',
       ]"
       @click="filterType(filter.value)"
     >

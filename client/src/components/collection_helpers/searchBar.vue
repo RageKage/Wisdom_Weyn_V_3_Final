@@ -9,7 +9,7 @@
     />
 
     <span
-      class="flex items-center hover:cursor-pointer rounded-lg bg-cinnabar-400 text-seashell-700 p-2 hover:bg-cinnabar-300 transition-all duration-300 mr-3"
+      class="bg-saffron-300 hover:bg-saffron-400 text-seashell-800 font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 flex items-center justify-center cursor-pointer"
       @click="searchItems()"
     >
       <svg

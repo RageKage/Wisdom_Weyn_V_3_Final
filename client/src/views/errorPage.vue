@@ -1,132 +1,104 @@
 <template>
-  <div>
-    <div class="h-screen justify-center flex flex-col">
-      <center class="m-auto">
-        <svg
-          class="emoji-404"
-          enable-background="new 0 0 226 249.135"
-          height="249.135"
-          id="Layer_1"
-          overflow="visible"
-          version="1.1"
-          viewBox="0 0 226 249.135"
-          width="226"
-          xml:space="preserve"
+  <div class="min-h-screen w-screen flex items-center justify-center">
+    <div
+      class="text-center p-8 rounded-3xl shadow-md w-full max-w-md bg-seashell-50"
+    >
+      <h1 class="text-6xl font-bold text-gray-800">404</h1>
+      <p class="text-2xl font-semibold text-gray-600">Oops! Page not found.</p>
+      <p class="mt-4 text-gray-600">
+        We can't seem to find the page you're looking for.
+      </p>
+
+      <div class="mt-4">
+        <span class="">
+          <!-- img -->
+          <span class="">
+            <a :href="currentImage.source" target="_blank">
+              <img
+                :src="currentImage.src"
+                alt="Art Image"
+                class="object-cover rounded-3xl mx-auto shadow-lg border-4"
+              />
+            </a>
+
+            <p>{{ currentImage.description }}</p>
+          </span>
+        </span>
+      </div>
+
+      <div class="mt-6">
+        <span
+          @click="goback"
+          class="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
         >
-          <circle cx="113" cy="113" fill="#FFE585" r="109" />
-          <line
-            enable-background="new    "
-            fill="none"
-            opacity="0.29"
-            stroke="#6E6E96"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="8"
-            x1="88.866"
-            x2="136.866"
-            y1="245.135"
-            y2="245.135"
-          />
-          <line
-            enable-background="new    "
-            fill="none"
-            opacity="0.17"
-            stroke="#6E6E96"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="8"
-            x1="154.732"
-            x2="168.732"
-            y1="245.135"
-            y2="245.135"
-          />
-          <line
-            enable-background="new    "
-            fill="none"
-            opacity="0.17"
-            stroke="#6E6E96"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="8"
-            x1="69.732"
-            x2="58.732"
-            y1="245.135"
-            y2="245.135"
-          />
-          <circle cx="68.732" cy="93" fill="#6E6E96" r="9" />
-          <path
-            d="M115.568,5.947c-1.026,0-2.049,0.017-3.069,0.045  c54.425,1.551,98.069,46.155,98.069,100.955c0,55.781-45.219,101-101,101c-55.781,0-101-45.219-101-101  c0-8.786,1.124-17.309,3.232-25.436c-3.393,10.536-5.232,21.771-5.232,33.436c0,60.199,48.801,109,109,109s109-48.801,109-109  S175.768,5.947,115.568,5.947z"
-            enable-background="new    "
-            fill="#FF9900"
-            opacity="0.24"
-          />
-          <circle cx="156.398" cy="93" fill="#6E6E96" r="9" />
-          <ellipse
-            cx="67.732"
-            cy="140.894"
-            enable-background="new    "
-            fill="#FF0000"
-            opacity="0.18"
-            rx="17.372"
-            ry="8.106"
-          />
-          <ellipse
-            cx="154.88"
-            cy="140.894"
-            enable-background="new    "
-            fill="#FF0000"
-            opacity="0.18"
-            rx="17.371"
-            ry="8.106"
-          />
-          <path
-            d="M13,118.5C13,61.338,59.338,15,116.5,15c55.922,0,101.477,44.353,103.427,99.797  c0.044-1.261,0.073-2.525,0.073-3.797C220,50.802,171.199,2,111,2S2,50.802,2,111c0,50.111,33.818,92.318,79.876,105.06  C41.743,201.814,13,163.518,13,118.5z"
-            fill="#FFEFB5"
-          />
-          <circle
-            cx="113"
-            cy="113"
-            fill="none"
-            r="109"
-            stroke="#6E6E96"
-            stroke-width="8"
-          />
-        </svg>
-        <div class="tracking-widest mt-4">
-          <div class="text-center">
-            <span class="-500 font-bold text-9xl">404</span>
-            <p class="-600 text-2xl mt-6">
-              Sorry, we couldn't find what you're looking for.
-            </p>
-          </div>
-          <div class="flex justify-center mt-6">
-            <router-link
-              to="/"
-              class="-500 font-semibold text-lg p-4 rounded-full border -500 hover:-500 hover:text-white transition-colors duration-300"
-              >Go Back</router-link
-            >
-          </div>
-        </div>
-      </center>
+          <span aria-hidden="true"> &larr;</span> Go back
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
-<style>
-  .emoji-404 {
-    position: relative;
-    animation: mymove 2.5s infinite;
+<script setup>
+  import { onMounted, ref } from 'vue'
+  import { useRouter } from 'vue-router'
+
+  const router = useRouter()
+
+  const goback = () => {
+    router.go(-1)
   }
 
-  @keyframes mymove {
-    33% {
-      top: 0px;
-    }
-    66% {
-      top: 20px;
-    }
-    100% {
-      top: 0px;
-    }
+  const options = [
+    {
+      src: '/src/assets/images/somali_art.jpeg',
+      source: 'https://collections.artsmia.org/art/127170/exodus-aziz-osman',
+      description: 'Exodus, 2004 by Aziz Osman Oil on canvas',
+    },
+    {
+      src: '/src/assets/images/somali_art_2.jpeg',
+      source: 'Source: Artist Name, Year',
+      description: 'Description of the second image',
+    },
+    {
+      src: '/src/assets/images/somali_art_3.jpeg',
+      source: 'Source: Artist Name, Year',
+      description: 'Description of the third image',
+    },
+    {
+      src: '/src/assets/images/somali_art_4.jpeg',
+      source: 'Source: Artist Name, Year',
+      description: 'Description of the fourth image',
+    },
+    {
+      src: '/src/assets/images/somali_art_5.jpeg',
+      source: 'Source: Artist Name, Year',
+      description: 'Description of the fifth image',
+    },
+    {
+      src: '/src/assets/images/somali_art_6.jpeg',
+      source: 'Source: Artist Name, Year',
+      description: 'Description of the sixth image',
+    },
+    {
+      src: '/src/assets/images/somali_art_7.jpeg',
+      source: 'Source: Artist Name, Year',
+      description: 'Description of the seventh image',
+    },
+    {
+      src: '/src/assets/images/somali_art_8.jpeg',
+      source: 'Source: Artist Name, Year',
+      description: 'Description of the eighth image',
+    },
+  ]
+
+  const currentImage = ref({})
+
+  // show random pick each time the page refreshed
+  const setRandomImage = () => {
+    const randomIndex = Math.floor(Math.random() * options.length)
+    currentImage.value = options[randomIndex]
   }
-</style>
+
+  // show random pick each time the page refreshed
+  onMounted(setRandomImage)
+</script>

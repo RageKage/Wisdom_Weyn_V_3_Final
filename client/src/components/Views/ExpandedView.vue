@@ -1,17 +1,15 @@
 <template>
-  <div
-    class="container p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4"
-  >
+  <div class="p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px]">
     <div v-if="item">
       <!-- post view -->
       <div
-        class="container px-4 shadow rounded-lg p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px] py-4 m-4 bg-seashell-50 text-seashell-900"
+        class="bg-seashell-50 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl mb-4 p-4"
       >
         <!-- back button  -->
-        <div class="flex mt-4">
+        <div class="flex mt-4 mb-4">
           <button
             @click="goback"
-            class="rounded-lg -100 -600 p-2 bg-redDamask-500 transition-all duration-300 mr-4"
+            class="text-seashell-900 hover:text-seashell-700 focus:outline-none transition-all duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +17,7 @@
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="w-5 h-5"
+              class="w-6 h-6"
             >
               <path
                 stroke-linecap="round"
@@ -48,21 +46,15 @@
               </div>
             </div>
 
-            <p class="text-sm text-gray-500 mt-2">
-              Submitted by:
+            <div class="text-sm text-gray-600 mb-4 mt-2">
+              Submitted by
               <span
-                class="font-medium text-cinnabar-500 hover:text-cinnabar-600 transition-all duration-300 cursor-pointer"
                 @click="userdashboard(item.submittedBy)"
+                class="text-indigo-600 hover:text-indigo-800 cursor-pointer"
                 >{{ item.username }}</span
               >
-            </p>
-
-            <p class="text-sm text-gray-500">
-              Date Added:
-              <span class="font-medium">{{
-                formatDate(item.creationDate)
-              }}</span>
-            </p>
+              on <span>{{ formatDate(item.creationDate) }}</span>
+            </div>
 
             <div class="flex mt-4 w-full justify-between items-baseline">
               <div class="flex items-center mt-4">
@@ -72,7 +64,7 @@
                     'text-carrotOrange-400':
                       item.userVote === 'upvote' || isUserUpvoted(item),
                   }"
-                  class="bg-seashell-50"
+                  class="focus:outline-none mr-2 hover:text-carrotOrange-600 transition-all duration-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -80,12 +72,12 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-8 h-8 mr-3 hover:text-carrotOrange-600 transition-all duration-300"
+                    class="w-6 h-6"
                   >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"
                     />
                   </svg>
                 </button>
@@ -96,7 +88,7 @@
                     'text-red-400':
                       item.userVote === 'downvote' || isUserDownvoted(item),
                   }"
-                  class="bg-seashell-50"
+                  class="focus:outline-none ml-2 mr-2 hover:text-cinnabar-500 transition-all duration-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -104,12 +96,12 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-8 h-8 ml-2 mr-3 hover:text-carrotOrange-600 transition-all duration-300"
+                    class="w-6 h-6"
                   >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
                     />
                   </svg>
                 </button>
@@ -120,7 +112,7 @@
               <div>
                 <button
                   @click="ShareToTwitter(item)"
-                  class="rounded-lg -200 -800 p-2 transition-all duration-300 ml-2 mr-3"
+                  class="rounded-lg text-blue-600 p-2 transition-all duration-300 mr-4"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +120,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-5 h-5"
+                    class="w-6 h-6"
                   >
                     <path
                       stroke-linecap="round"
@@ -140,7 +132,7 @@
                 <!-- TODO soon to be added -->
                 <button
                   v-if="future_feature"
-                  class="rounded-lg -100 -600 p-2 hover:-200 hover:-700 transition-all duration-300 mr-4"
+                  class="rounded-lg text-green-600 p-2 transition-all duration-300 mr-4"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +140,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-5 h-5"
+                    class="w-6 h-6"
                   >
                     <path
                       stroke-linecap="round"
@@ -162,7 +154,7 @@
                 <button
                   v-if="isLoggedIn && user.email === item.submittedBy"
                   @click="deletessubmission(item.id, user.uid)"
-                  class="rounded-lg bg-red-100 text-red-600 p-2 hover:bg-red-200 hover:text-red-700 transition-all duration-300"
+                  class="rounded-lg text-red-600 p-2 transition-all duration-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +162,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-5 h-5"
+                    class="w-6 h-6"
                   >
                     <path
                       stroke-linecap="round"
@@ -182,6 +174,15 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div>
+        <!-- adding comments will be added soon -->
+        <div class="flex flex-col items-center justify-center text-center">
+          <h2 class="text-2xl font-bold -600 mb-2">Comments</h2>
+          <p class="text-gray-700 text-lg leading-relaxed">
+            Comments will be added soon.
+          </p>
         </div>
       </div>
     </div>

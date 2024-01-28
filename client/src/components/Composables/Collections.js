@@ -33,10 +33,10 @@ export function CollectionsFunctions() {
     Object.values(collectionData.value).forEach((typeCollection) => {
       typeCollection.forEach((item) => {
         // check if title isn't empty string
-        if (item.title) {
+        if (item.title && item.title !== '') {
           item.title = truncateString(item.title, 10)
         }
-        item.content = truncateString(item.content, 12)
+        item.content = truncateString(item.content, 5)
         item.meaning = truncateString(item.meaning, 12)
         allItems.push(item)
       })
@@ -126,7 +126,7 @@ export function CollectionsFunctions() {
         ? `'${query}' not found`
         : 'Server Error'
     } finally {
-      isLoading.value = false
+      isLoading.value = false // Set isLoading to false immediately after fetching data
     }
   }
 
