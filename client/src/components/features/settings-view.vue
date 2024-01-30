@@ -2,9 +2,13 @@
   <div class="p-4">
     <div
       v-if="showSuccessPopup"
-      class="bg-green-200 text-green-800 p-2 rounded"
+      class="bg-green-100 text-green-700 p-2 rounded-2xl shadow mx-auto max-w-2xl text-center"
     >
-      <span>Username updated successfully!</span>
+      <span
+        class="text-sm font-semibold text-green-700 hover:text-green-900 cursor-pointer"
+      >
+        Username updated successfully!
+      </span>
     </div>
 
     <div v-if="user" class="mt-4 bg-white rounded-2xl shadow mx-auto max-w-2xl">
@@ -126,10 +130,8 @@
         const localUserData = localStorage.getItem('user-data')
 
         if (localUserData) {
-          console.log('Getting current user via local storage')
           user.value = JSON.parse(localUserData)
         } else {
-          console.log('Getting current user via API')
           const dbUser = await getCurrentUser(authUser.uid)
 
           // Save the data to local storage for future use
@@ -184,16 +186,12 @@
     if (!usernameError.value) {
       // If there are no validation errors, proceed with the username update
       try {
-        // console.log('Updating username', user.value.username)
-
         const updateuser = await updateUsername(user.value.username)
-        console.log(updateuser)
 
         if (updateuser) {
           // Show the success popup
           showSuccessPopup.value = true
 
-          console.log('Username updated successfully!')
           // localStorage.setItem('user-data')
 
           // this just makes a call to the API to get the updated user data in the local storage

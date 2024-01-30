@@ -49,12 +49,13 @@
     </div>
   </div>
 
-  <div v-if="errorMessage" class="p-2">
+  <div v-if="errorMessage" class="py-2">
     <div
-      class="bg-red-100 text-red-800 font-medium py-2 px-4 rounded-lg flex items-center justify-between"
+      class="bg-red-100 text-red-800 font-medium py-2 px-4 rounded-3xl flex items-center text-center justify-between"
     >
-      <div class="flex flex-row">
-        <span class="bg-red-500 text-white rounded-full mr-2"
+      <div class="flex flex-row items-center text-center justify-between">
+        <span
+          class="bg-red-500 text-white rounded-full mr-3 flex items-center justify-center w-8 h-8"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -74,7 +75,7 @@
       </div>
 
       <span
-        class="bg-red-500 text-white rounded-full px-1 mr-1 cursor-pointer"
+        class="bg-red-500 text-white rounded-full cursor-pointer hover:bg-red-600 transition-all duration-300 p-2"
         @click="closeError"
         ><svg
           xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +101,7 @@
     <div
       v-for="item in displayedItems"
       :key="item.id"
-      class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+      class="bg-seashell-50 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 justify-between items-start p-4 mb-4"
     >
       <div class="flex-1">
         <div class="pr-2">
@@ -116,9 +117,7 @@
               </span>
             </div>
 
-            <div
-              class="text-seashell-900 leading-relaxed flex justify-between items-center"
-            >
+            <div class="text-seashell-900 py-1 font-medium">
               {{ item.content }}
             </div>
           </div>
@@ -130,7 +129,7 @@
 
         <button
           @click="toggleMeaning(item)"
-          class="mt-4 text-indigo-600 hover:text-indigo-800"
+          class="mt-4 text-indigo-600 hover:text-indigo-800 focus:outline-none text-sm transition-all duration-300"
         >
           {{ item.showMeaning ? 'Hide Meaning' : 'See Meaning' }}
         </button>
@@ -145,7 +144,9 @@
         </div>
 
         <!-- voting -->
-        <div class="flex items-center justify-between">
+        <div
+          class="flex flex-row justify-between items-center text-sm text-gray-600"
+        >
           <div class="flex items-center">
             <button
               @click="upvoteSubmisson(item.id)"
@@ -196,7 +197,9 @@
             </button>
             <span>{{ item.votes.downvote.count || 0 }}</span>
           </div>
-          <div>
+          <div
+            class="flex flex-row justify-between items-center text-sm text-gray-600"
+          >
             <button
               @click="showFullText(item.id)"
               class="focus:outline-none p-2"

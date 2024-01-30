@@ -2,26 +2,28 @@
   <div class="">
     <div v-if="data" class="mx-auto">
       <div
-        class="shadow-lg mt-4 bg-seashell-50 rounded-2xl p-4 sm:p-8 max-w-3xl mx-auto"
+        class="mx-auto max-w-3xl px-4 sm:px-6 md:px-8 py-10 bg-white shadow rounded-3xl"
       >
-        <div class="text-center">
-          <h1 class="text-2xl font-semibold">
+        <div class="pb-4">
+          <h1 class="text-xl font-semibold">
             {{ data.username }}'s Contributions
           </h1>
         </div>
 
-        <div
-          class="flex justify-between items-center mt-10 border-b border-gray-200 pb-4"
-        >
-          <div class="text-center">
-            <p class="text-2xl font-bold">
+        <div class="grid grid-cols-3 gap-4 border-b border-gray-200 pb-4">
+          <div
+            class="text-center border-r border-gray-200 pr-4 flex flex-col justify-center"
+          >
+            <p class="text-2xl font-bold text-indigo-600">
               {{ data.userStats ? data.userStats.totalSubmissions || 0 : 0 }}
             </p>
             <p class="text-sm text-gray-600">Submissions</p>
           </div>
 
-          <div class="text-center">
-            <p class="text-2xl font-bold">
+          <div
+            class="text-center border-r border-gray-200 pr-4 flex flex-col justify-center"
+          >
+            <p class="text-2xl font-bold text-indigo-600">
               {{
                 data.userStats && data.userStats.proverbs
                   ? data.userStats.proverbs
@@ -32,7 +34,7 @@
           </div>
 
           <div class="text-center">
-            <p class="text-2xl font-bold">
+            <p class="text-2xl font-bold text-indigo-600">
               {{
                 data.userStats && data.userStats.Poetrys
                   ? data.userStats.Poetrys
@@ -44,17 +46,17 @@
         </div>
 
         <div v-if="noSubmissions" class="mt-10">
-          <div class="text-center">
-            <h2 class="text-xl font-semibold">Top Contributions</h2>
+          <div class="text-left">
+            <h2 class="font-semibold text-lg">Top Contributions</h2>
           </div>
 
           <div v-if="data.mostVotes.length > 0" class="mt-6">
             <div
               v-for="submission in data.mostVotes"
               :key="submission.id"
-              class="p-4 border-b border-gray-200"
+              class="p-2 border-b border-gray-200"
             >
-              <p class="truncate text-lg">
+              <p>
                 {{ truncateText(submission.title || submission.content, 10) }}
               </p>
 
@@ -84,17 +86,17 @@
         </div>
 
         <div class="mt-10">
-          <div class="text-center">
-            <h2 class="text-xl font-semibold">Recent Activity</h2>
+          <div class="text-left">
+            <h2 class="font-semibold text-lg">Recent Activity</h2>
           </div>
 
           <div v-if="data.mostRecent.length > 0" class="mt-6">
             <div
               v-for="submission in data.mostRecent"
               :key="submission.id"
-              class="p-4 border-b border-gray-200"
+              class="p-2 border-b border-gray-200"
             >
-              <p class="truncate text-lg">
+              <p>
                 {{ truncateText(submission.title || submission.content, 10) }}
               </p>
               <p class="text-sm text-gray-600">
@@ -143,7 +145,6 @@
   const fetchData = async () => {
     try {
       data.value = await service.getuserDashBoardAPI(id.value)
-      console.log(data.value)
 
       // Check if there are any submissions
       if (!data.value.mostRecent) {

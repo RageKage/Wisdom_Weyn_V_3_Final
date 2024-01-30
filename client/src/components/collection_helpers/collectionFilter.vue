@@ -1,12 +1,10 @@
 <template>
-  <div
-    class="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 p-4"
-  >
+  <div class="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4">
     <button
       v-for="filter in filters"
       :key="filter.value"
       :class="[
-        ' p-2 rounded-2xl hover:bg-saffron-400 transition-all duration-300',
+        ' px-4 py-2 rounded-2xl hover:bg-saffron-400 transition-all duration-300',
         ,
         activeFilter === filter.value
           ? 'bg-saffron-300 hover:bg-saffron-400 text-seashell-800 shadow-lg outline-none ring-2 ring-offset-2 ring-saffron-300'

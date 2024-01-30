@@ -36,9 +36,15 @@ const AppApiService = () => {
   const apiPath = '/api'
 
   return {
-    getAllCollections() {
+    // this also is pagination
+    getAllCollections(pageNumber) {
+      const params = {
+        page: pageNumber,
+        limit: 12,
+      }
+
       return axios
-        .get(apiPath + '/collections', { headers })
+        .get(apiPath + '/collections', { params, headers })
         .then(handleResponse)
         .catch(handleError)
     },

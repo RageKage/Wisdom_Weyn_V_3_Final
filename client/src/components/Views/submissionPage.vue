@@ -25,7 +25,7 @@
                 />
               </svg>
             </div>
-            <p class="text-lg font-semibold">Successfully Posted!</p>
+            <p class="text-lg font-semibold">Successfully submitted !</p>
           </div>
         </div>
       </transition>

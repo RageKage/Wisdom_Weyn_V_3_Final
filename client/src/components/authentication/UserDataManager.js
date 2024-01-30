@@ -3,7 +3,6 @@ import { getDatabase, ref, set, get, update } from 'firebase/database'
 const db = getDatabase()
 
 async function CreateUserInDatabase(userData, realName) {
-  // console.log("Creating user in database", displayName, name)
   // Creating user in database CoolMaster Niman Ahmed
   const user = userData.user
 

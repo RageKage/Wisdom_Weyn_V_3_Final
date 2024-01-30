@@ -52,42 +52,45 @@
     {
       src: '/src/assets/images/somali_art.jpeg',
       source: 'https://collections.artsmia.org/art/127170/exodus-aziz-osman',
-      description: 'Exodus, 2004 by Aziz Osman Oil on canvas',
+      description: 'Exodus, 2004 by Aziz Osman',
     },
     {
       src: '/src/assets/images/somali_art_2.jpeg',
-      source: 'Source: Artist Name, Year',
-      description: 'Description of the second image',
+      source: 'https://www.arabnews.com/node/1870281/lifestyle',
+      description: 'Jandheer Dance, 2016 by Aziz Osman',
     },
     {
       src: '/src/assets/images/somali_art_3.jpeg',
-      source: 'Source: Artist Name, Year',
-      description: 'Description of the third image',
+      source: 'https://www.pinterest.com/pin/180988478748598445/',
+      description: 'Reer Guuraa aka Nomads, source unknown',
     },
     {
       src: '/src/assets/images/somali_art_4.jpeg',
-      source: 'Source: Artist Name, Year',
-      description: 'Description of the fourth image',
+      source: 'https://halgankiixisbigasyl.wordpress.com/2015/04/29/538/r',
+      description: 'Sheikh Abukar, 1954',
     },
     {
       src: '/src/assets/images/somali_art_5.jpeg',
-      source: 'Source: Artist Name, Year',
-      description: 'Description of the fifth image',
+      source:
+        'https://www.somalispot.com/threads/somali-painting-thread.22639/',
+      description: 'Somali Women, 1926, source unknown',
     },
     {
       src: '/src/assets/images/somali_art_6.jpeg',
       source: 'Source: Artist Name, Year',
-      description: 'Description of the sixth image',
+      description: 'Concerto di Madame, 1930 by Milo Corso Malverna',
     },
     {
       src: '/src/assets/images/somali_art_7.jpeg',
-      source: 'Source: Artist Name, Year',
-      description: 'Description of the seventh image',
+      source:
+        'https://somaliwomen.tumblr.com/post/59448886489/the-first-painting-is-by-amin-amir-the-last-three',
+      description: 'Untitled, by Madaar Osmans',
     },
+
     {
       src: '/src/assets/images/somali_art_8.jpeg',
-      source: 'Source: Artist Name, Year',
-      description: 'Description of the eighth image',
+      source: 'https://www.flickr.com/photos/clairity/30582975007/',
+      description: 'Moving, 2016 by Aziz Osman',
     },
   ]
 

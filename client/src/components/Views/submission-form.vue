@@ -3,7 +3,7 @@
     <Popup v-if="!user" />
 
     <div class="mx-auto">
-      <div class="shadow-lg mt-4 bg-white rounded-2xl p-4 sm:p-8">
+      <div class="shadow-lg bg-white rounded-2xl p-4 sm:p-8">
         <h2 class="text-xl font-semibold text-center text-gray-800">
           Share Your Wisdom
         </h2>
@@ -75,54 +75,56 @@
             ></textarea>
           </div>
 
-          <div
-            v-if="picked == 'Poetry' && !isOriginal"
-            class="flex flex-col space-y-2 text-sm font-semibold text-gray-800 mb-4"
-          >
-            <input
-              type="text"
-              id="author"
-              v-model="author"
-              placeholder="Author's Name (if known)"
-              class="w-full p-3 border border-gray-300 bg-white rounded-xl mt-4"
-            />
-            <label>
+          <div v-if="future_feature">
+            <div
+              v-if="picked == 'Poetry' && !isOriginal"
+              class="flex flex-col space-y-2 text-sm font-semibold text-gray-800 mb-4"
+            >
               <input
-                type="checkbox"
-                id="unknownAuthor"
-                v-model="unknownAuthor"
-                class="h-6 w-6 p-3 border border-gray-300 bg-white rounded-xl"
+                type="text"
+                id="author"
+                v-model="author"
+                placeholder="Author's Name (if known)"
+                class="w-full p-3 border border-gray-300 bg-white rounded-xl mt-4"
               />
-              <span class="text-sm font-semibold text-gray-800 ml-2"
-                >Author Unknown</span
-              >
-            </label>
-          </div>
+              <label>
+                <input
+                  type="checkbox"
+                  id="unknownAuthor"
+                  v-model="unknownAuthor"
+                  class="h-6 w-6 p-3 border border-gray-300 bg-white rounded-xl"
+                />
+                <span class="text-sm font-semibold text-gray-800 ml-2"
+                  >Author Unknown</span
+                >
+              </label>
+            </div>
 
-          <!-- ! Future implement -->
+            <!-- ! Future implement -->
 
-          <div
-            v-if="picked == 'Poetry'"
-            class="flex items-center space-x-2 text-sm font-semibold text-gray-800 mt-4"
-          >
-            <label>
-              <input
-                type="checkbox"
-                id="original"
-                v-model="isOriginal"
-                class="h-6 w-6 p-3 border border-gray-300 bg-white rounded-xl"
-              />
-              <span class="text-sm font-semibold text-gray-800 ml-2"
-                >This is my original work</span
-              >
-            </label>
+            <div
+              v-if="picked == 'Poetry'"
+              class="flex items-center space-x-2 text-sm font-semibold text-gray-800 mt-4"
+            >
+              <label>
+                <input
+                  type="checkbox"
+                  id="original"
+                  v-model="isOriginal"
+                  class="h-6 w-6 p-3 border border-gray-300 bg-white rounded-xl"
+                />
+                <span class="text-sm font-semibold text-gray-800 ml-2"
+                  >This is my original work</span
+                >
+              </label>
+            </div>
           </div>
         </form>
         <div class="mt-6">
           <button
             type="submit"
             @click="submitForm"
-            class="w-full sm:w-auto px-4 py-2 text-base font-semibold text-center text-white transition duration-200 ease-in bg-[#007a5e] rounded-md hover:shadow-md flex items-center justify-center"
+            class="w-full sm:w-auto text-base text-center ease-in hover:shadow-md flex items-center justify-center bg-carrotOrange-500 border-2 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
           >
             <span v-if="props.isLoading" class="flex items-center">
               <div role="status">
@@ -197,6 +199,8 @@
 
   const isOriginal = ref(false)
   const unknownAuthor = ref(false)
+
+  const future_feature = ref(false)
 
   // prop
   const props = defineProps({

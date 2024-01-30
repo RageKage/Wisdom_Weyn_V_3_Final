@@ -8,7 +8,7 @@
       class="rounded-2xl fixed top-0 left-0 bottom-0 flex z-5 flex-col w-5/6 max-w-sm py-5 px-5 sm:py-6 sm:px-6 bg-slate-50 border-r overflow-y-auto ease-in-out duration-300"
     >
       <div class="flex justify-between items-center py-5 sm:py-4">
-        <a href="#" class="flex items-center">
+        <a @click="closeMenu" href="#" class="flex items-center">
           <Logo class="mr-2"></Logo>
           <span class="font-semibold text-lg">Wisdom Weyn</span>
         </a>
@@ -101,10 +101,8 @@
         const localUserData = localStorage.getItem('user-data')
 
         if (localUserData) {
-          console.log('Getting current user via local storage')
           user.value = JSON.parse(localUserData)
         } else {
-          console.log('Getting current user via API')
           const dbUser = await getCurrentUser(authUser.uid)
 
           // Save the data to local storage for future use

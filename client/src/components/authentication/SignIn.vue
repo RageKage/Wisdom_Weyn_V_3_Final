@@ -81,7 +81,7 @@
       />
       <button
         type="submit"
-        class="text-white bg-carrotOrange-600 hover:bg-carrotOrange-700 focus:ring-4 focus:outline-none focus:ring-carrotOrange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+        class="bg-carrotOrange-500 border-2 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-3xl shadow-lg transition duration-300"
       >
         Sign In
       </button>
@@ -219,7 +219,6 @@
 
       // Check for existing username
       const hasUsername = await UsernameInDB(user.uid)
-      console.log(hasUsername)
       if (hasUsername) {
         router.push('/') // Redirect to home if username exists
       } else {

@@ -1,12 +1,13 @@
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import AppApiService from '../../service/index'
 
 export function CollectionsFunctions() {
   const collectionData = ref({})
-  const showScrollToTopBtn = ref(false)
   const activeFilter = ref(null)
   const isLoading = ref(false)
   const errorMessage = ref(null)
+
+  const currentPage = ref(1)
 
   const service = AppApiService()
 
@@ -30,9 +31,9 @@ export function CollectionsFunctions() {
     let allItems = []
 
     // Loop through the collection data and push all the items into the allItems array and truncate the content and meaning
-    Object.values(collectionData.value).forEach((typeCollection) => {
-      typeCollection.forEach((item) => {
-        // check if title isn't empty string
+    if (Array.isArray(collectionData.value)) {
+      collectionData.value.forEach((item) => {
+        // check if title isn't an empty string
         if (item.title && item.title !== '') {
           item.title = truncateString(item.title, 10)
         }
@@ -40,7 +41,7 @@ export function CollectionsFunctions() {
         item.meaning = truncateString(item.meaning, 12)
         allItems.push(item)
       })
-    })
+    }
 
     if (activeFilter.value && activeFilter.value !== 'all') {
       return allItems.filter((item) => item.type === activeFilter.value)
@@ -64,47 +65,49 @@ export function CollectionsFunctions() {
     item.showMeaning = !item.showMeaning
   }
 
-  // Fetch the collection data from the database
-  const fetchCollectionData = async () => {
+  const fetchCollectionData = async (pageNum) => {
     isLoading.value = true
 
-    const tempArray = {}
-
     try {
-      const data = await service.getAllCollections() // Await the promise
+      const data = await service.getAllCollections(pageNum)
       if (data) {
-        Object.keys(data).forEach((type) => {
-          tempArray[type] = Object.values(data[type]).reverse()
-        })
+        collectionData.value = {}
+        collectionData.value = data
       }
-      collectionData.value = tempArray
     } catch (error) {
       console.error('Error fetching collections:', error)
-      errorMessage.value = error.toString().includes('404')
-        ? `No data found `
-        : 'Server Error'
+      // Display error message
+      if (error.toString().includes('404')) {
+        errorMessage.value = 'You have reached the end of the data'
+      } else if (error.toString().includes('500')) {
+        errorMessage.value = 'Server Error'
+      } else if (error.toString().includes('401')) {
+        errorMessage.value = 'Unauthorized'
+      } else {
+        errorMessage.value = 'An unknown error occurred'
+      }
     } finally {
-      isLoading.value = false // Set isLoading to false immediately after fetching data
+      isLoading.value = false
     }
   }
-
-  // Scroll to the top of the page
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  const goForward = () => {
+    window.scrollTo(0, 0)
+    currentPage.value++
+    fetchCollectionData(currentPage.value)
   }
 
-  const checkScroll = () => {
-    showScrollToTopBtn.value = window.scrollY > 100
+  const goBack = () => {
+    window.scrollTo(0, 0)
+    if (currentPage.value > 1) {
+      currentPage.value--
+      fetchCollectionData(currentPage.value)
+    }
   }
 
   // Call the fetchCollectionData function when the component is mounted
   onMounted(() => {
-    fetchCollectionData()
-    window.addEventListener('scroll', checkScroll)
-  })
-
-  onUnmounted(() => {
-    window.removeEventListener('scroll', checkScroll)
+    fetchCollectionData(currentPage.value)
+    window.scrollTo(0, 0)
   })
 
   const isSearching = ref(false)
@@ -171,10 +174,9 @@ export function CollectionsFunctions() {
     formatDate,
     toggleMeaning,
     showMeaning,
-    showScrollToTopBtn,
-    scrollToTop,
-    checkScroll,
     errorMessage,
     closeError,
+    goForward,
+    goBack,
   }
 }

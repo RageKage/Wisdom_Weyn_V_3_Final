@@ -69,19 +69,6 @@ export function getCurrentUser(Useruid) {
   })
 }
 
-// service
-// .getUserDatabyuid(Useruid)
-// .then((response) => {
-//   if (response) {
-//     resolve(response)
-//   } else {
-//     resolve(null) // set to null if no user logged in
-//   }
-// })
-// .catch((error) => {
-//   reject(error)
-// })
-
 // Sign out the user
 export async function signout() {
   const auth = getAuth()

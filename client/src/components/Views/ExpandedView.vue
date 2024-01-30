@@ -29,7 +29,9 @@
         </div>
         <div class="flex flex-col space-y-4">
           <div class="flex flex-col items-start">
-            <h2 class="text-xl font-bold -600 mb-2">
+            <h2
+              class="text-2xl font-bold mb-2 text-seashell-900 hover:text-seashell-700 transition-all duration-300"
+            >
               {{ item.title }}
             </h2>
 
@@ -39,7 +41,6 @@
               </div>
 
               <div
-                role="alert"
                 class="mt-2 sm:mt-0 p-2 -100 -600 rounded bg-saffron-300 text-seashell-900"
               >
                 <span>{{ item.meaning }}</span>
@@ -56,15 +57,17 @@
               on <span>{{ formatDate(item.creationDate) }}</span>
             </div>
 
-            <div class="flex mt-4 w-full justify-between items-baseline">
-              <div class="flex items-center mt-4">
+            <div
+              class="flex items-center justify-between w-full border-t border-gray-200 pt-4"
+            >
+              <div class="flex items-center">
                 <button
                   @click="upvoteSubmisson(item.id)"
                   :class="{
                     'text-carrotOrange-400':
                       item.userVote === 'upvote' || isUserUpvoted(item),
                   }"
-                  class="focus:outline-none mr-2 hover:text-carrotOrange-600 transition-all duration-300"
+                  class="focus:outline-none mr-2 hover:text-carrotOrange-500 transition-all duration-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +91,7 @@
                     'text-red-400':
                       item.userVote === 'downvote' || isUserDownvoted(item),
                   }"
-                  class="focus:outline-none ml-2 mr-2 hover:text-cinnabar-500 transition-all duration-300"
+                  class="focus:outline-none ml-4 mr-2 hover:text-red-500 transition-all duration-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +115,7 @@
               <div>
                 <button
                   @click="ShareToTwitter(item)"
-                  class="rounded-lg text-blue-600 p-2 transition-all duration-300 mr-4"
+                  class="rounded-lg text-blue-500 p-2 transition-all duration-300 mr-4"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +135,7 @@
                 <!-- TODO soon to be added -->
                 <button
                   v-if="future_feature"
-                  class="rounded-lg text-green-600 p-2 transition-all duration-300 mr-4"
+                  class="rounded-lg text-gray-500 p-2 transition-all duration-300 mr-4"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -178,8 +181,14 @@
       </div>
       <div>
         <!-- adding comments will be added soon -->
-        <div class="flex flex-col items-center justify-center text-center">
-          <h2 class="text-2xl font-bold -600 mb-2">Comments</h2>
+        <div
+          class="flex flex-col items-center justify-center text-center bg-seashell-50 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl mb-4 p-4"
+        >
+          <h2
+            class="text-2xl font-bold mb-2 text-seashell-900 hover:text-seashell-700 transition-all duration-300"
+          >
+            Comments
+          </h2>
           <p class="text-gray-700 text-lg leading-relaxed">
             Comments will be added soon.
           </p>
@@ -188,17 +197,23 @@
     </div>
     <!-- looking for a post that doesn't exist -->
     <div v-if="submissionNotFound">
-      <div class="flex flex-col items-center justify-center text-center">
-        <h2 class="text-2xl font-bold -600 mb-2">Submission Not Found</h2>
+      <div
+        class="flex flex-col items-center justify-center text-center bg-seashell-50 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl mb-4 p-4"
+      >
+        <h2
+          class="text-2xl font-bold mb-2 text-seashell-900 hover:text-seashell-700 transition-all duration-300"
+        >
+          Submission Not Found
+        </h2>
         <p class="text-gray-700 text-lg leading-relaxed">
           The submission you are looking for does not exist.
         </p>
       </div>
       <!-- go back to collections button -->
-      <div class="flex justify-center mt-4">
+      <div class="flex flex-col items-center justify-center text-center">
         <button
           @click="goback"
-          class="rounded-lg -100 -600 p-2 hover:-200 hover:-700 transition-all duration-300 mr-4"
+          class="bg-seashell-900 text-seashell-50 hover:bg-seashell-700 transition-all duration-300 rounded-lg px-4 py-2 focus:outline-none"
         >
           Go Back to Collection
         </button>
@@ -224,7 +239,7 @@
   const item = ref(null)
 
   const goback = () => {
-    router.push('/collections')
+    router.go(-1) || router.push('/collections')
   }
 
   const isLoggedIn = ref(false)

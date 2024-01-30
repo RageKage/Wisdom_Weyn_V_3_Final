@@ -1,4 +1,4 @@
-@import url('https://api.fontshare.com/v2/css?f[]=kalam@400&display=swap');
+@import url("https://api.fontshare.com/v2/css?f[]=kalam@400&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,10 +7,8 @@
 /* Add these styles to your stylesheet or component */
 
 .router-link-exact-active.active {
-    @apply transition-none border-b-2 border-redDamask-500 ;
-    transition: none;
+    @apply border border-redDamask-500  items-center rounded-full p-2 text-redDamask-500;
 }
-
 
 @keyframes fadeIn {
     from {

@@ -5,11 +5,11 @@
       id="searchInput"
       placeholder="Search for proverb or Gabay"
       v-model="searchQuery"
-      class="flex-grow hover:cursor-pointer placeholder:text-seashell-900 rounded-xl transition-all duration-300"
+      class="flex-grow hover:cursor-pointer placeholder:text-seashell-900 px-4 py-2 rounded-2xl transition-all duration-300"
     />
 
     <span
-      class="bg-saffron-300 hover:bg-saffron-400 text-seashell-800 font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 flex items-center justify-center cursor-pointer"
+      class="bg-saffron-300 text-seashell-800 px-4 py-2 rounded-2xl hover:bg-saffron-400 transition-all duration-300 flex items-center cursor-pointer"
       @click="searchItems()"
     >
       <svg

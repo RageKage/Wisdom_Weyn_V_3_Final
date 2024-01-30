@@ -1,40 +1,14 @@
 <template>
-  <nav class="text-seashell-700">
+  <nav class="text-seashell-700" v-if="loading">
     <div class="flex items-center justify-between flex-wrap py-6 px-1">
-      <Logo class="rounded-3xl sm:rounded-3xl" />
+      <Logo class="sm:rounded-3xl" />
 
       <div
         class="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
       >
         <div
-          v-if="loading"
-          class="flex items-center space-x-3 sm:pr-4 md:pr-4 lg:pr-0"
-        >
-          <button
-            type="button"
-            class="bg-redDamask-600 p-1 rounded-2xl text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
-            id="user-menu-button"
-          >
-            <span class="sr-only">Open user menu</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-8 h-8 animate-spin text-redDamask-200 text-center"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-              />
-            </svg>
-          </button>
-        </div>
-        <div
-          v-else-if="user"
-          class="flex items-center space-x-3 sm:pr-4 md:pr-4 lg:pr-0"
+          v-if="user"
+          class="flex items-center justify-center space-x-3 sm:pr-4 md:pr-4 lg:pr-0 w-16 h-16 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 ease-in-out transform"
         >
           <button
             @click="toggleDropdown"
@@ -123,58 +97,22 @@
       </div>
 
       <div
-        class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-        id="navbar-user"
+        class="items-center justify-between hidden w-full md:w-auto md:order-1 sm:hidden md:hidden lg:flex"
       >
-        <ul
-          v-show="isMenuOpen || isLargeScreen"
-          class="sm:hidden md:hidden lg:flex items-center space-x-6"
+        <div
+          class="text-base md:flex-grow items-center justify-end md:flex md:space-x-10 text-seashell-700"
         >
-          <li class="p-2 rounded-lg">
-            <router-link
-              to="/collections"
-              class="block py-2 px-3 rounded md:p-0 router-link-exact-active"
-              >Wisdoms</router-link
-            >
-          </li>
-          <li>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-              />
-            </svg>
-          </li>
-          <li class="p-2 rounded-lg">
-            <router-link
-              to="/submissions/create"
-              class="block py-2 px-3 rounded md:p-0 router-link-exact-active"
-              >Contribute</router-link
-            >
-          </li>
-          <li>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-              />
-            </svg>
-          </li>
-        </ul>
+          <span class="rounded-lg md:p-0 router-link-exact-active">
+            <router-link to="/collections"> Wisdoms </router-link>
+          </span>
+          <span class="rounded-lg md:p-0 router-link-exact-active">
+            <router-link to="/submissions/create"> Contribute </router-link>
+          </span>
+        </div>
+        <div
+          id="slider"
+          class="absolute bottom-0 h-1 bg-blue-500 transition-all duration-300"
+        ></div>
       </div>
     </div>
   </nav>
@@ -216,7 +154,7 @@
     emit('toggleMenu')
   }
 
-  const loading = ref(false)
+  const loading = ref(true)
 
   // this closes the dropdown menu when users clicks outside the dropdown menu
   const onClickOutside = (event) => {
@@ -229,32 +167,24 @@
   }
 
   onMounted(async () => {
-    loading.value = true
+    loading.value = false
     document.addEventListener('click', onClickOutside)
 
     try {
       const authUser = await currentUser()
 
       if (authUser) {
-        // get user data from local storage
-        const localUserData = localStorage.getItem('user-data')
+        const dbUser = await getCurrentUser(authUser.uid)
 
-        if (localUserData) {
-          console.log('Getting current user via local storage')
-          user.value = JSON.parse(localUserData)
-        } else {
-          console.log('Getting current user via API')
-          const dbUser = await getCurrentUser(authUser.uid)
+        // Save the data to local storage for future use
+        localStorage.setItem('user-data', JSON.stringify(dbUser))
 
-          // Save the data to local storage for future use
-          localStorage.setItem('user-data', JSON.stringify(dbUser))
-
-          user.value = dbUser
-        }
+        user.value = dbUser
       }
-      loading.value = false
     } catch (error) {
       console.error('Error getting current user:', error.message)
+    } finally {
+      loading.value = true
     }
   })
 
@@ -266,7 +196,8 @@
 
       dropdownOpen.value = false
       user.value = null
-      router.push('/') // Redirect to home after successful login
+      // refresh the page
+      router.go()
     } catch (error) {
       console.error('Error signing out:', error)
     }

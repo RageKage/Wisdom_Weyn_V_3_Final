@@ -21,22 +21,32 @@ router.get("/collections", function (req, res) {
           return res.status(404).send("No data found");
         }
 
-        // Sort data by creationDate in descending order
-        const sortedData = {};
+        // Merge proverbs and poetry into one array
+        let mergedData = [];
         Object.keys(data).forEach((type) => {
-          sortedData[type] = Object.values(data[type]).reverse();
+          mergedData = mergedData.concat(Object.values(data[type]));
         });
 
-        // Now sort the sortedData by up votes in descending order
-        const sortedDataByVotes = {};
-        Object.keys(sortedData).forEach((type) => {
-          sortedDataByVotes[type] = Object.values(sortedData[type]).sort(
-            (a, b) => a.votes.upvote.count - b.votes.upvote.count,
-          );
-        });
+        // Sort by most recent
+        mergedData.sort((a, b) => b.creationDate - a.creationDate);
+
+        // Sort by up votes in descending order
+        mergedData.sort((a, b) => b.votes.upvote.count - a.votes.upvote.count);
+
+        // Pagination
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        const paginatedData = mergedData.slice(startIndex, endIndex);
+
+        // Check if there is any data to return
+        if (paginatedData.length === 0) {
+          return res.status(404).send("You have reached the end of the data");
+        }
 
         // Return the data
-        res.json(sortedDataByVotes);
+        res.json(paginatedData);
       },
       (errorObject) => {
         res
@@ -382,7 +392,6 @@ router.delete("/submissions/:id/:uid", (req, res) => {
             db.ref()
               .update(updates)
               .then(() => {
-                console.log("Submission deleted!");
                 res.json({
                   message: "Submission deleted!",
                 });
