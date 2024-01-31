@@ -186,7 +186,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import { currentUser, getCurrentUser } from '@/service/authService.js'
   import Popup from '../../views/Pop_up.vue'
 
@@ -236,7 +236,23 @@
     window.location.href = '/sign-in'
   }
 
+  watch(title, (newTitle) => {
+    localStorage.setItem('title', newTitle)
+  })
+
+  watch(content, (newContent) => {
+    localStorage.setItem('content', newContent)
+  })
+
+  watch(meaning, (newMeaning) => {
+    localStorage.setItem('meaning', newMeaning)
+  })
+
   onMounted(async () => {
+    // Populate fields with localStorage data
+    title.value = localStorage.getItem('title') || ''
+    content.value = localStorage.getItem('content') || ''
+    meaning.value = localStorage.getItem('meaning') || ''
     try {
       const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
       user.value = isLoggedIn ? await currentUser() : null
