@@ -12,6 +12,16 @@
       >
         Wisdom Weyn
       </h2>
+      <p>
+        <span
+          data-aos="zoom-out-down"
+          data-aos-delay="400"
+          data-aos-duration="1000"
+          class="text-xs md:text-mdxl lg:text-xl font-bold text-center text-seashell-900"
+        >
+          Gabay & Maahmaahyo
+        </span>
+      </p>
     </section>
 
     <!-- Intro section -->
@@ -25,7 +35,7 @@
           data-aos-easing="ease-in-sine"
           class="text-2xl md:text-4xl lg:text-4xl font-semibold text-center text-seashell-900 mt-6 mb-4"
         >
-          Explore the richness of Somali culture
+          What is Wisdom Weyn?
         </h1>
         <p
           class="text-center text-seashell-900 leading-relaxed mb-10 max-w-3xl mx-auto"
