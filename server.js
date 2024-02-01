@@ -4,7 +4,7 @@ let admin = require("firebase-admin");
 
 // initialize Firebase Admin using our env called ADMIN_SDK
 // console.log(process.env);
-var serviceAccount = require(process.env.ADMIN_SDK)
+var serviceAccount = require('./wisdom-weyn-firebase-adminsdk-cmkcb-2df3bce2fb.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
