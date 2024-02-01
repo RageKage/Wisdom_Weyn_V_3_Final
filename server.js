@@ -2,8 +2,9 @@ let express = require("express");
 var cors = require("cors");
 let admin = require("firebase-admin");
 
-// initialize Firebase Admin
-var serviceAccount = require("./wisdom-weyn-firebase-adminsdk-cmkcb-2df3bce2fb.json");
+// initialize Firebase Admin using our env called ADMIN_SDK
+// console.log(process.env);
+var serviceAccount = require(process.env.ADMIN_SDK)
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
