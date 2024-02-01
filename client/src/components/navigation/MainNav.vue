@@ -192,7 +192,6 @@
   const signOutUser = async () => {
     try {
       await signout()
-      localStorage.clear()
 
       dropdownOpen.value = false
       user.value = null

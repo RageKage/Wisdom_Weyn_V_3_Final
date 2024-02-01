@@ -27,11 +27,13 @@ router.get("/collections", function (req, res) {
           mergedData = mergedData.concat(Object.values(data[type]));
         });
 
-        // Sort by most recent
-        mergedData.sort((a, b) => b.creationDate - a.creationDate);
-
-        // Sort by up votes in descending order
-        mergedData.sort((a, b) => b.votes.upvote.count - a.votes.upvote.count);
+        // Sort by up votes in descending order and then by most recent
+        mergedData.sort((a, b) => {
+          if (b.votes.upvote.count === a.votes.upvote.count) {
+            return new Date(b.creationDate) - new Date(a.creationDate);
+          }
+          return b.votes.upvote.count - a.votes.upvote.count;
+        });
 
         // Pagination
         const page = parseInt(req.query.page) || 1;
@@ -52,7 +54,7 @@ router.get("/collections", function (req, res) {
         res
           .status(500)
           .send("Error reading from database: " + errorObject.name);
-      },
+      }
     );
   } catch (error) {
     console.error("Error:", error);
@@ -88,7 +90,7 @@ router.post("/submissions", async (req, res) => {
 
     // get the reference to the user's submissions
     const userSubmissionRef = db.ref(
-      `users/${formData.user_id.uid}/submissions`,
+      `users/${formData.user_id.uid}/submissions`
     );
 
     // create a new entry id using firebase push
@@ -292,7 +294,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
     // get the top 5 most voted submissions
     const mostVotes = Object.values(userSubmissionData).filter(
-      (submission) => submission.votes.upvote.count > 0,
+      (submission) => submission.votes.upvote.count > 0
     );
     const mostRecent = Object.values(userSubmissionData);
 
@@ -301,7 +303,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
     mostVotes.splice(5);
 
     mostRecent.sort(
-      (a, b) => new Date(b.creationDate) - new Date(a.creationDate),
+      (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
     );
     mostRecent.splice(5);
 

@@ -72,10 +72,11 @@ export function getCurrentUser(Useruid) {
 // Sign out the user
 export async function signout() {
   const auth = getAuth()
-  localStorage.clear()
 
   try {
     await signOut(auth)
+  localStorage.clear()
+
   } catch (error) {
     console.error('Error signing out:', error)
     throw error

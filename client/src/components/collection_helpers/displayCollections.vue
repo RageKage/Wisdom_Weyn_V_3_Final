@@ -306,7 +306,6 @@
   }
 
   onMounted(async () => {
-    // window.scrollTo(0,500);
 
     try {
       const storedUser = localStorage.getItem('user')
