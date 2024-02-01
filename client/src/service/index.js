@@ -33,11 +33,15 @@ const AppApiService = () => {
   // const apiPath = 'https://0d80-2601-243-822-1e1a-98a0-a8bf-1d4b-3149.ngrok-free.app/api'
 
   // ! run locally
-  const apiPath = '/api'
+  // const apiPath = '/api'
+
+  const apiPath = import.meta.env.VITE_API_URL
 
   return {
     // this also is pagination
     getAllCollections(pageNumber) {
+      // see what apiPath path is used
+      console.log(apiPath)
       const params = {
         page: pageNumber,
         limit: 12,
