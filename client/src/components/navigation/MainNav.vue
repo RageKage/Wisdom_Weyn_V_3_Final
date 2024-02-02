@@ -173,8 +173,10 @@
     try {
       const authUser = await currentUser()
 
+      const { uid } = authUser
+
       if (authUser) {
-        const dbUser = await getCurrentUser(authUser.uid)
+        const dbUser = await getCurrentUser(authUser.user.uid)
 
         // Save the data to local storage for future use
         localStorage.setItem('user-data', JSON.stringify(dbUser))

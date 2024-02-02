@@ -306,7 +306,6 @@
   }
 
   onMounted(async () => {
-
     try {
       const storedUser = localStorage.getItem('user')
       if (storedUser) {
@@ -314,8 +313,10 @@
         isLoggedIn.value = true
       } else {
         const currentUserData = await currentUser()
-        if (currentUserData) {
-          user.value = currentUserData
+        const { uid } = currentUserData
+
+        if (currentUserData.user) {
+          user.value = currentUserData.user
           isLoggedIn.value = true
           // localStorage.setItem('user', JSON.stringify(currentUserData))
         }

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center h-96 md:h-96 lg:h-screen w-full -z-20"
+    class="flex flex-col items-center justify-center h-96 md:h-96 lg:h-screen w-full -z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out"
   >
     <div class="relative" :v-model="isLoading">
       <svg

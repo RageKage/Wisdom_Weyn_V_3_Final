@@ -70,10 +70,7 @@
     </div>
 
     <!-- Loader Component -->
-    <LoaderVue
-      v-if="isLoading"
-      class="fixed top-0 left-0 w-full h-full flex justify-center items-center"
-    />
+    <LoaderVue v-if="isLoading" />
   </div>
 </template>
 
@@ -118,7 +115,6 @@
     updateSearchQuery,
     displayedItems,
     activeFilter,
-    searchQuery,
     isLoading,
     filterType,
     closeError,

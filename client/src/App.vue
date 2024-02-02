@@ -52,7 +52,7 @@
           />
         </div>
         <div v-else class="loading-state">
-          <loaderIcon class="transition-all duration-300 ease-in-out" />
+          <loaderIcon />
         </div>
       </transition>
     </router-view>
@@ -76,11 +76,11 @@
     isDataLoaded.value = false // Set loading state to false before checking server status
     service
       .checkServerStatus()
-      .then((response) => {
+      .then(() => {
         serverStatus.value = 'running'
         isDataLoaded.value = true
       })
-      .catch((error) => {
+      .catch(() => {
         serverStatus.value = 'down'
         isDataLoaded.value = true
       })

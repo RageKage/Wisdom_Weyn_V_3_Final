@@ -67,9 +67,10 @@
   onMounted(async () => {
     try {
       const authUser = await currentUser()
+      const { uid } = authUser
 
       if (authUser) {
-        const dbUser = await getCurrentUser(authUser.uid)
+        const dbUser = await getCurrentUser(authUser.user.uid)
         user.value = dbUser
       }
     } catch (error) {

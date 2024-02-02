@@ -95,15 +95,16 @@
   onMounted(async () => {
     try {
       const authUser = await currentUser()
+      const { uid } = authUser
 
-      if (authUser) {
+      if (authUser.user) {
         // get user data from local storage
         const localUserData = localStorage.getItem('user-data')
 
         if (localUserData) {
           user.value = JSON.parse(localUserData)
         } else {
-          const dbUser = await getCurrentUser(authUser.uid)
+          const dbUser = await getCurrentUser(authUser.user.uid)
 
           // Save the data to local storage for future use
           localStorage.setItem('user-data', JSON.stringify(dbUser))

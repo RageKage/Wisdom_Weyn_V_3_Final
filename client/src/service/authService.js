@@ -15,12 +15,15 @@ export function currentUser() {
 
     const unsubscribe = onAuthStateChanged(
       auth,
-      (user) => {
+      async (user) => {
         if (user) {
+          const token = await user.getIdToken()
+
           // Save user data in localStorage
           localStorage.setItem('isLoggedIn', 'true')
           localStorage.setItem('user', JSON.stringify(user))
-          resolve(user)
+
+          resolve({ user, token })
         } else {
           // Remove user data from localStorage
           localStorage.clear()
@@ -34,6 +37,20 @@ export function currentUser() {
     // var endTime = performance.now()
     // console.error('this query took ' + (endTime - startTime) + ' milliseconds.')
   })
+}
+
+// This function will return the headers with the token if the user is logged in, otherwise it will return an empty object
+
+export async function getAuthHeaders() {
+  const authResult = await currentUser()
+  if (authResult && authResult.token) {
+    return {
+      Authorization: `Bearer ${authResult.token}`,
+      user: authResult.user,
+    }
+  } else {
+    return {}
+  }
 }
 
 // this is to get the current user from our db, this should be return only the needed data so no submissions or votes data will be returned
@@ -75,8 +92,7 @@ export async function signout() {
 
   try {
     await signOut(auth)
-  localStorage.clear()
-
+    localStorage.clear()
   } catch (error) {
     console.error('Error signing out:', error)
     throw error

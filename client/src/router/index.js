@@ -2,7 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { ref } from 'vue'
 import AOS from 'aos'
 
-import { currentUser, getCurrentUser } from '../service/authService.js'
+import {
+  currentUser,
+  getCurrentUser,
+  getAuthHeaders,
+} from '../service/authService.js'
 
 // firebase import
 
@@ -113,50 +117,30 @@ router.beforeEach(async (to, from, next) => {
 // ! next update add logic to check that if the user some how got past this that the server checks that the if the user doesn't have a username it allows them to create one else if they do res should be 404 with the message " to update your username do it through the settings page"
 // block auth users from accessing the CustomUsername page if they already have a username, also first we wanna check the localStorage named user-data to see if the user has a username, if they do then we redirect them to the collections
 router.beforeEach(async (to, from, next) => {
-  const userDataStr = localStorage.getItem('user-data')
-  let userData
-
-  if (userDataStr) {
-    userData = JSON.parse(userDataStr) // Parse stored json string to object
-  }
-
-  // Redirect to collections if user is already authenticated
-  if (userData && ['SignIn', 'SignUp', 'CustomUsername'].includes(to.name)) {
-    next('/collections') // Redirect to collections or a default authenticated user page
-    return
-  }
-
-  // CustomUsername page access logic
   if (to.name === 'CustomUsername') {
-    if (userData && userData.username) {
-      alert(
-        'Please use setting to change username. Remember you can only change your username once.',
-      )
+    const header = await getAuthHeaders()
+    const userData = await getCurrentUser(header.user.uid)
+    if (userData.username) {
       next('/collections')
     } else {
-      const authUser = await currentUser()
-
-      if (authUser) {
-        const dbUser = await getCurrentUser(authUser.uid)
-        if (dbUser.username) {
-          next('/setting')
-        } else {
-          next()
-        }
-      } else {
-        next()
-      }
+      next()
     }
   } else {
     next()
   }
 })
 
-// Use beforeEach guard to toggle navbar visibility
-router.beforeEach((to, from, next) => {
-  // Hide the navbar for signIn and signUp routes
-  showHeader.value = !['SignIn', 'SignUp', 'CustomUsername'].includes(to.name)
-  next()
+// auth users can't not go back to the login page or sign up routes
+router.beforeEach(async (to, from, next) => {
+  if (to.name === 'SignIn' || to.name === 'SignUp') {
+    if (await currentUser()) {
+      next('/collections')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 // Update the document title using the meta information from the route definition

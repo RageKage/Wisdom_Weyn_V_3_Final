@@ -11,8 +11,10 @@
       </span>
     </div>
 
-    <div v-if="user" class="mt-4 bg-white rounded-2xl shadow mx-auto max-w-2xl">
-      <div class="p-4 border-b">
+    <div v-if="user" class="mt-4 bg-white rounded-2xl shadow">
+      <div
+        class="p-4 border-b border-seashell-200 flex items-center justify-between"
+      >
         <div class="flex items-center space-x-4">
           <div v-if="user.photoURL">
             <img
@@ -28,7 +30,7 @@
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="bg-redDamask-600 p-1 rounded-full text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
+              class="w-12 h-12 bg-redDamask-600 p-1 rounded-full text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
             >
               <path
                 stroke-linecap="round"
@@ -46,13 +48,13 @@
         </div>
       </div>
 
-      <div class="p-4 border-b">
+      <div class="p-4 border-b border-seashell-200">
         <label class="block font-bold mb-2">Username</label>
         <div class="flex items-center space-x-2">
           <input
             type="text"
             v-model="user.username"
-            class="flex-grow p-2 border bg-white rounded-xl"
+            class="flex-grow p-2 border bg-white border-seashell-200 rounded-xl"
           />
           <div class="ml-2 hover:animate-spin">
             <svg
@@ -75,7 +77,7 @@
         <p v-if="usernameError" class="text-red-500">{{ usernameError }}</p>
       </div>
       <div class="cursor-not-allowed">
-        <div class="p-4 border-b">
+        <div class="p-4 border-b border-seashell-200">
           <p class="font-bold">Contact Information</p>
           <p>
             Email: <span>{{ user.email }}</span>
@@ -86,7 +88,7 @@
           </p>
         </div>
 
-        <div class="p-4 border-b">
+        <div class="p-4 border-b border-seashell-200">
           <p class="text-sm font-semibold">Settings</p>
 
           <p>Recent Activity</p>
@@ -99,7 +101,7 @@
           </div>
         </div>
 
-        <div class="p-4 border-b">
+        <div class="p-4 border-b border-seashell-200">
           <p class="font-bold text-red-600">Danger Zone</p>
           <p>Delete all posts</p>
           <p>Delete your account</p>
@@ -117,22 +119,22 @@
   import { Actions } from '../Composables/actions'
 
   const user = ref(null)
-  const userImage = ref(null)
 
   const usernameError = ref('')
 
   onMounted(async () => {
     try {
       const authUser = await currentUser()
+      const { uid } = authUser
 
-      if (authUser) {
+      if (authUser.user) {
         // Try to get user data from local storage
         const localUserData = localStorage.getItem('user-data')
 
         if (localUserData) {
           user.value = JSON.parse(localUserData)
         } else {
-          const dbUser = await getCurrentUser(authUser.uid)
+          const dbUser = await getCurrentUser(authUser.user.uid)
 
           // Save the data to local storage for future use
           localStorage.setItem('user-data', JSON.stringify(dbUser))
@@ -167,8 +169,9 @@
       return
     }
     const authUser = await currentUser()
+    const { uid } = authUser
 
-    const isUsernameAvailable = await checkUsername(username, authUser.uid)
+    const isUsernameAvailable = await checkUsername(username, authUser.user.uid)
 
     if (!isUsernameAvailable) {
       usernameError.value = 'Username already exists.'
@@ -196,7 +199,8 @@
 
           // this just makes a call to the API to get the updated user data in the local storage
           const authUser = await currentUser()
-          const dbUser = await getCurrentUser(authUser.uid)
+          const { uid } = authUser
+          const dbUser = await getCurrentUser(authUser.user.uid)
 
           // Save the data to local storage for future use
           localStorage.setItem('user-data', JSON.stringify(dbUser))

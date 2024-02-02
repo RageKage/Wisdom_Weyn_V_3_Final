@@ -54,7 +54,7 @@ router.get("/collections", function (req, res) {
         res
           .status(500)
           .send("Error reading from database: " + errorObject.name);
-      }
+      },
     );
   } catch (error) {
     console.error("Error:", error);
@@ -62,107 +62,88 @@ router.get("/collections", function (req, res) {
   }
 });
 
-// ! future update make this code more efficient and smaller using multi-path updates,
-// this is to add a new submission to the database
+function validateFormData(formData) {
+  if (!formData || Object.keys(formData).length === 0) {
+    return "Please provide form data";
+  }
+
+  const requiredKeys = ["content", "meaning", "picked", "user_id"];
+  for (const key of requiredKeys) {
+    if (!formData[key]) {
+      return `Missing value for key: ${key}`;
+    }
+  }
+  return null;
+}
+
+// Route to add a new submission to the database
 router.post("/submissions", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+  if (!idToken) {
+    return res.status(403).send("Unauthorized");
+  }
+
   try {
-    // get the form data
+    await admin.auth().verifyIdToken(idToken);
+
     const formData = req.body;
+    validateFormData(formData);
 
-    // check if the form data is empty
-    if (!formData || Object.keys(formData).length === 0) {
-      return res.status(400).send("Please provide form data");
-    }
+    const date = new Date().toISOString();
+    const submissionRef = db
+      .ref(`users/${formData.user_id.uid}/submissions`)
+      .push();
+    const submissionKey = `submission_${formData.picked}_${submissionRef.key}`;
 
-    // check that the form data has all of the required keys
-    const requiredKeys = ["content", "meaning", "picked", "user_id"];
-    for (const key of requiredKeys) {
-      if (!formData[key]) {
-        return res.status(400).send(`Missing value for key: ${key}`);
-      }
-    }
-
-    // the multi-path updates object
-    const updates = {};
-
-    const getisodate = new Date().toISOString();
-    const date = new Date(getisodate);
-
-    // get the reference to the user's submissions
-    const userSubmissionRef = db.ref(
-      `users/${formData.user_id.uid}/submissions`
-    );
-
-    // create a new entry id using firebase push
-    const submissionRef = userSubmissionRef.push();
-    const newEntryID = submissionRef.key;
-
-    // create a new submission key
-    let submissionKey = `submission_${formData.picked}_${newEntryID}`;
-
-    // create the submission data object
-    const submissionData = {
-      entry_id: submissionKey,
-      user_id: formData.user_id.uid,
+    const updates = {
+      [`users/${formData.user_id.uid}/submissions/${submissionKey}`]: {
+        entry_id: submissionKey,
+        user_id: formData.user_id.uid,
+      },
+      [`collections/${formData.picked}/${submissionKey}`]: {
+        id: submissionKey,
+        entry_id: submissionRef.key,
+        title: formData.title,
+        content: formData.content,
+        meaning: formData.meaning,
+        creationDate: date,
+        votes: { upvote: { count: 0 }, downvote: { count: 0 } },
+        flagged: false,
+        submittedBy: formData.user_id.email,
+        username: formData.user_id.username,
+        type: formData.picked,
+      },
     };
 
-    // add the path the updates object to the update the user's submissions
-    updates[`users/${formData.user_id.uid}/submissions/${submissionKey}`] =
-      submissionData;
-
-    // update the user's submission count
-    const updateUserCount = db.ref(`users/${formData.user_id.uid}`);
-    const userCountSnapshot = await updateUserCount.once("value");
+    // Update submission count
+    const userCountSnapshot = await db
+      .ref(`users/${formData.user_id.uid}`)
+      .once("value");
     const userCount = userCountSnapshot.child("submissionCount").val() || 0;
-
-    // add the path to the updates object to update the user's submission count
     updates[`users/${formData.user_id.uid}/submissionCount`] = userCount + 1;
 
-    // collection data
-    const collectionData = {
-      id: submissionKey,
-      entry_id: newEntryID,
-      title: formData.title,
-      content: formData.content,
-      meaning: formData.meaning,
-      creationDate: date,
-      // item.votes.upvote.
-      votes: {
-        upvote: {
-          count: 0,
-        },
-        downvote: {
-          count: 0,
-        },
-      },
-      flagged: false,
-      submittedBy: formData.user_id.email,
-      username: formData.user_id.username,
-      type: formData.picked,
-    };
-
-    // add the path to the updates object to update the collection
-    updates[`collections/${formData.picked}/${submissionKey}`] = collectionData;
-
-    // now we update the database with the new submission all at once using multi-path updates and also error handling
-    try {
-      await db.ref().update(updates);
-      res.json({ message: "Submission successful!" });
-    } catch (error) {
-      console.error("Error:", error);
-      return res.status(500).send("Server error: " + error.message);
-    }
+    await db.ref().update(updates);
+    res.json({ message: "Submission successful!" });
   } catch (error) {
-    console.error("Error in submission:", error);
-    res.status(500).send("Internal Server Error");
+    console.error("Error:", error);
+    res
+      .status(error.code === "auth/id-token-expired" ? 403 : 500)
+      .send("Error: " + error.message);
   }
 });
 
 // Function to handle voting
 const handleVote = async (req, res, newVoteType) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return res.status(403).send("Unauthorized");
+  }
+
   try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
     const id = req.params.id;
-    const uid = req.body.uid;
     const type = id.split("_")[1];
 
     const userVotesRef = db.ref(`users/${uid}/votes/${id}`);
@@ -202,8 +183,10 @@ const handleVote = async (req, res, newVoteType) => {
 
     res.json({ message: "Vote updated!" });
   } catch (error) {
-    console.error(`Error updating vote:`, error);
-    res.status(500).send(`Server error: ${error.message}`);
+    console.error("Error:", error.message);
+    res
+      .status(error.code === "auth/id-token-expired" ? 403 : 500)
+      .send("Error: " + error.message);
   }
 };
 
@@ -294,7 +277,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
     // get the top 5 most voted submissions
     const mostVotes = Object.values(userSubmissionData).filter(
-      (submission) => submission.votes.upvote.count > 0
+      (submission) => submission.votes.upvote.count > 0,
     );
     const mostRecent = Object.values(userSubmissionData);
 
@@ -303,7 +286,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
     mostVotes.splice(5);
 
     mostRecent.sort(
-      (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
+      (a, b) => new Date(b.creationDate) - new Date(a.creationDate),
     );
     mostRecent.splice(5);
 
@@ -324,142 +307,167 @@ router.get("/users/:email/dashboard", async (req, res) => {
 });
 
 // delete a submission
-router.delete("/submissions/:id/:uid", (req, res) => {
-  const id = req.params.id;
-  const uid = req.params.uid;
+router.delete("/submissions/:id", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
 
-  // the updates object
-  let updates = {};
+  if (!idToken) {
+    return res.status(403).send("Unauthorized");
+  }
 
-  // Check if the user is authenticated to delete the submission
-  const userRef = db.ref("users/" + uid);
-  userRef.once("value", (userSnapshot) => {
-    if (!userSnapshot.exists()) {
-      return res.status(404).send("User not found");
-    }
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
 
-    const userSubmissionsRef = db.ref(`users/${uid}`);
+    const id = req.params.id;
 
-    const submissionKey = userSubmissionsRef
-      .orderByChild("submissions")
-      .equalTo(id);
+    // the updates object
+    let updates = {};
 
-    userSubmissionsRef.once("value", (userSubmissionsSnapshot) => {
-      if (!userSubmissionsSnapshot.exists()) {
-        console.error("User has no submissions");
-        return res.status(404).send("Submission not found");
-      }
-
-      if (!submissionKey) {
-        return res.status(404).send("Submission not found");
-      }
-
-      // Remove the submission from the collections
-      const type = id.split("_")[1];
-      const collectionRef = db.ref(`collections/${type}/${id}`);
-      collectionRef.once("value", (collectionSnapshot) => {
-        if (collectionSnapshot.exists()) {
-          // remove the data from the updates object
-          updates[`collections/${type}/${id}`] = null;
-        }
-
-        // Remove the submission from the user's submissions
-        updates[`users/${uid}/submissions/${id}`] = null;
-
-        // update the user's submission count, decrement by 1
-        const usersubRef = db.ref(`users/${uid}/submissions`);
-        usersubRef.once("value", (usersubSnapshot) => {
-          const newSubmissionCount = usersubSnapshot.numChildren();
-
-          if (newSubmissionCount <= 0) {
-            updates[`users/${uid}/submissionCount`] = 0;
-          } else {
-            updates[`users/${uid}/submissionCount`] = newSubmissionCount;
-          }
-
-          // now remove it from the user's votes collection
-          const userVotesRef = db.ref(`users/${uid}/votes`);
-          userVotesRef.once("value", (userVotesSnapshot) => {
-            if (userVotesSnapshot.exists()) {
-              const submissionKey = userSubmissionsRef
-                .orderByChild("votes")
-                .equalTo(id);
-
-              if (submissionKey) {
-                updates[`users/${uid}/votes/${id}`] = null;
-              }
-            }
-
-            // now we update the database with the new submission all at once using multi-path updates and also error handling
-            db.ref()
-              .update(updates)
-              .then(() => {
-                res.json({
-                  message: "Submission deleted!",
-                });
-              })
-              .catch((error) => {
-                console.error("Error:", error);
-                return res.status(500).send("Server error: " + error.message);
-              });
-          });
-        });
-      });
-    });
-  });
-});
-
-// update username
-router.put("/users/:uid", (req, res) => {
-  const uid = req.params.uid;
-  const newUsername = req.body.username;
-
-  // the updates object
-  const updates = {};
-
-  // Check if the user is authenticated to update the username
-  const userRef = db.ref("users/" + uid);
-  userRef.once("value", (userSnapshot) => {
-    if (!userSnapshot.exists()) {
-      return res.status(404).send("User not found");
-    }
-
+    // Check if the user is authenticated to delete the submission
+    const userRef = db.ref("users/" + uid);
     userRef.once("value", (userSnapshot) => {
       if (!userSnapshot.exists()) {
         return res.status(404).send("User not found");
       }
 
-      const userData = userSnapshot.val(); // get user data
-      const oldUsername = userData.username; // get old username
+      const userSubmissionsRef = db.ref(`users/${uid}`);
 
-      // Update usernames in user collection
-      updates[`/users/${uid}/username`] = newUsername;
+      const submissionKey = userSubmissionsRef
+        .orderByChild("submissions")
+        .equalTo(id);
 
-      // Update username in submissions collection
-      if (userData.submissions) {
-        for (const submissionKey of Object.keys(userData.submissions)) {
-          const type = submissionKey.split("_")[1];
-          updates[`/collections/${type}/${submissionKey}/username`] =
-            newUsername;
+      userSubmissionsRef.once("value", (userSubmissionsSnapshot) => {
+        if (!userSubmissionsSnapshot.exists()) {
+          console.error("User has no submissions");
+          return res.status(404).send("Submission not found");
         }
+
+        if (!submissionKey) {
+          return res.status(404).send("Submission not found");
+        }
+
+        // Remove the submission from the collections
+        const type = id.split("_")[1];
+        const collectionRef = db.ref(`collections/${type}/${id}`);
+        collectionRef.once("value", (collectionSnapshot) => {
+          if (collectionSnapshot.exists()) {
+            // remove the data from the updates object
+            updates[`collections/${type}/${id}`] = null;
+          }
+
+          // Remove the submission from the user's submissions
+          updates[`users/${uid}/submissions/${id}`] = null;
+
+          // update the user's submission count, decrement by 1
+          const usersubRef = db.ref(`users/${uid}/submissions`);
+          usersubRef.once("value", (usersubSnapshot) => {
+            const newSubmissionCount = usersubSnapshot.numChildren();
+
+            if (newSubmissionCount <= 0) {
+              updates[`users/${uid}/submissionCount`] = 0;
+            } else {
+              updates[`users/${uid}/submissionCount`] = newSubmissionCount;
+            }
+
+            // now remove it from the user's votes collection
+            const userVotesRef = db.ref(`users/${uid}/votes`);
+            userVotesRef.once("value", (userVotesSnapshot) => {
+              if (userVotesSnapshot.exists()) {
+                const submissionKey = userSubmissionsRef
+                  .orderByChild("votes")
+                  .equalTo(id);
+
+                if (submissionKey) {
+                  updates[`users/${uid}/votes/${id}`] = null;
+                }
+              }
+
+              // now we update the database with the new submission all at once using multi-path updates and also error handling
+              db.ref()
+                .update(updates)
+                .then(() => {
+                  res.json({
+                    message: "Submission deleted!",
+                  });
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                  return res.status(500).send("Server error: " + error.message);
+                });
+            });
+          });
+        });
+      });
+    });
+  } catch (error) {}
+});
+
+// update username
+router.put("/users/:uid", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return res.status(403).send("Unauthorized");
+  }
+
+  // Verify the ID token and extract the user's Firebase UID
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
+    const newUsername = req.body.username;
+
+    // the updates object
+    const updates = {};
+
+    // Check if the user is authenticated to update the username
+    const userRef = db.ref("users/" + uid);
+    userRef.once("value", (userSnapshot) => {
+      if (!userSnapshot.exists()) {
+        return res.status(404).send("User not found");
       }
 
-      // Update the username in the usernames collection as well
-      updates[`/usernames/${oldUsername}`] = null; // remove old username
-      updates[`/usernames/${newUsername}`] = { uid: uid }; // add new username
+      userRef.once("value", (userSnapshot) => {
+        if (!userSnapshot.exists()) {
+          return res.status(404).send("User not found");
+        }
 
-      // now we update the database with the new username all at once using multi-path updates and also error handling
-      db.ref()
-        .update(updates)
-        .then(() => {
-          res.status(200).json({ message: "Username updated successfully" });
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          return res.status(500).send("Server error: " + error.message);
-        });
+        const userData = userSnapshot.val(); // get user data
+        const oldUsername = userData.username; // get old username
+
+        // Update usernames in user collection
+        updates[`/users/${uid}/username`] = newUsername;
+
+        // Update username in submissions collection
+        if (userData.submissions) {
+          for (const submissionKey of Object.keys(userData.submissions)) {
+            const type = submissionKey.split("_")[1];
+            updates[`/collections/${type}/${submissionKey}/username`] =
+              newUsername;
+          }
+        }
+
+        // Update the username in the usernames collection as well
+        updates[`/usernames/${oldUsername}`] = null; // remove old username
+        updates[`/usernames/${newUsername}`] = { uid: uid }; // add new username
+
+        // now we update the database with the new username all at once using multi-path updates and also error handling
+        db.ref()
+          .update(updates)
+          .then(() => {
+            res.status(200).json({ message: "Username updated successfully" });
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            return res.status(500).send("Server error: " + error.message);
+          });
+      });
     });
-  });
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(error.code === "auth/id-token-expired" ? 403 : 500)
+      .send("Error: " + error.message);
+  }
 });
 
 // search for a submission by proverbs or poetry, or title
@@ -514,30 +522,5 @@ router.get("/server/status", async (req, res) => {
     return res.status(500).send("Server error: " + error.message);
   }
 });
-
-// get user by id
-// router.get('/users/:id', async (req, res) => {
-//   try {
-//     const id = req.params.id;
-
-//     const userRef = db.ref('users/' + id);
-//     const userSnapshot = await userRef.once('value');
-
-//     if (!userSnapshot.exists()) {
-//       return res.status(404).send('User not found');
-//     }
-
-//     const userData = userSnapshot.val();
-
-//     res.json({
-//       uid: userData.uid,
-//       displayName: userData.displayName,
-//       email: userData.email,
-//       submissionCount: userData.submissionCount,
-//     });
-//   } catch (error) {
-//     return res.status(500).send('Server error: ' + error.message);
-//   }
-// })
 
 module.exports = router;

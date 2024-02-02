@@ -11,19 +11,24 @@ export function CollectionsFunctions() {
 
   const service = AppApiService()
 
+  // Truncate the string to a certain limit by words not text length
   const truncateString = (text, limit) => {
-    if (!text) return '' // Return empty string if text is undefined
+    // Normalize the text to treat multiple newline characters and spaces equally
+    const normalizedText = text.replace(/\s+/g, ' ')
 
-    text = text.trim()
-    const words = text.split(' ')
+    // Split the normalized text into words
+    const words = normalizedText.split(' ')
 
+    // Check if the text after normalization still respects the word limit
     if (words.length <= limit) {
-      return text
+      return words.join(' ')
     }
 
-    const truncatedText = words.slice(0, limit).join(' ')
+    // Truncate the array of words to the specified limit
+    const truncatedWords = words.slice(0, limit)
 
-    return truncatedText + '...'
+    // Join the truncated words back into a string
+    return truncatedWords.join(' ') + '...' // Append ellipsis to indicate truncation
   }
 
   // Filter the collection data based on the active filter

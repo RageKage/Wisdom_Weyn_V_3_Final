@@ -1,14 +1,9 @@
 import axios from 'axios'
-import { currentUser } from '@/service/authService.js'
+import { getAuthHeaders } from '@/service/authService.js'
 
 // see all of the env we have in our .
 
 const AppApiService = () => {
-  // ngrok header to disable the popup
-  const headers = {
-    'ngrok-skip-browser-warning': 'true',
-  }
-
   const handleResponse = (response) => {
     return response.data
   }
@@ -27,36 +22,26 @@ const AppApiService = () => {
     }
   }
 
-  // import NGROK_URL from our .env using dotenv , run on ngrok server
-  // ! hosting server
-  // const apiPath = import.meta.env.VITE_NGROK_URL + '/api'
-  // const apiPath = 'https://0d80-2601-243-822-1e1a-98a0-a8bf-1d4b-3149.ngrok-free.app/api'
-
-  // ! run locally
-  // const apiPath = '/api'
-
   const apiPath = import.meta.env.VITE_API_URL
 
   return {
     // this also is pagination
     getAllCollections(pageNumber) {
-      // see what apiPath path is used
-      console.log(apiPath)
       const params = {
         page: pageNumber,
         limit: 12,
       }
 
       return axios
-        .get(apiPath + '/collections', { params, headers })
+        .get(apiPath + '/collections', { params })
         .then(handleResponse)
         .catch(handleError)
     },
 
     async createSubmission(formData) {
-      const authUser = await currentUser()
+      const headers = await getAuthHeaders()
 
-      if (!authUser) {
+      if (Object.keys(headers).length === 0) {
         return Promise.reject('You must be logged in to create a submission')
       }
 
@@ -67,15 +52,16 @@ const AppApiService = () => {
     },
 
     async deleteSubmission(data) {
-      const authUser = await currentUser()
+      const headers = await getAuthHeaders()
 
-      if (!authUser) {
-        return Promise.reject('You must be logged in to delete a submission')
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged in to create a submission')
       }
 
-      const uid = authUser.uid
       return axios
-        .delete(apiPath + `/submissions/${data.id}/${uid}`, { headers })
+        .delete(`${apiPath}/submissions/${data.id}`, {
+          headers,
+        })
         .then(handleResponse)
         .catch(handleError)
     },
@@ -83,19 +69,20 @@ const AppApiService = () => {
     getSubmission(id) {
       // this is the path it makes to the submission
       return axios
-        .get(apiPath + `/submissions/${id}`, { headers })
+        .get(apiPath + `/submissions/${id}`)
         .then(handleResponse)
         .catch(handleError)
     },
 
     async upvoteSubmission(id) {
-      const authUser = await currentUser()
+      const headers = await getAuthHeaders()
 
-      if (!authUser) {
-        return Promise.reject('Sorry, you must be logged in to vote')
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged in to create a submission')
       }
 
-      const uid = authUser.uid
+      const uid = headers.user.uid
+
       return axios
         .put(apiPath + `/submissions/${id}/upvote`, { uid }, { headers })
         .then(handleResponse)
@@ -103,13 +90,13 @@ const AppApiService = () => {
     },
 
     async downvoteSubmission(id) {
-      const authUser = await currentUser()
+      const headers = await getAuthHeaders()
 
-      if (!authUser) {
-        return Promise.reject('Sorry, you must be logged in to vote')
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged in to create a submission')
       }
 
-      const uid = authUser.uid
+      const uid = headers.user.uid
       return axios
         .put(apiPath + `/submissions/${id}/downvote`, { uid }, { headers })
         .then(handleResponse)
@@ -118,21 +105,19 @@ const AppApiService = () => {
 
     getuserDashBoardAPI(email) {
       return axios
-        .get(apiPath + `/users/${email}/dashboard`, { headers })
+        .get(apiPath + `/users/${email}/dashboard`)
         .then(handleResponse)
         .catch(handleError)
     },
 
     async usernameUpdate(username) {
-      const authUser = await currentUser()
+      const headers = await getAuthHeaders()
 
-      if (!authUser) {
-        return Promise.reject(
-          'Sorry, you must be logged in to update the username',
-        )
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged in to create a submission')
       }
 
-      const uid = authUser.uid
+      const uid = headers.user.uid
       const data = { username } // Put the new username in the request body
 
       return axios
@@ -143,29 +128,13 @@ const AppApiService = () => {
 
     async searchCollection(query) {
       return axios
-        .get(apiPath + `/search/${query}`, { headers })
+        .get(apiPath + `/search/${query}`)
         .then(handleResponse)
         .catch(handleError)
     },
-    // getUserDatabyuid(uid) {
-    //   return axios
-    //     .get(`/api/users/${uid}`)
-    //     .then(handleResponse)
-    //     .catch(handleError)
-    // },
-
-    // checkServerStatus() {
-    //   return axios
-    //     .get(`${apiPath}/server/status`)
-    //     .then((res) => {
-    //       return res.data
-    //     })
-    //     .catch(handleError);
-    // },
-
     checkServerStatus() {
       return axios
-        .get(`${apiPath}/server/status`, { headers })
+        .get(`${apiPath}/server/status`)
         .then((res) => {
           return res.data
         })
@@ -175,31 +144,3 @@ const AppApiService = () => {
 }
 
 export default AppApiService
-
-// import axios from 'axios'
-// import { currentUser } from '@/service/authService.js'
-
-// import router from '@/router'
-
-// const AppApiService = () => {
-//   const handleResponse = (response) => response.data
-
-//   const handleError = (error) => {
-//     if (error.response) {
-//       // The request was made, but the server responded with a status code outside of the 2xx range
-//       const { status, data } = error.response
-//       const errorMessage = `Error: ${status} - ${data}`
-//       router.push({ name: 'ErrorHandling', params: { error: errorMessage } }) // Redirect to error page with error message
-//       return Promise.reject(errorMessage)
-//     } else if (error.request) {
-//       // The request was made, but no response was received
-//       const errorMessage = 'Network error. Please try again.'
-//       router.push({ name: 'ErrorHandling', params: { error: errorMessage } }) // Redirect to error page with error message
-//       return Promise.reject(errorMessage)
-//     } else {
-//       // Something happened in setting up the request that triggered an Error
-//       const errorMessage = 'Unexpected error. Please try again.'
-//       router.push({ name: 'ErrorHandling', params: { error: errorMessage } }) // Redirect to error page with error message
-//       return Promise.reject(errorMessage)
-//     }
-//   }
