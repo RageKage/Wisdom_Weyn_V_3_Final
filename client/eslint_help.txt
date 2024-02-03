@@ -1,0 +1,20 @@
+### See Problems and Errors:
+
+- To run ESLint on the entire project:
+  npx eslint .
+
+- To run ESLint in the 'src' directory:
+  npx eslint --ext .jsx --ext .js --ext .vue src/
+
+### Auto Fix Unused Imports and Variables:
+
+  npx eslint --fix .
+
+or 
+
+  npx eslint --ext .jsx --ext .js --ext .vue src/ --fix
+
+### Running Prettier:
+
+  npx prettier --write "src/**/*.vue"
+  npx prettier --write "src/**/*.js"
