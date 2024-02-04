@@ -10,6 +10,7 @@
               <div
                 v-if="displayedItems.length > 0"
                 class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
+
               >
                 {{ displayedItems.length }}
               </div>
@@ -17,6 +18,7 @@
           </div>
           <div>
             <span
+
               class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
             >
               {{ activeFilter }}
@@ -33,6 +35,7 @@
           <div>
             <div
               class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
+
             >
               No data available for
             </div>
@@ -41,6 +44,7 @@
         <div>
           <span
             class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
+
           >
             {{ activeFilter }}
           </span>
