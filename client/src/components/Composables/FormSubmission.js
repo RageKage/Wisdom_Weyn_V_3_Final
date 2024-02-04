@@ -47,24 +47,39 @@ export function submissionFunctions() {
         }, 2300)
       }
     } catch (error) {
-      // check if error contains the msg "You must be logged in to create a submission"
-      if (error.includes('You must be logged in to create a submission')) {
-        await Swal.fire({
-          title: 'Login Required',
-          text: 'You must be logged in to create a submission',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Login',
-          cancelButtonText: 'Cancel',
-          reverseButtons: true,
-          customClass: {
-            popup: 'flex flex-col space-y-4',
-            header: 'flex items-center justify-between w-full',
-            closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
-            content: 'text-gray-700 prose',
-            actions: 'flex justify-end gap-4 mt-4',
-          },
-        })
+      console.log('server response', error)
+
+      const errorString = error.toString()
+
+      // split string by "-" [0] is title and [1] is message
+
+      const title = errorString.split('-')[0]
+      const message = errorString.split('-')[1]
+
+      if (errorString.includes('400')) {
+        if (message.includes('User must have a username')) {
+          await Swal.fire({
+            title: title,
+            text: message,
+            icon: 'warning',
+            reverseButtons: true,
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Create Username',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // redirect to the user profile page
+              window.location.href = '/custom-username'
+            }
+          })
+        } else {
+          await Swal.fire({
+            title: title,
+            text: message,
+            icon: 'warning',
+            reverseButtons: true,
+          })
+        }
         isLoading.value = false
         return
       } else {

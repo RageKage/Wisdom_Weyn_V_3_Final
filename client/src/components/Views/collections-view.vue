@@ -95,13 +95,6 @@
       confirmButtonText: 'Login',
       cancelButtonText: 'Cancel',
       reverseButtons: true,
-      customClass: {
-        popup: 'flex flex-col space-y-4',
-        header: 'flex items-center justify-between w-full',
-        closeButton: 'text-gray-400 hover:text-gray-500 ml-auto',
-        content: 'text-gray-700 prose',
-        actions: 'flex justify-end gap-4 mt-4',
-      },
     }).then((result) => {
       if (result.isConfirmed) {
         // Redirect to login page

@@ -9,6 +9,7 @@ const AppApiService = () => {
   }
 
   const handleError = (error) => {
+
     if (error.response) {
       // The request was made, but the server responded with a status code outside of the 2xx range
       const { status, data } = error.response
@@ -22,7 +23,10 @@ const AppApiService = () => {
     }
   }
 
-  const apiPath = import.meta.env.VITE_API_URL
+  const apiPath =
+    import.meta.env.NODE_ENV === 'production'
+      ? import.meta.env.VITE_API_URL
+      : import.meta.env.VITE_API_URL
 
   return {
     // this also is pagination

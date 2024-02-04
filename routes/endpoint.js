@@ -54,7 +54,7 @@ router.get("/collections", function (req, res) {
         res
           .status(500)
           .send("Error reading from database: " + errorObject.name);
-      },
+      }
     );
   } catch (error) {
     console.error("Error:", error);
@@ -95,6 +95,11 @@ router.post("/submissions", async (req, res) => {
       .push();
     const submissionKey = `submission_${formData.picked}_${submissionRef.key}`;
 
+    const validationResult = validateFormData(formData);
+    if (validationResult !== null) {
+      return res.status(400).send(validationResult);
+    }
+
     const updates = {
       [`users/${formData.user_id.uid}/submissions/${submissionKey}`]: {
         entry_id: submissionKey,
@@ -131,6 +136,30 @@ router.post("/submissions", async (req, res) => {
       .send("Error: " + error.message);
   }
 });
+
+function validateFormData(formData) {
+  // if they are creating a Poem then the title isn't required else it
+  if (!formData || Object.keys(formData).length === 0) {
+    return "Please provide form data";
+  }
+
+  if (formData.picked === "Poetry" && !formData.title) {
+    return "Please provide a title for the poetry";
+  }
+
+  const requiredKeys = ["content", "meaning", "picked", "user_id"];
+  for (const key of requiredKeys) {
+    if (!formData[key]) {
+      return `Missing value for key: ${key}`;
+    }
+  }
+
+  // no username
+  if (!formData.user_id.username) {
+    return "User must have a username";
+  }
+  return null;
+}
 
 // Function to handle voting
 const handleVote = async (req, res, newVoteType) => {
@@ -277,7 +306,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
 
     // get the top 5 most voted submissions
     const mostVotes = Object.values(userSubmissionData).filter(
-      (submission) => submission.votes.upvote.count > 0,
+      (submission) => submission.votes.upvote.count > 0
     );
     const mostRecent = Object.values(userSubmissionData);
 
@@ -286,7 +315,7 @@ router.get("/users/:email/dashboard", async (req, res) => {
     mostVotes.splice(5);
 
     mostRecent.sort(
-      (a, b) => new Date(b.creationDate) - new Date(a.creationDate),
+      (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
     );
     mostRecent.splice(5);
 
