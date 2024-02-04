@@ -9,7 +9,6 @@ import 'aos/dist/aos.css'
 import AppApiService from './service/index'
 import { MotionPlugin } from '@vueuse/motion'
 
-
 const app = createApp(App)
 AOS.init()
 

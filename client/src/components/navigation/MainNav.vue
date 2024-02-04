@@ -1,7 +1,7 @@
 <template>
-  <nav class="text-seashell-700" v-if="loading" >
-    <div class="flex items-center justify-between flex-wrap py-6 px-1" >
-      <Logo  />
+  <nav class="text-seashell-700" v-if="loading">
+    <div class="flex items-center justify-between flex-wrap py-6 px-1">
+      <Logo />
 
       <div
         class="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"

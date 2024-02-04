@@ -57,14 +57,12 @@
     <router-view
       class="px-4 sm:px-5 max-w-full mx-auto sm:max-w-[1500px] py-4"
     />
-
   </div>
 </template>
 
 <script setup>
   import LoadingSpinner from './assets/app-loader.vue'
   import { showHeader, isLoading, serverDown } from './router/index'
-
 
   import siteNavigation from './components/navigation/SiteNavigation.vue'
 
