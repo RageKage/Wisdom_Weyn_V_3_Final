@@ -61,6 +61,7 @@
           <li v-if="!user">
             <router-link
               to="/sign-in"
+              @click="closeMenu"
               class="block text-2xl font-medium text-seashell-900"
             >
               Log in <span>&rarr;</span>

@@ -1,10 +1,6 @@
 <template>
   <div
-    class="
-
-    flex justify-center items-center fixed top-0 left-0 min-h-full min-w-full bg-seashell-50 z-50
-
-    "
+    class="flex justify-center items-center fixed top-0 left-0 min-h-full min-w-full bg-seashell-50 z-50"
   >
     <!-- Firebase Error Message -->
     <div
@@ -32,7 +28,7 @@
     </div>
 
     <form
-      class="flex flex-col space-y-6 p-8 rounded-3xl shadow w-full max-w-md "
+      class="flex flex-col space-y-6 p-8 rounded-3xl shadow w-full max-w-md"
       @submit.prevent="signup"
     >
       <button

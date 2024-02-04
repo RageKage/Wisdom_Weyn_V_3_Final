@@ -7,6 +7,8 @@ import './assets/css/input.css'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import AppApiService from './service/index'
+import { MotionPlugin } from '@vueuse/motion'
+
 
 const app = createApp(App)
 AOS.init()
@@ -36,6 +38,8 @@ initializeApp(firebaseConfig)
 
 // Use the Pinia state management library
 app.use(createPinia())
+
+app.use(MotionPlugin)
 
 // Use the router instance
 app.use(router)

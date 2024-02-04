@@ -5,18 +5,40 @@
     <!-- Header section -->
     <section class="flex flex-col items-center justify-center min-h-screen">
       <h2
-        data-aos="zoom-out-down"
-        data-aos-delay="200"
-        data-aos-duration="1000"
         class="text-4xl md:text-6xl lg:text-8xl font-bold text-center text-seashell-900"
+        v-motion
+        :initial="{
+          opacity: 0,
+          y: 100,
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            type: 'spring',
+            stiffness: '100',
+            delay: 100,
+          },
+        }"
       >
         Wisdom Weyn
       </h2>
       <p>
         <span
-          data-aos="zoom-out-down"
-          data-aos-delay="400"
-          data-aos-duration="1000"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100,
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              type: 'spring',
+              stiffness: '100',
+              delay: 300,
+            },
+          }"
           class="text-xs md:text-mdxl lg:text-xl font-bold text-center text-seashell-900"
         >
           Gabay & Maahmaahyo
@@ -43,7 +65,7 @@
           <span
             data-aos="fade-right"
             data-aos-offset="300"
-            data-aos-delay="150"
+            data-aos-delay="100"
             data-aos-easing="ease-in-out"
             data-aos-duration="1000"
           >
@@ -51,8 +73,8 @@
           </span>
           <span
             data-aos="fade-right"
-            data-aos-offset="400"
-            data-aos-delay="180"
+            data-aos-offset="300"
+            data-aos-delay="200"
             data-aos-easing="ease-in-out"
             data-aos-duration="1000"
           >
@@ -60,8 +82,8 @@
           </span>
           <span
             data-aos="fade-right"
-            data-aos-offset="500"
-            data-aos-delay="200"
+            data-aos-offset="300"
+            data-aos-delay="300"
             data-aos-easing="ease-in-out"
             data-aos-duration="1000"
           >
@@ -69,8 +91,8 @@
           </span>
           <span
             data-aos="fade-right"
-            data-aos-offset="600"
-            data-aos-delay="230"
+            data-aos-offset="300"
+            data-aos-delay="400"
             data-aos-easing="ease-in-out"
             data-aos-duration="1000"
           >
@@ -83,7 +105,7 @@
           class="rounded-3xl shadow-lg"
           data-aos="fade-left"
           data-aos-offset="300"
-          data-aos-delay="300"
+          data-aos-delay="500"
         >
           <a :href="currentImage.source" target="_blank">
             <img
@@ -91,12 +113,12 @@
               alt="Art Image"
               class="object-cover rounded-3xl mx-auto shadow-lg"
               data-aos="zoom-in"
-              data-aos-delay="450"
+              data-aos-delay="600"
             />
           </a>
           <p
             data-aos="fade-up"
-            data-aos-delay="200"
+            data-aos-delay="700"
             class="text-center text-seashell-900 text-sm leading-relaxed max-w-3xl mx-auto"
           >
             {{ currentImage.description }}
@@ -116,7 +138,6 @@
       >
         Discover
       </h1>
-
       <p
         class="text-center text-seashell-900 leading-relaxed mb-10 max-w-3xl mx-auto"
       >
@@ -124,30 +145,27 @@
           Browse through the collections of poems and proverbs, each with its
           own
         </span>
-        <span data-aos="fade-down" data-aos-delay="600">
+        <span data-aos="fade-down" data-aos-delay="450">
           story and interpretation. You can also submit your own poems and
         </span>
-        <span data-aos="fade-down" data-aos-delay="900">
+        <span data-aos="fade-down" data-aos-delay="600">
           proverbs, or share your insights and feedback with other users.
         </span>
       </p>
-
-      <div
-        class="flex flex-row items-center justify-center gap-4 mb-6 mt-6 rounded-3xl"
-      >
+      <div class="flex flex-row items-center justify-center gap-4 mb-6 mt-6">
         <router-link
           to="/Collections"
-          data-aos="fade-right"
+          data-aos="fade-up"
           data-aos-delay="400"
-          class="bg-carrotOrange-500 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1"
+          class="bg-carrotOrange-500 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl transition duration-300 ease-in-out transform"
         >
           Collections
         </router-link>
         <router-link
           to="/submissions/create"
-          data-aos="fade-left"
-          data-aos-delay="500"
-          class="bg-carrotOrange-500 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1"
+          data-aos="fade-up"
+          data-aos-delay="600"
+          class="bg-carrotOrange-500 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl transition duration-300 ease-in-out transform"
         >
           Contribute
         </router-link>
@@ -160,7 +178,7 @@
     >
       <h1
         data-aos="fade-down"
-        data-aos-delay="200"
+        data-aos-delay="100"
         class="text-2xl md:text-4xl lg:text-4xl font-semibold text-center text-seashell-900 mt-6 mb-4"
       >
         About Wisdom Weyn
@@ -168,15 +186,15 @@
       <p
         class="text-center text-seashell-900 leading-relaxed mb-10 max-w-3xl mx-auto"
       >
-        <span data-aos="zoom-in" data-aos-delay="200">
+        <span data-aos="zoom-in" data-aos-delay="300">
           Wisdom Weyn began as a personal project to collect and document the
           poems and proverbs I found on TikTok and other sources.
         </span>
-        <span data-aos="zoom-in" data-aos-delay="400">
+        <span data-aos="zoom-in" data-aos-delay="500">
           I soon realized many people were interested in learning more about
           these sayings and their meanings,
         </span>
-        <span data-aos="zoom-in" data-aos-delay="600">
+        <span data-aos="zoom-in" data-aos-delay="700">
           so I decided to create a platform where anyone can access, contribute,
           and enjoy them.
         </span>

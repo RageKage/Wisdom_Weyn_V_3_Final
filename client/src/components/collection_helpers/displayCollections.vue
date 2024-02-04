@@ -99,6 +99,20 @@
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start"
   >
     <div
+    v-motion
+    :initial="{
+      x: 0,
+      y: -200,
+      scale: 0.5,
+      opacity: 0,
+    }"
+    :enter="{
+      x: 0,
+      y: 0,
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 1, delay: 0.5 },
+    }"
       v-for="item in displayedItems"
       :key="item.id"
       class="bg-seashell-50 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 justify-between items-start p-4 mb-4"
