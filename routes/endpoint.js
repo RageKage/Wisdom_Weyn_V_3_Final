@@ -8,214 +8,66 @@ let admin = require("firebase-admin");
 
 var db = admin.database();
 
+var handleError = require("./errorHandler.js").handleError;
+var verifyToken = require("./errorHandler.js").verifyToken;
+var sendNotFound = require("./errorHandler.js").sendNotFound;
+var sendUnauthorized = require("./errorHandler.js").sendUnauthorized;
+
+// CRUD
+var updateData = require("./helper/Update.js").updateData;
+var updateUsername = require("./helper/Update.js").updateUsername;
+var handleVoting = require("./helper/Update.js").handleVoting;
+var getDashboardData = require("./helper/Read.js").getDashboardData;
+var getCollections = require("./helper/Read.js").getCollections;
+var createSubmission = require("./helper/Create.js").createSubmission;
+var DeleteSubmission = require("./helper/Delete.js").DeleteSubmission;
+
+var storeUserData = require("./helper/Create.js").storeUserData;
+
+var addUsernameToDB = require("./helper/Create.js").addUsernameToDB;
+
 // getting all of the data in my collections
-router.get("/collections", function (req, res) {
+router.get("/collections", async function (req, res) {
   try {
-    const ref = db.ref("/collections");
-
-    ref.once(
-      "value",
-      (snapshot) => {
-        let data = snapshot.val();
-        if (!data || Object.keys(data).length === 0) {
-          return res.status(404).send("No data found");
-        }
-
-        // Merge proverbs and poetry into one array
-        let mergedData = [];
-        Object.keys(data).forEach((type) => {
-          mergedData = mergedData.concat(Object.values(data[type]));
-        });
-
-        // Sort by up votes in descending order and then by most recent
-        mergedData.sort((a, b) => {
-          if (b.votes.upvote.count === a.votes.upvote.count) {
-            return new Date(b.creationDate) - new Date(a.creationDate);
-          }
-          return b.votes.upvote.count - a.votes.upvote.count;
-        });
-
-        // Pagination
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const startIndex = (page - 1) * limit;
-        const endIndex = page * limit;
-        const paginatedData = mergedData.slice(startIndex, endIndex);
-
-        // Check if there is any data to return
-        if (paginatedData.length === 0) {
-          return res.status(404).send("You have reached the end of the data");
-        }
-
-        // Return the data
-        res.json(paginatedData);
-      },
-      (errorObject) => {
-        res
-          .status(500)
-          .send("Error reading from database: " + errorObject.name);
-      }
-    );
+    await getCollections(req, res);
   } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).send("Server error: " + error.message);
+    return handleError(res, error);
   }
 });
-
-function validateFormData(formData) {
-  if (!formData || Object.keys(formData).length === 0) {
-    return "Please provide form data";
-  }
-
-  const requiredKeys = ["content", "meaning", "picked", "user_id"];
-  for (const key of requiredKeys) {
-    if (!formData[key]) {
-      return `Missing value for key: ${key}`;
-    }
-  }
-  return null;
-}
 
 // Route to add a new submission to the database
 router.post("/submissions", async (req, res) => {
   const idToken = req.headers.authorization?.split("Bearer ")[1];
   if (!idToken) {
-    return res.status(403).send("Unauthorized");
+    sendUnauthorized(res, "Unauthorized");
   }
 
   try {
-    await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await verifyToken(idToken);
 
-    const formData = req.body;
-    validateFormData(formData);
-
-    const date = new Date().toISOString();
-    const submissionRef = db
-      .ref(`users/${formData.user_id.uid}/submissions`)
-      .push();
-    const submissionKey = `submission_${formData.picked}_${submissionRef.key}`;
-
-    const validationResult = validateFormData(formData);
-    if (validationResult !== null) {
-      return res.status(400).send(validationResult);
-    }
-
-    const updates = {
-      [`users/${formData.user_id.uid}/submissions/${submissionKey}`]: {
-        entry_id: submissionKey,
-        user_id: formData.user_id.uid,
-      },
-      [`collections/${formData.picked}/${submissionKey}`]: {
-        id: submissionKey,
-        entry_id: submissionRef.key,
-        title: formData.title,
-        content: formData.content,
-        meaning: formData.meaning,
-        creationDate: date,
-        votes: { upvote: { count: 0 }, downvote: { count: 0 } },
-        flagged: false,
-        submittedBy: formData.user_id.email,
-        username: formData.user_id.username,
-        type: formData.picked,
-      },
-    };
-
-    // Update submission count
-    const userCountSnapshot = await db
-      .ref(`users/${formData.user_id.uid}`)
-      .once("value");
-    const userCount = userCountSnapshot.child("submissionCount").val() || 0;
-    updates[`users/${formData.user_id.uid}/submissionCount`] = userCount + 1;
-
-    await db.ref().update(updates);
-    res.json({ message: "Submission successful!" });
+    await createSubmission(req, res, decodedToken);
   } catch (error) {
-    console.error("Error:", error);
-    res
-      .status(error.code === "auth/id-token-expired" ? 403 : 500)
-      .send("Error: " + error.message);
+    return handleError(res, error);
   }
 });
-
-function validateFormData(formData) {
-  // if they are creating a Poem then the title isn't required else it
-  if (!formData || Object.keys(formData).length === 0) {
-    return "Please provide form data";
-  }
-
-  if (formData.picked === "Poetry" && !formData.title) {
-    return "Please provide a title for the poetry";
-  }
-
-  const requiredKeys = ["content", "meaning", "picked", "user_id"];
-  for (const key of requiredKeys) {
-    if (!formData[key]) {
-      return `Missing value for key: ${key}`;
-    }
-  }
-
-  // no username
-  if (!formData.user_id.username) {
-    return "User must have a username";
-  }
-  return null;
-}
 
 // Function to handle voting
 const handleVote = async (req, res, newVoteType) => {
   const idToken = req.headers.authorization?.split("Bearer ")[1];
 
   if (!idToken) {
-    return res.status(403).send("Unauthorized");
+    sendUnauthorized(res, "Unauthorized");
   }
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await verifyToken(idToken);
+
     const uid = decodedToken.uid;
     const id = req.params.id;
-    const type = id.split("_")[1];
 
-    const userVotesRef = db.ref(`users/${uid}/votes/${id}`);
-    const votesRef = db.ref(`collections/${type}/${id}/votes`);
-
-    const currentVote = (await userVotesRef.once("value")).val();
-
-    // Update user's vote
-    if (currentVote === newVoteType) {
-      // User is removing their vote
-      await userVotesRef.remove();
-      await votesRef.child(currentVote).child("users").child(uid).remove();
-      await votesRef
-        .child(currentVote)
-        .child("count")
-        .transaction((count) => (count ? count - 1 : 0));
-    } else {
-      // New vote or changing vote
-      await userVotesRef.set(newVoteType);
-
-      // Remove previous vote if exists
-      if (currentVote) {
-        await votesRef.child(currentVote).child("users").child(uid).remove();
-        await votesRef
-          .child(currentVote)
-          .child("count")
-          .transaction((count) => (count ? count - 1 : 0));
-      }
-
-      // Add new vote
-      await votesRef.child(newVoteType).child("users").child(uid).set(true);
-      await votesRef
-        .child(newVoteType)
-        .child("count")
-        .transaction((count) => (count || 0) + 1);
-    }
-
-    res.json({ message: "Vote updated!" });
+    await handleVoting(req, res, newVoteType, uid, id);
   } catch (error) {
-    console.error("Error:", error.message);
-    res
-      .status(error.code === "auth/id-token-expired" ? 403 : 500)
-      .send("Error: " + error.message);
+    return handleError(res, error);
   }
 };
 
@@ -247,10 +99,10 @@ router.get("/submissions/:id", async (req, res) => {
       // return the data
       res.json(data);
     } else {
-      return res.status(404).send("Submission not found");
+      return sendNotFound(res, "Submission not found");
     }
   } catch (error) {
-    return res.status(500).send("Server error: " + error.message);
+    return handleError(res, error);
   }
 });
 
@@ -261,77 +113,9 @@ router.get("/users/:email/dashboard", async (req, res) => {
     const email = req.params.email;
     const usersRef = db.ref("users");
 
-    const usersSnapshot = await usersRef
-      .orderByChild("email")
-      .equalTo(email)
-      .once("value"); // get the user data
-
-    if (!usersSnapshot.exists()) {
-      return res.status(404).send("User not found");
-    }
-
-    const userData = usersSnapshot.val();
-    const uid = Object.keys(userData)[0];
-    const userObject = userData[uid];
-
-    const userSubmissionsRef = db.ref(`users/${uid}/submissions`);
-    const userSubmissionsSnapshot = await userSubmissionsRef.once("value");
-    const userSubmissionsData = userSubmissionsSnapshot.val() || {}; // get the user's submissions
-
-    const submissionKeys = Object.keys(userSubmissionsData);
-    const submissionPromises = submissionKeys.map((key) => {
-      const type = key.split("_")[1];
-      const submissionRef = db.ref(`collections/${type}/${key}`);
-      return submissionRef.once("value");
-    });
-
-    // get all of the user's submissions
-    const submissionSnapshots = await Promise.all(submissionPromises);
-
-    // create an object with the user's submissions
-    const userSubmissionData = {};
-    submissionSnapshots.forEach((snapshot) => {
-      const data = snapshot.val();
-      if (data !== null && data.id !== undefined) {
-        userSubmissionData[data.id] = data;
-      }
-    });
-
-    // get the user's submission count
-    const submissionsCount = {
-      proverbs: submissionKeys.filter((key) => key.includes("proverb")).length,
-      poetrys: submissionKeys.filter((key) => key.includes("Poetry")).length,
-      totalSubmissions: submissionKeys.length,
-    };
-
-    // get the top 5 most voted submissions
-    const mostVotes = Object.values(userSubmissionData).filter(
-      (submission) => submission.votes.upvote.count > 0
-    );
-    const mostRecent = Object.values(userSubmissionData);
-
-    // sort the submissions by most votes and most recent
-    mostVotes.sort((a, b) => b.votes.upvote.count - a.votes.upvote.count);
-    mostVotes.splice(5);
-
-    mostRecent.sort(
-      (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
-    );
-    mostRecent.splice(5);
-
-    // return the user data
-    res.json({
-      uid: uid,
-      username: userObject.username,
-      email: userObject.email,
-      submissionCount: userObject.submissionCount,
-      userStats: submissionsCount,
-      mostVotes: mostVotes,
-      mostRecent: mostRecent,
-    });
+    await getDashboardData(email, usersRef, res);
   } catch (error) {
-    console.error("Error:", error.message);
-    return res.status(500).send("Server error: " + error.message);
+    return handleError(res, error);
   }
 });
 
@@ -340,95 +124,20 @@ router.delete("/submissions/:id", async (req, res) => {
   const idToken = req.headers.authorization?.split("Bearer ")[1];
 
   if (!idToken) {
-    return res.status(403).send("Unauthorized");
+    sendUnauthorized(res, "Unauthorized");
   }
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await verifyToken(idToken);
+
     const uid = decodedToken.uid;
 
     const id = req.params.id;
 
-    // the updates object
-    let updates = {};
-
-    // Check if the user is authenticated to delete the submission
-    const userRef = db.ref("users/" + uid);
-    userRef.once("value", (userSnapshot) => {
-      if (!userSnapshot.exists()) {
-        return res.status(404).send("User not found");
-      }
-
-      const userSubmissionsRef = db.ref(`users/${uid}`);
-
-      const submissionKey = userSubmissionsRef
-        .orderByChild("submissions")
-        .equalTo(id);
-
-      userSubmissionsRef.once("value", (userSubmissionsSnapshot) => {
-        if (!userSubmissionsSnapshot.exists()) {
-          console.error("User has no submissions");
-          return res.status(404).send("Submission not found");
-        }
-
-        if (!submissionKey) {
-          return res.status(404).send("Submission not found");
-        }
-
-        // Remove the submission from the collections
-        const type = id.split("_")[1];
-        const collectionRef = db.ref(`collections/${type}/${id}`);
-        collectionRef.once("value", (collectionSnapshot) => {
-          if (collectionSnapshot.exists()) {
-            // remove the data from the updates object
-            updates[`collections/${type}/${id}`] = null;
-          }
-
-          // Remove the submission from the user's submissions
-          updates[`users/${uid}/submissions/${id}`] = null;
-
-          // update the user's submission count, decrement by 1
-          const usersubRef = db.ref(`users/${uid}/submissions`);
-          usersubRef.once("value", (usersubSnapshot) => {
-            const newSubmissionCount = usersubSnapshot.numChildren();
-
-            if (newSubmissionCount <= 0) {
-              updates[`users/${uid}/submissionCount`] = 0;
-            } else {
-              updates[`users/${uid}/submissionCount`] = newSubmissionCount;
-            }
-
-            // now remove it from the user's votes collection
-            const userVotesRef = db.ref(`users/${uid}/votes`);
-            userVotesRef.once("value", (userVotesSnapshot) => {
-              if (userVotesSnapshot.exists()) {
-                const submissionKey = userSubmissionsRef
-                  .orderByChild("votes")
-                  .equalTo(id);
-
-                if (submissionKey) {
-                  updates[`users/${uid}/votes/${id}`] = null;
-                }
-              }
-
-              // now we update the database with the new submission all at once using multi-path updates and also error handling
-              db.ref()
-                .update(updates)
-                .then(() => {
-                  res.json({
-                    message: "Submission deleted!",
-                  });
-                })
-                .catch((error) => {
-                  console.error("Error:", error);
-                  return res.status(500).send("Server error: " + error.message);
-                });
-            });
-          });
-        });
-      });
-    });
-  } catch (error) {}
+    await DeleteSubmission(id, uid, res);
+  } catch (error) {
+    return handleError(res, error);
+  }
 });
 
 // update username
@@ -436,72 +145,23 @@ router.put("/users/:uid", async (req, res) => {
   const idToken = req.headers.authorization?.split("Bearer ")[1];
 
   if (!idToken) {
-    return res.status(403).send("Unauthorized");
+    sendUnauthorized(res, "Unauthorized");
   }
 
   // Verify the ID token and extract the user's Firebase UID
   try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await verifyToken(idToken);
     const uid = decodedToken.uid;
     const newUsername = req.body.username;
 
-    // the updates object
-    const updates = {};
-
-    // Check if the user is authenticated to update the username
-    const userRef = db.ref("users/" + uid);
-    userRef.once("value", (userSnapshot) => {
-      if (!userSnapshot.exists()) {
-        return res.status(404).send("User not found");
-      }
-
-      userRef.once("value", (userSnapshot) => {
-        if (!userSnapshot.exists()) {
-          return res.status(404).send("User not found");
-        }
-
-        const userData = userSnapshot.val(); // get user data
-        const oldUsername = userData.username; // get old username
-
-        // Update usernames in user collection
-        updates[`/users/${uid}/username`] = newUsername;
-
-        // Update username in submissions collection
-        if (userData.submissions) {
-          for (const submissionKey of Object.keys(userData.submissions)) {
-            const type = submissionKey.split("_")[1];
-            updates[`/collections/${type}/${submissionKey}/username`] =
-              newUsername;
-          }
-        }
-
-        // Update the username in the usernames collection as well
-        updates[`/usernames/${oldUsername}`] = null; // remove old username
-        updates[`/usernames/${newUsername}`] = { uid: uid }; // add new username
-
-        // now we update the database with the new username all at once using multi-path updates and also error handling
-        db.ref()
-          .update(updates)
-          .then(() => {
-            res.status(200).json({ message: "Username updated successfully" });
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            return res.status(500).send("Server error: " + error.message);
-          });
-      });
-    });
+    // validate the data is good and exists
+    await updateUsername(newUsername, uid, res);
   } catch (error) {
-    console.error("Error:", error);
-    res
-      .status(error.code === "auth/id-token-expired" ? 403 : 500)
-      .send("Error: " + error.message);
+    return handleError(res, error);
   }
 });
 
 // search for a submission by proverbs or poetry, or title
-//         .get(apiPath + `/search/${query}`, { headers })
-
 router.get("/search/:query", async (req, res) => {
   try {
     const query = req.params.query.toLowerCase();
@@ -510,10 +170,10 @@ router.get("/search/:query", async (req, res) => {
     if (results.length > 0) {
       res.json(results);
     } else {
-      res.status(404).send("No matches found");
+      return sendNotFound(res, "No results found");
     }
   } catch (error) {
-    res.status(500).send("Server error: " + error.message);
+    return handleError(res, error);
   }
 });
 
@@ -540,6 +200,99 @@ async function searchDatabase(query) {
   return results.map((result) => result.item);
 }
 
+// Route to create user account
+router.post("/users/create", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return sendUnauthorized(res, "Unauthorized");
+  }
+
+  try {
+    const decodedToken = await verifyToken(idToken);
+    const uid = decodedToken.uid;
+    const userData = req.body;
+
+    await storeUserData(res, userData, uid);
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+// Route to sync google user data
+router.post("/users/sync", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return sendUnauthorized(res, "Unauthorized");
+  }
+
+  try {
+    const decodedToken = await verifyToken(idToken);
+    const uid = decodedToken.uid;
+    const userData = req.body;
+
+    await storeUserData(res, userData, uid);
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+// Check if the username is already in the database
+router.get("/users/username", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return sendUnauthorized(res, "Unauthorized");
+  }
+
+  try {
+    const decodedToken = await verifyToken(idToken);
+    const uid = decodedToken.uid;
+    const usernamesRef = db.ref("usernames");
+
+    const exists = await UsernameInDB(uid, usernamesRef);
+
+    res.json({ exists });
+  } catch (error) {
+    console.error("Error checking username:", error);
+    return res.status(500).send("Server error"); // Proper error response
+  }
+});
+
+async function UsernameInDB(uid, usernamesRef) {
+  const snapshot = await usernamesRef.once("value");
+  const data = snapshot.val();
+
+  if (data) {
+    const usernames = Object.values(data);
+    console.log("Usernames:", usernames);
+    const exists = usernames.includes(uid);
+    return exists;
+  } else {
+    return false;
+  }
+}
+
+// add user username to the db
+router.post("/users/username", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return sendUnauthorized(res, "Unauthorized");
+  }
+
+  try {
+    const decodedToken = await verifyToken(idToken);
+    const uid = decodedToken.uid;
+    const username = req.body.username;
+
+    await addUsernameToDB(username, uid, res);
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
 // check server status
 router.get("/server/status", async (req, res) => {
   try {
@@ -547,8 +300,7 @@ router.get("/server/status", async (req, res) => {
       message: "Server is up!",
     });
   } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).send("Server error: " + error.message);
+    return handleError(res, error);
   }
 });
 

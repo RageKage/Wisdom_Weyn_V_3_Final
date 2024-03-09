@@ -1,15 +1,15 @@
 import axios from 'axios'
-import { getAuthHeaders } from '@/service/authService.js'
+import { useAuthStore } from '../store/authStore' // Import useAuthStore
 
 // see all of the env we have in our .
 
 const AppApiService = () => {
+
   const handleResponse = (response) => {
     return response.data
   }
 
   const handleError = (error) => {
-
     if (error.response) {
       // The request was made, but the server responded with a status code outside of the 2xx range
       const { status, data } = error.response
@@ -43,12 +43,13 @@ const AppApiService = () => {
     },
 
     async createSubmission(formData) {
-      const headers = await getAuthHeaders()
+      const headers =    await useAuthStore().getAuthHeaders()
 
       if (Object.keys(headers).length === 0) {
         return Promise.reject('You must be logged in to create a submission')
       }
 
+      console.log('Sending data to server:', headers)
       return axios
         .post(apiPath + '/submissions', formData, { headers })
         .then(handleResponse)
@@ -56,7 +57,7 @@ const AppApiService = () => {
     },
 
     async deleteSubmission(data) {
-      const headers = await getAuthHeaders()
+      const headers =  await useAuthStore().getAuthHeaders()
 
       if (Object.keys(headers).length === 0) {
         return Promise.reject('You must be logged in to create a submission')
@@ -79,7 +80,7 @@ const AppApiService = () => {
     },
 
     async upvoteSubmission(id) {
-      const headers = await getAuthHeaders()
+      const headers =   await useAuthStore().getAuthHeaders()
 
       if (Object.keys(headers).length === 0) {
         return Promise.reject('You must be logged in to create a submission')
@@ -94,7 +95,7 @@ const AppApiService = () => {
     },
 
     async downvoteSubmission(id) {
-      const headers = await getAuthHeaders()
+      const headers =  await useAuthStore().getAuthHeaders()
 
       if (Object.keys(headers).length === 0) {
         return Promise.reject('You must be logged in to create a submission')
@@ -115,7 +116,7 @@ const AppApiService = () => {
     },
 
     async usernameUpdate(username) {
-      const headers = await getAuthHeaders()
+      const headers =  await useAuthStore().getAuthHeaders()
 
       if (Object.keys(headers).length === 0) {
         return Promise.reject('You must be logged in to create a submission')
@@ -133,6 +134,97 @@ const AppApiService = () => {
     async searchCollection(query) {
       return axios
         .get(apiPath + `/search/${query}`)
+        .then(handleResponse)
+        .catch(handleError)
+    },
+
+    async addUserToDB(userData, personalName) {
+      const headers =  await useAuthStore().getAuthHeaders()
+
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged in to create a submission')
+      }
+
+      await userData?.reload()
+
+      const data = {
+        personalName: personalName,
+        email: userData.email,
+        createdAt: userData.metadata.creationTime || null,
+        lastLoginAt: userData.metadata.lastSignInTime || null,
+        submissionCount: 0,
+      }
+
+      console.log('Sending data to server:', data)
+
+      return axios
+        .post(apiPath + '/users/create', data, { headers })
+        .then(handleResponse)
+        .catch(handleError)
+    },
+    // Check if the username is already in the database, past it as a body parameter
+    async checkUsername() {
+
+      const headers =   await useAuthStore().getAuthHeaders()
+
+      console.log('Sending data to server:', headers)
+
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged ')
+      }
+
+
+      console.log('Sending data to server:', headers)
+
+      return axios
+        .get(apiPath + `/users/username`, { headers })
+        .then(handleResponse)
+        .catch(handleError)
+    },
+
+    // Sync google user data with the database
+    async syncGoogleUserData(user) {
+
+
+      console.log('Syncing user data:', user)
+      const headers =  await useAuthStore().getAuthHeaders()
+
+      console.log('Sending data to server:', headers)
+
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be ')
+      }
+
+      const userData = {
+        personalName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        createdAt: user.metadata.creationTime || null,
+        lastLoginAt: user.metadata.lastSignInTime || null,
+        submissionCount: 0,
+      }
+
+      console.log('Sending data to server:', userData)
+
+      return axios
+        .post(apiPath + `/users/sync`, userData, { headers })
+        .then(handleResponse)
+        .catch(handleError)
+    },
+    // add user username to the db
+    async addUsernameToDB(username) {
+      const headers =  await useAuthStore().getAuthHeaders()
+
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged in to create a submission')
+      }
+
+      const data = {
+        username,
+      }
+
+      return axios
+        .post(apiPath + `/users/username`, data, { headers })
         .then(handleResponse)
         .catch(handleError)
     },

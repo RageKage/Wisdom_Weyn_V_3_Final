@@ -2,11 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { ref } from 'vue'
 
 import AOS from 'aos'
-import {
-  currentUser,
-  getAuthHeaders,
-  getCurrentUser,
-} from '../service/authService'
+import { useAuthStore } from '../store/authStore' // Import useAuthStore
 import AppApiService from '../service/index'
 
 // Import views dynamically to improve code-splitting
@@ -87,25 +83,23 @@ const router = createRouter({
 
 const handleNavigation = async (to, from, next) => {
   isLoading.value = true
-  const isAuthenticated = await currentUser()
 
+  const isAuthenticated = await useAuthStore().getAuthHeaders()
   showHeader.value = !['SignIn', 'SignUp', 'CustomUsername'].includes(to.name)
 
-  // Centralize authentication and redirection logic
-  if (to.meta.requireAuth && !isAuthenticated) {
-    alert("You don't have access.")
+  // Use Optional Chaining (?.) to safely access user property
+  if (to.meta.requireAuth && !isAuthenticated?.user) {
     isLoading.value = false
     return next('/sign-in')
   }
 
-  if ((to.name === 'SignIn' || to.name === 'SignUp') && isAuthenticated) {
+  if ((to.name === 'SignIn' || to.name === 'SignUp') && isAuthenticated?.user) {
     return next('/collections')
   }
 
-  if (to.name === 'CustomUsername' && isAuthenticated) {
-    const header = await getAuthHeaders()
-    const userData = await getCurrentUser(header.user.uid)
-    if (userData.username) {
+  if (to.name === 'CustomUsername' && isAuthenticated?.user) {
+    // Here, no need to call getCurrentUserDetails() again since you already have isAuthenticated
+    if (isAuthenticated.dbData?.username) {
       return next('/collections')
     }
   }

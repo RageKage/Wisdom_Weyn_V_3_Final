@@ -1,5 +1,4 @@
 import { ref } from 'vue'
-import Swal from 'sweetalert2'
 import AppApiService from '../../service/index'
 
 export function submissionFunctions() {
@@ -9,87 +8,38 @@ export function submissionFunctions() {
   const formVueRef = ref(null)
   const isSent = ref(false)
   const isLoading = ref(false)
+  const msgError = ref(null)
 
   const submitEntry = async (formData) => {
     isLoading.value = true
     isSent.value = false
+    msgError.value = null
 
-    // check that all input are valid before submitting, they can't be empty at all
+    // Validate form data upfront
+    const isPoetry = formData.picked === 'Poetry'
     if (
       !formData.content.trim() ||
       !formData.meaning.trim() ||
-      (formData.picked === 'Poetry' && !formData.title.trim())
+      (isPoetry && !formData.title.trim())
     ) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill in all fields!',
-      })
-      isLoading.value = false
-      return
+      return (msgError.value = 'Please fill in all fields')
     }
 
     try {
       const response = await service.createSubmission(formData)
-
       if (response) {
-        // reset the form after a delay
-        setTimeout(() => {
-          // reset the form by sending a reset event to the child component
-          formVueRef.value.resetForm()
-          isSent.value = true
-          isLoading.value = false
-        }, 1500)
-
+        setTimeout(() => formVueRef.value.resetForm(), 1000)
         setTimeout(() => {
           isLoading.value = false
           isSent.value = false
-        }, 2300)
+        }, 1500)
+        isSent.value = true
       }
     } catch (error) {
-      console.log('server response', error)
-
-      const errorString = error.toString()
-
-      // split string by "-" [0] is title and [1] is message
-
-      const title = errorString.split('-')[0]
-      const message = errorString.split('-')[1]
-
-      if (errorString.includes('400')) {
-        if (message.includes('User must have a username')) {
-          await Swal.fire({
-            title: title,
-            text: message,
-            icon: 'warning',
-            reverseButtons: true,
-            showCancelButton: true,
-            cancelButtonText: 'Cancel',
-            confirmButtonText: 'Create Username',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // redirect to the user profile page
-              window.location.href = '/custom-username'
-            }
-          })
-        } else {
-          await Swal.fire({
-            title: title,
-            text: message,
-            icon: 'warning',
-            reverseButtons: true,
-          })
-        }
-        isLoading.value = false
-        return
-      } else {
-        await Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong! Please try again later.',
-        })
-        isLoading.value = false
-      }
+      msgError.value = error
+      console.error('Error submitting entry:', error)
+    } finally {
+      isLoading.value = false // Ensure isLoading is always reset
     }
   }
 
@@ -98,5 +48,6 @@ export function submissionFunctions() {
     isSent,
     isLoading,
     submitEntry,
+    msgError,
   }
 }

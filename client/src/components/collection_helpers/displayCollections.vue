@@ -10,7 +10,6 @@
               <div
                 v-if="displayedItems.length > 0"
                 class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
-
               >
                 {{ displayedItems.length }}
               </div>
@@ -18,7 +17,6 @@
           </div>
           <div>
             <span
-
               class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
             >
               {{ activeFilter }}
@@ -35,7 +33,6 @@
           <div>
             <div
               class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
-
             >
               No data available for
             </div>
@@ -44,7 +41,6 @@
         <div>
           <span
             class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
-
           >
             {{ activeFilter }}
           </span>
@@ -272,10 +268,11 @@
 
 <script setup>
   import { ref, onMounted } from 'vue'
-  import { currentUser } from '@/service/authService.js'
   import { Actions } from '../Composables/actions'
   import Swal from 'sweetalert2'
   import { useRouter } from 'vue-router'
+  import { useAuthStore } from '../../store/authStore' // Import useAuthStore
+  const authStore = useAuthStore()
 
   const router = useRouter()
   const isLoggedIn = ref(false)
@@ -322,23 +319,17 @@
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
     return new Date(date).toLocaleDateString('en-US', options)
   }
-
+  // ! user local Storage instead
   onMounted(async () => {
     try {
-      const storedUser = localStorage.getItem('user')
-      if (storedUser) {
-        user.value = JSON.parse(storedUser)
-        isLoggedIn.value = true
-      } else {
-        const currentUserData = await currentUser()
-        const { uid } = currentUserData
+      // get the current user details
+      await authStore.getCurrentUserDetails()
 
-        if (currentUserData.user) {
-          user.value = currentUserData.user
-          isLoggedIn.value = true
-          // localStorage.setItem('user', JSON.stringify(currentUserData))
-        }
+      // set the user value to the user details
+      if (authStore.dbUser) {
+        user.value = authStore.dbUser.dbData
       }
+      isLoggedIn.value = true
     } catch (error) {
       console.error('Error getting current user:', error)
     }

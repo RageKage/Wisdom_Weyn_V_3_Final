@@ -37,7 +37,6 @@
           v-else
           to="/sign-in"
           class="hidden lg:inline text-gray-900 hover:-700"
-
         >
           Log in <span>&rarr;</span>
         </router-link>
@@ -50,7 +49,7 @@
         >
           <div class="px-4 py-3">
             <span class="block text-sm text-seashell-700">
-              {{ user?.realName }}</span
+              {{ user?.personalName }}</span
             >
             <span class="block text-sm text-seashell-500 truncate">{{
               user?.email
@@ -123,17 +122,13 @@
   import { onMounted, ref, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
   import Logo from './Site-Logo.vue'
-  import {
-    currentUser,
-    getCurrentUser,
-    signout,
-  } from '@/service/authService.js'
-
   import { Actions } from '../Composables/actions'
+  import { useAuthStore } from '../../store/authStore' // Import useAuthStore
+  const authStore = useAuthStore()
 
-  const user = ref(null)
   const dropdownOpen = ref(false)
   const router = useRouter()
+  const user = ref(null)
 
   // Props and Emits
   const props = defineProps({
@@ -171,34 +166,20 @@
     loading.value = false
     document.addEventListener('click', onClickOutside)
 
-    try {
-      const authUser = await currentUser()
+    // get the current user details
+    await authStore.getCurrentUserDetails()
 
-      const { uid } = authUser
-
-      if (authUser) {
-        const dbUser = await getCurrentUser(authUser.user.uid)
-
-        // Save the data to local storage for future use
-        localStorage.setItem('user-data', JSON.stringify(dbUser))
-
-        user.value = dbUser
-      }
-    } catch (error) {
-      console.error('Error getting current user:', error.message)
-    } finally {
-      loading.value = true
+    // set the user value to the user details
+    if (authStore.dbUser) {
+      user.value = authStore.dbUser.dbData
     }
-  })
 
+    loading.value = true
+  })
   // Sign out user
   const signOutUser = async () => {
     try {
-      await signout()
-
-      dropdownOpen.value = false
-      user.value = null
-      // refresh the page
+      await authStore.signout()
       router.go()
     } catch (error) {
       console.error('Error signing out:', error)

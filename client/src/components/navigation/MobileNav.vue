@@ -76,7 +76,8 @@
 <script setup>
   import Logo from './Site-Logo.vue'
   import { onMounted, ref } from 'vue'
-  import { currentUser, getCurrentUser } from '@/service/authService.js'
+  import { useAuthStore } from '../../store/authStore' // Import useAuthStore
+  const authStore = useAuthStore()
 
   const props = defineProps({
     isMenuOpen: {
@@ -94,27 +95,12 @@
   const user = ref(null)
 
   onMounted(async () => {
-    try {
-      const authUser = await currentUser()
-      const { uid } = authUser
+    // get the current user details
+    await authStore.getCurrentUserDetails()
 
-      if (authUser.user) {
-        // get user data from local storage
-        const localUserData = localStorage.getItem('user-data')
-
-        if (localUserData) {
-          user.value = JSON.parse(localUserData)
-        } else {
-          const dbUser = await getCurrentUser(authUser.user.uid)
-
-          // Save the data to local storage for future use
-          localStorage.setItem('user-data', JSON.stringify(dbUser))
-
-          user.value = dbUser
-        }
-      }
-    } catch (error) {
-      console.error('Error getting current user:', error.message)
+    // set the user value to the user details
+    if (authStore.dbUser) {
+      user.value = authStore.dbUser.dbData
     }
   })
 </script>

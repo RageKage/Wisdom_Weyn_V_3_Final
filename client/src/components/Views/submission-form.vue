@@ -1,7 +1,5 @@
 <template>
   <div class="min-h-screen">
-    <Popup v-if="!user" />
-
     <div class="mx-auto">
       <div class="shadow-lg bg-white rounded-2xl p-4 sm:p-8">
         <h2 class="text-xl font-semibold text-center text-gray-800">
@@ -187,8 +185,8 @@
 
 <script setup>
   import { ref, onMounted, watch } from 'vue'
-  import { currentUser, getCurrentUser } from '@/service/authService.js'
-  import Popup from '../../views/Pop_up.vue'
+  import { useAuthStore } from '../../store/authStore' // Import useAuthStore
+  const authStore = useAuthStore()
 
   const picked = ref('proverb')
   const title = ref('')
@@ -254,30 +252,13 @@
     content.value = localStorage.getItem('content') || ''
     meaning.value = localStorage.getItem('meaning') || ''
     try {
-      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+      // get the current user details
+      await authStore.getCurrentUserDetails()
 
-      // Call currentUser() to get both user and token
-      const authResult = isLoggedIn ? await currentUser() : null
-
-      // If authResult exists, destructure to get user and possibly token
-      if (authResult && authResult.user) {
-        user.value = authResult.user // Set user to the user part of authResult
-
-        // You might store the token somewhere or use it directly, depending on your needs
-        // For example, saving it in a reactive state if needed:
-        // token.value = authResult.token;
-
-        const userDB = await getCurrentUser(user.value.uid)
-
-        // Store user realName and email in currentUserDB
-        currentUserDB.value = {
-          username: userDB.username,
-          email: user.value.email,
-          uid: user.value.uid,
-        }
-      } else {
-        user.value = null
-        // Handle the case where there is no user logged in
+      // set the user value to the user details
+      if (authStore.dbUser) {
+        user.value = authStore.dbUser.dbData
+        currentUserDB.value = authStore.dbUser.dbData._id
       }
     } catch (error) {
       console.error('Error getting current user:', error)

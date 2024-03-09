@@ -116,7 +116,7 @@ export function Actions() {
         return updateuser.message
       }
     } catch (error) {
-      console.error(error)
+      // console.error(error)
     }
   }
 

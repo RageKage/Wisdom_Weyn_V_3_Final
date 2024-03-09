@@ -113,37 +113,26 @@
 
 <script setup>
   import { ref, onMounted } from 'vue'
-  import { currentUser, getCurrentUser } from '@/service/authService.js'
-  import { checkUsername } from '../authentication/UserDataManager'
-
   import { Actions } from '../Composables/actions'
+  import AppApiService from '../../service/index.js'
+  import { useAuthStore } from '../../store/authStore' // Import useAuthStore
+  const authStore = useAuthStore()
 
+  const service = AppApiService()
   const user = ref(null)
 
   const usernameError = ref('')
 
   onMounted(async () => {
-    try {
-      const authUser = await currentUser()
-      const { uid } = authUser
+    // get the current user details
 
-      if (authUser.user) {
-        // Try to get user data from local storage
-        const localUserData = localStorage.getItem('user-data')
+    // get the current user details
+    await authStore.getCurrentUserDetails()
 
-        if (localUserData) {
-          user.value = JSON.parse(localUserData)
-        } else {
-          const dbUser = await getCurrentUser(authUser.user.uid)
-
-          // Save the data to local storage for future use
-          localStorage.setItem('user-data', JSON.stringify(dbUser))
-
-          user.value = dbUser
-        }
-      }
-    } catch (error) {
-      console.error('Error getting current user:', error.message)
+    // set the user value to the user details
+    if (authStore.dbUser) {
+      console.log(authStore.dbUser)
+      user.value = authStore.dbUser.dbData
     }
   })
 
@@ -168,17 +157,7 @@
         'Username cannot contain empty spaces between letters.'
       return
     }
-    const authUser = await currentUser()
-    const { uid } = authUser
 
-    const isUsernameAvailable = await checkUsername(username, authUser.user.uid)
-
-    if (!isUsernameAvailable) {
-      usernameError.value = 'Username already exists.'
-      return
-    }
-
-    // Clear any previous error messages
     usernameError.value = ''
   }
   const showSuccessPopup = ref(false)
@@ -187,32 +166,24 @@
     await validateUsername()
 
     if (!usernameError.value) {
-      // If there are no validation errors, proceed with the username update
       try {
-        const updateuser = await updateUsername(user.value.username)
+        // const updateuser = await updateUsername(user.value.username)
 
-        if (updateuser) {
-          // Show the success popup
+        const updateuser = await service.usernameUpdate(user.value.username)
+
+        if (updateuser && updateuser.message) {
           showSuccessPopup.value = true
 
-          // localStorage.setItem('user-data')
+          const userDetails = await authStore.getCurrentUserDetails()
 
-          // this just makes a call to the API to get the updated user data in the local storage
-          const authUser = await currentUser()
-          const { uid } = authUser
-          const dbUser = await getCurrentUser(authUser.user.uid)
-
-          // Save the data to local storage for future use
-          localStorage.setItem('user-data', JSON.stringify(dbUser))
-
-          // Hide the success popup after 3000 milliseconds (adjust as needed)
-          setTimeout(() => {
-            showSuccessPopup.value = false
-          }, 2000)
+          localStorage.setItem('dbUser', JSON.stringify(userDetails))
         }
       } catch (error) {
-        console.error('Error updating username:', error.message)
-        // Handle errors during the update process
+        usernameError.value = error
+      } finally {
+        setTimeout(() => {
+          showSuccessPopup.value = false
+        }, 3000)
       }
     }
   }

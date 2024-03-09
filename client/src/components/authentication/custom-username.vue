@@ -7,7 +7,7 @@
       <h2 class="text-2xl font-semibold text-seashell-900 mb-4">
         Welcome,
         <span class="text-seashell-600">
-          {{ user.realName || userlocalStg.displayName }}
+          {{ user?.personalName }}
         </span>
       </h2>
 
@@ -42,22 +42,19 @@
 
 <script setup>
   import { ref, onMounted } from 'vue'
-  import {
-    updatesyncGoogleUserData,
-    updatesyncUserData,
-  } from './UserDataManager'
 
-  import { currentUser, getCurrentUser } from '@/service/authService.js'
   import { useRouter } from 'vue-router'
+  import AppApiService from '../../service/index.js'
+  import { useAuthStore } from '../../store/authStore' // Import useAuthStore
+  const authStore = useAuthStore()
 
+  const service = AppApiService()
   const router = useRouter()
   const user = ref(null)
-  const userlocalStg = ref(null)
   const chosenUsername = ref('')
   const usernameError = ref('')
 
   const validateUsername = () => {
-    // username validation
     usernameError.value =
       chosenUsername.value.length < 4
         ? 'Username must be at least 3 characters long.'
@@ -66,49 +63,31 @@
 
   onMounted(async () => {
     try {
-      const authUser = await currentUser()
-      const { uid } = authUser
+      // get the current user details
+      await authStore.getCurrentUserDetails()
 
-      if (authUser) {
-        const dbUser = await getCurrentUser(authUser.user.uid)
-        user.value = dbUser
+      // set the user value to the user details
+      if (authStore.dbUser) {
+        user.value = authStore.dbUser.dbData
       }
     } catch (error) {
       console.error('Error getting current user:', error.message)
     }
   })
 
-  userlocalStg.value = JSON.parse(localStorage.getItem('user'))
-
   const submitUsername = async () => {
-    // Logging the cleaned JSON
     validateUsername()
-
     if (usernameError.value) {
-      return // if there are any errors then return the error
+      return
     }
 
-    const uid = userlocalStg.value.uid
-    const realName = userlocalStg.value.displayName
     const username = chosenUsername.value
 
     try {
-      // Check if the user is a Google user
-      const isGoogleUser =
-        userlocalStg.value.displayName &&
-        userlocalStg.value.providerData.some(
-          (provider) => provider.providerId === 'google.com',
-        )
-
-      if (isGoogleUser) {
-        await updatesyncGoogleUserData(uid, realName, username)
-      } else {
-        await updatesyncUserData(uid, username)
-      }
-
+      await service.addUsernameToDB(username)
       router.push('/')
     } catch (error) {
-      usernameError.value = error.message
+      usernameError.value = error
     }
   }
 </script>
