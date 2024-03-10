@@ -180,7 +180,6 @@
         firebaseError.value = 'Please verify your email/password'
       }
     } catch (error) {
-      console.log('Error signing in:', error)
       if (error.code) {
         switch (error.code) {
           case 'auth/invalid-email':
@@ -220,8 +219,6 @@
         router.push('/custom-username') // Redirect to username creation page
       }
     } catch (error) {
-      console.log('Error signing in:', error)
-
       if (error.code) {
         switch (error.code) {
           case 'auth/invalid-email':
@@ -232,7 +229,6 @@
             break
         }
       } else {
-
         firebaseError.value = 'An unknown error occurred'
       }
     }

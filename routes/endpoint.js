@@ -266,7 +266,6 @@ async function UsernameInDB(uid, usernamesRef) {
 
   if (data) {
     const usernames = Object.values(data);
-    console.log("Usernames:", usernames);
     const exists = usernames.includes(uid);
     return exists;
   } else {

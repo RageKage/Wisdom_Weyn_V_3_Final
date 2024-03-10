@@ -28,7 +28,7 @@ const createSubmission = async (req, res, decodedToken) => {
     submissionRef.key,
     date,
     uid,
-    email
+    email,
   );
 
   // Update submission count
@@ -49,7 +49,7 @@ async function generateSubmissionData(
   submissionRefKey,
   date,
   uid,
-  email
+  email,
 ) {
   const submissionKey = `submission_${formData.picked}_${submissionRefKey}`;
   const username = await getUserUsername(uid);
@@ -126,9 +126,6 @@ const storeUserData = async (res, userData, uid) => {
 
 const addUsernameToDB = async (username, uid, res) => {
   try {
-    console.log("username", username);
-    console.log("uid", uid);
-
     let updates = {};
     if (!username) {
       return handleError(res, "Please provide a username");

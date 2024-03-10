@@ -39,7 +39,8 @@ async function updateUsername(newUsername, uid, res) {
       if (userData.submissions) {
         for (const submissionKey of Object.keys(userData.submissions)) {
           const type = submissionKey.split("_")[1];
-          updates[`/collections/${type}/${submissionKey}/username`] = newUsername;
+          updates[`/collections/${type}/${submissionKey}/username`] =
+            newUsername;
         }
       }
 

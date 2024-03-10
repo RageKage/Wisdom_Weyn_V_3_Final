@@ -131,7 +131,6 @@
 
     // set the user value to the user details
     if (authStore.dbUser) {
-      console.log(authStore.dbUser)
       user.value = authStore.dbUser.dbData
     }
   })

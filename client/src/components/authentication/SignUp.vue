@@ -255,8 +255,6 @@
         firebaseError.value = 'An unknown error occurred'
       }
     } catch (error) {
-      console.log('Error signing in:', error)
-
       firebaseError.value = error.message // Display Firebase error
       if (error) {
         switch (error.code) {
@@ -293,8 +291,6 @@
         router.push('/custom-username') // Redirect to username creation page
       }
     } catch (error) {
-      console.log('Error signing in:', error)
-
       // Handle specific errors with appropriate messages
       if (error.code) {
         switch (error.code) {

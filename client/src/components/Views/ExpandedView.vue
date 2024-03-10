@@ -281,16 +281,14 @@
 
   onMounted(async () => {
     try {
+      // get the current user details
+      await authStore.getCurrentUserDetails()
 
-          // get the current user details
-          await authStore.getCurrentUserDetails()
-
-// set the user value to the user details
-if (authStore.dbUser) {
-  user.value = authStore.dbUser.dbData
-}
-        isLoggedIn.value = true
-
+      // set the user value to the user details
+      if (authStore.dbUser) {
+        user.value = authStore.dbUser.dbData
+      }
+      isLoggedIn.value = true
     } catch (error) {
       console.error('Error getting current user:', error)
     }

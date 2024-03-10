@@ -10,7 +10,7 @@ async function getDashboardData(email, usersRef, res) {
   try {
     const { uid, userObject } = await fetchUserDataAndSubmissions(
       email,
-      usersRef
+      usersRef,
     );
     const userSubmissionsData = await fetchUserSubmissions(uid);
     const userSubmissionData = await processSubmissions(userSubmissionsData);
@@ -19,10 +19,10 @@ async function getDashboardData(email, usersRef, res) {
 
     const submissionsCount = {
       proverbs: Object.keys(userSubmissionsData).filter((key) =>
-        key.includes("proverb")
+        key.includes("proverb"),
       ).length,
       poetrys: Object.keys(userSubmissionsData).filter((key) =>
-        key.includes("Poetry")
+        key.includes("Poetry"),
       ).length,
       totalSubmissions: Object.keys(userSubmissionsData).length,
     };
@@ -86,7 +86,7 @@ async function processSubmissions(userSubmissionsData) {
 
 function sortAndFilterSubmissions(userSubmissionData) {
   const mostVotes = Object.values(userSubmissionData).filter(
-    (submission) => submission.votes && submission.votes.upvote.count > 0
+    (submission) => submission.votes && submission.votes.upvote.count > 0,
   );
   const mostRecent = [...Object.values(userSubmissionData)]; // Clone to avoid mutating original array
 

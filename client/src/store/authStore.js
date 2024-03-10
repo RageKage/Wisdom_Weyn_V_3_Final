@@ -64,7 +64,6 @@ export const useAuthStore = defineStore('auth', () => {
                   username: snapshot.val().username,
                 },
               }
-              console.log('userData: ', userData)
               resolve(userData)
             } else {
               resolve(null) // Resolve with null if no data found
