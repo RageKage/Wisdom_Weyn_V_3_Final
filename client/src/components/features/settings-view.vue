@@ -18,7 +18,15 @@
         <div class="flex items-center space-x-4">
           <div>
             <img
-              :src="user.photoURL || defaultPic"
+              v-if="user.photoURL"
+              :src="user.photoURL"
+              alt="User Photo"
+              class="w-12 h-12 rounded-full"
+            />
+
+            <img
+              v-else
+              :src="defaultPic"
               alt="User Photo"
               class="w-12 h-12 rounded-full"
             />
