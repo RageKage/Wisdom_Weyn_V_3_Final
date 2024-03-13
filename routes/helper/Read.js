@@ -6,23 +6,23 @@ var verifyToken = require("../errorHandler.js").verifyToken;
 var sendNotFound = require("../errorHandler.js").sendNotFound;
 var sendUnauthorized = require("../errorHandler.js").sendUnauthorized;
 
-async function getDashboardData(email, usersRef, res) {
+async function getDashboardData(username, res) {
   try {
-    const { uid, userObject } = await fetchUserDataAndSubmissions(
-      email,
-      usersRef,
-    );
+    const { uid, userObject } = await fetchUserDataAndSubmissions(username);
+
     const userSubmissionsData = await fetchUserSubmissions(uid);
+
     const userSubmissionData = await processSubmissions(userSubmissionsData);
+
     const { mostVotes, mostRecent } =
       sortAndFilterSubmissions(userSubmissionData);
 
     const submissionsCount = {
       proverbs: Object.keys(userSubmissionsData).filter((key) =>
-        key.includes("proverb"),
+        key.includes("Proverb")
       ).length,
       poetrys: Object.keys(userSubmissionsData).filter((key) =>
-        key.includes("Poetry"),
+        key.includes("Poetry")
       ).length,
       totalSubmissions: Object.keys(userSubmissionsData).length,
     };
@@ -44,18 +44,28 @@ async function getDashboardData(email, usersRef, res) {
   }
 }
 
-async function fetchUserDataAndSubmissions(email, usersRef) {
-  const usersSnapshot = await usersRef
-    .orderByChild("email")
-    .equalTo(email)
-    .once("value");
-  if (!usersSnapshot.exists()) {
-    throw new Error("UserNotFound"); // Use an Error with a specific type or message for easier handling.
+async function fetchUserDataAndSubmissions(username) {
+  const usernameRef = db.ref(`usernames/${username}`);
+
+  const usernameSnapshot = await usernameRef.once("value");
+
+  if (!usernameSnapshot.exists()) {
+    throw new Error("UserNotFound");
   }
 
-  const userData = usersSnapshot.val();
-  const uid = Object.keys(userData)[0];
-  const userObject = userData[uid];
+  const usernameUID = usernameSnapshot.val();
+  const uid = usernameUID.uid;
+
+  const userRef = db.ref(`users/${uid}`);
+
+  const userSnapshot = await userRef.once("value");
+
+  if (!userSnapshot.exists()) {
+    throw new Error("UserNotFound");
+  }
+
+  const userObject = userSnapshot.val();
+
   return { uid, userObject };
 }
 
@@ -86,7 +96,7 @@ async function processSubmissions(userSubmissionsData) {
 
 function sortAndFilterSubmissions(userSubmissionData) {
   const mostVotes = Object.values(userSubmissionData).filter(
-    (submission) => submission.votes && submission.votes.upvote.count > 0,
+    (submission) => submission.votes && submission.votes.upvote.count > 0
   );
   const mostRecent = [...Object.values(userSubmissionData)]; // Clone to avoid mutating original array
 
@@ -104,6 +114,14 @@ const getCollections = async (req, res) => {
   const ref = db.ref("/collections");
   try {
     const data = await fetchCollectionsData(ref);
+
+    // check if the data is empty
+    if (data === null) {
+      return sendNotFound(
+        res,
+        "No data found in the database. Please check back later."
+      );
+    }
     const mergedData = mergeAndSortCollections(data);
 
     const page = parseInt(req.query.page) || 1;
@@ -147,9 +165,6 @@ function mergeAndSortCollections(data) {
 async function fetchCollectionsData(ref) {
   const snapshot = await ref.once("value");
   const data = snapshot.val();
-  if (!data || Object.keys(data).length === 0) {
-    throw new Error("NoDataFound");
-  }
   return data;
 }
 

@@ -8,7 +8,7 @@
       >
         <div
           v-if="user"
-          class="flex items-center justify-center space-x-3 sm:pr-4 md:pr-4 lg:pr-0 w-16 h-16 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 ease-in-out transform"
+          class="flex items-center justify-center space-x-3 sm:pr-4 lg:pr-0 w-16 h-16 lg:w-20 lg:h-20 transition-all duration-300 ease-in-out transform"
         >
           <button
             @click="toggleDropdown"
@@ -37,9 +37,8 @@
           v-else
           to="/sign-in"
           class="hidden lg:inline text-gray-900 hover:-700"
+          >Log in <span>&rarr;</span></router-link
         >
-          Log in <span>&rarr;</span>
-        </router-link>
         <!-- Dropdown menu -->
         <div
           v-show="dropdownOpen"
@@ -48,9 +47,9 @@
           style="top: 100%; right: 0"
         >
           <div class="px-4 py-3">
-            <span class="block text-sm text-seashell-700">
-              {{ user?.personalName }}</span
-            >
+            <span class="block text-sm text-seashell-700">{{
+              user?.personalName
+            }}</span>
             <span class="block text-sm text-seashell-500 truncate">{{
               user?.email
             }}</span>
@@ -61,7 +60,7 @@
             @click="closeDropdown"
           >
             <li class="px-4 py-2 hover:bg-gray-100">
-              <button @click="userdashboard(user?.email)">Dashboard</button>
+              <button @click="userdashboard(user?.username)">Dashboard</button>
             </li>
             <li class="px-4 py-2 hover:bg-gray-100">
               <button @click="router.push('/setting')">Settings</button>
@@ -96,18 +95,18 @@
         </div>
       </div>
 
-      <div
-        class="items-center justify-between hidden w-full md:w-auto md:order-1 sm:hidden md:hidden lg:flex"
-      >
+      <div class="items-center justify-between hidden w-full md:w-auto lg:flex">
         <div
           class="text-base md:flex-grow items-center justify-end md:flex md:space-x-10 text-seashell-700"
         >
-          <span class="rounded-lg md:p-0 router-link-exact-active">
-            <router-link to="/collections"> Wisdoms </router-link>
-          </span>
-          <span class="rounded-lg md:p-0 router-link-exact-active">
-            <router-link to="/submissions/create"> Contribute </router-link>
-          </span>
+          <span class="rounded-lg md:p-0 router-link-exact-active"
+            ><router-link to="/collections"> Wisdoms </router-link></span
+          >
+          <span class="rounded-lg md:p-0 router-link-exact-active"
+            ><router-link to="/submissions/create">
+              Contribute
+            </router-link></span
+          >
         </div>
         <div
           id="slider"

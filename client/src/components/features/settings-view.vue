@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4">
+  <div class="p-4 lg:w-2/4">
     <div
       v-if="showSuccessPopup"
       class="bg-green-100 text-green-700 p-2 rounded-2xl shadow mx-auto max-w-2xl text-center"
@@ -16,28 +16,12 @@
         class="p-4 border-b border-seashell-200 flex items-center justify-between"
       >
         <div class="flex items-center space-x-4">
-          <div v-if="user.photoURL">
+          <div>
             <img
-              :src="user.photoURL"
+              :src="user.photoURL || defaultPic"
               alt="User Photo"
               class="w-12 h-12 rounded-full"
             />
-          </div>
-          <div v-else>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-12 h-12 bg-redDamask-600 p-1 rounded-full text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-              />
-            </svg>
           </div>
           <div>
             <h2 class="font-bold">Hello, {{ user.username }}</h2>
@@ -76,37 +60,66 @@
         </div>
         <p v-if="usernameError" class="text-red-500">{{ usernameError }}</p>
       </div>
-      <div class="cursor-not-allowed">
+
+      <!-- <div class="p-4 border-b border-seashell-200">
+        <label class="block font-bold mb-2">Bio</label>
+
+        <div>
+          <textarea
+            v-model="user.bio"
+            rows="4"
+            class="w-full p-2 border bg-white border-seashell-200 rounded-xl"
+            placeholder="Tell us something about yourself..."
+          ></textarea>
+          <button class="bg-blue-500 text-white px-4 py-2 rounded-xl mt-2">
+            Save
+          </button>
+        </div>
+      </div> -->
+
+      <div>
         <div class="p-4 border-b border-seashell-200">
           <p class="font-bold">Contact Information</p>
           <p>
             Email: <span>{{ user.email }}</span>
           </p>
           <p>Email Verified: <span>No</span></p>
-          <p v-if="user.lastLoginDate">
+          <p v-if="user.lastLoginAt">
             Last Login: {{ isotimeValueConvert(user.lastLoginAt) }}
           </p>
         </div>
+      </div>
 
+      <!-- <div>
         <div class="p-4 border-b border-seashell-200">
-          <p class="text-sm font-semibold">Settings</p>
-
-          <p>Recent Activity</p>
-          <div class="mt-6">
-            <div class="mt-2">
-              <h2 class="text-lg">
-                More settings options will be available soon
-              </h2>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 border-b border-seashell-200">
-          <p class="font-bold text-red-600">Danger Zone</p>
-          <p>Delete all posts</p>
-          <p>Delete your account</p>
+          <p class="font-bold">Update Password</p>
+          <button
+            class="bg-blue-300 text-white px-4 py-2 rounded-xl mt-2 hover:bg-blue-500 transition duration-300"
+          >
+            Request Password Reset
+          </button>
         </div>
       </div>
+
+
+      <div>
+        <div class="p-4 border-b border-seashell-200">
+          <p class="font-bold text-red-500">Danger Zone</p>
+          <div class="flex items-center space-x-2 mt-2">
+            <button
+              class="bg-red-300 text-white px-4 py-2 rounded-xl mt-2 hover:bg-red-500 transition duration-300"
+            >
+              Delete Account
+            </button>
+
+            <button
+              class="bg-red-300 text-white px-4 py-2 rounded-xl mt-2 hover:bg-red-500 transition duration-300"
+            >
+              Delete All Posts
+            </button>
+          </div>
+        </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -115,6 +128,8 @@
   import { ref, onMounted } from 'vue'
   import { Actions } from '../Composables/actions'
   import AppApiService from '../../service/index.js'
+  import defaultPic from '@/assets/defaultprofilePic.svg'
+
   import { useAuthStore } from '../../store/authStore' // Import useAuthStore
   const authStore = useAuthStore()
 

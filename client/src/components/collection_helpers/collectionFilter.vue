@@ -27,7 +27,7 @@
   const filters = [
     { label: 'All', value: 'all' },
     { label: 'Gabay', value: 'Poetry' },
-    { label: 'Maahmaahyo', value: 'proverb' },
+    { label: 'Maahmaahyo', value: 'Proverb' },
   ]
 
   // emits

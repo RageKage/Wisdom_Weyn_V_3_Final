@@ -6,7 +6,7 @@
           Share Your Wisdom
         </h2>
         <p class="text-center text-sm text-gray-500 mt-2">
-          Contribute your favorite Somali proverbs or poetry
+          Contribute your favorite Somali Proverbs or Poetry
         </p>
 
         <form class="mt-4">
@@ -16,8 +16,8 @@
             >
               <input
                 type="radio"
-                id="proverb"
-                value="proverb"
+                id="Proverb"
+                value="Proverb"
                 v-model="picked"
                 checked
                 class="p-3 border border-gray-300 bg-white rounded-xl"
@@ -29,7 +29,7 @@
             >
               <input
                 type="radio"
-                id="poetry"
+                id="Poetry"
                 value="Poetry"
                 v-model="picked"
                 class="p-3 border border-gray-300 bg-white rounded-xl"
@@ -122,7 +122,7 @@
           <button
             type="submit"
             @click="submitForm"
-            class="w-full sm:w-auto text-base text-center ease-in hover:shadow-md flex items-center justify-center bg-carrotOrange-500 border-2 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+            class="w-full sm:w-auto text-base text-center ease-in  flex items-center justify-center bg-carrotOrange-500 border-2 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
           >
             <span v-if="props.isLoading" class="flex items-center">
               <div role="status">
@@ -165,7 +165,7 @@
         </p>
         <ul class="list-disc list-inside mt-4">
           <li class="text-sm text-gray-500">
-            Share original content or time-honored proverbs and poetry.
+            Share original content or time-honored Proverbs and poetry.
           </li>
           <li class="text-sm text-gray-500">
             If you're sharing someone else's work, please give credit where it's
@@ -188,7 +188,7 @@
   import { useAuthStore } from '../../store/authStore' // Import useAuthStore
   const authStore = useAuthStore()
 
-  const picked = ref('proverb')
+  const picked = ref('Proverb')
   const title = ref('')
   const content = ref('')
   const meaning = ref('')
@@ -227,7 +227,7 @@
     title.value = ''
     content.value = ''
     meaning.value = ''
-    picked.value = 'proverb'
+    picked.value = 'Proverb'
   }
 
   const login = () => {

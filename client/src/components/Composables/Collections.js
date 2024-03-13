@@ -83,13 +83,15 @@ export function CollectionsFunctions() {
       console.error('Error fetching collections:', error)
       // Display error message
       if (error.toString().includes('404')) {
-        errorMessage.value = 'You have reached the end of the data'
+        errorMessage.value = error
       } else if (error.toString().includes('500')) {
-        errorMessage.value = 'Server Error'
+        errorMessage.value = error
       } else if (error.toString().includes('401')) {
-        errorMessage.value = 'Unauthorized'
+        errorMessage.value = error
+      } else if (error.toString().includes('405')) {
+        errorMessage.value = error
       } else {
-        errorMessage.value = 'An unknown error occurred'
+        errorMessage.value = error
       }
     } finally {
       isLoading.value = false
@@ -163,6 +165,9 @@ export function CollectionsFunctions() {
 
   const closeError = () => {
     errorMessage.value = null
+
+    // refresh page state
+    window.location.reload()
   }
 
   // Return all the functions so they can be used globally

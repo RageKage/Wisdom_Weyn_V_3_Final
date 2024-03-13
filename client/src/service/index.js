@@ -106,9 +106,9 @@ const AppApiService = () => {
         .catch(handleError)
     },
 
-    getuserDashBoardAPI(email) {
+    getuserDashBoardAPI(username) {
       return axios
-        .get(apiPath + `/users/${email}/dashboard`)
+        .get(apiPath + `/users/${username}`)
         .then(handleResponse)
         .catch(handleError)
     },
@@ -167,7 +167,7 @@ const AppApiService = () => {
       }
 
       return axios
-        .get(apiPath + `/users/username`, { headers })
+        .get(apiPath + `/validate/user/username`, { headers })
         .then(handleResponse)
         .catch(handleError)
     },

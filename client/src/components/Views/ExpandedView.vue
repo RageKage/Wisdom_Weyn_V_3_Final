@@ -1,28 +1,27 @@
 <template>
   <div class="p-6 sm:px-5 max-w-full mx-auto sm:max-w-[1200px]">
     <div v-if="item">
-      <!-- post view -->
+      <!-- Post view -->
       <div
-        class="bg-seashell-50 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl mb-4 p-4"
+        class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 mb-4 p-4"
       >
-        <!-- back button  -->
+        <!-- Back button -->
         <div class="flex mt-4 mb-4">
           <button
             @click="goback"
-            class="text-seashell-900 hover:text-seashell-700 focus:outline-none transition-all duration-300"
+            class="text-gray-700 hover:text-gray-500 focus:outline-none transition-all duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
               stroke="currentColor"
               class="w-6 h-6"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                d="M15 19l-7-7 7-7"
               />
             </svg>
           </button>
@@ -30,81 +29,65 @@
         <div class="flex flex-col space-y-4">
           <div class="flex flex-col items-start">
             <h2
-              class="text-2xl font-bold mb-2 text-seashell-900 hover:text-seashell-700 transition-all duration-300"
+              class="text-2xl font-bold mb-2 text-gray-900 hover:text-gray-700 transition-all duration-300"
             >
               {{ item.title }}
             </h2>
-
             <div class="grid grid-cols-1 md:grid-cols-2 py-4 w-full">
               <div class="text-gray-700 text-lg leading-relaxed md:mr-6">
                 {{ item.content }}
               </div>
-
-              <div
-                class="mt-2 sm:mt-0 p-2 -100 -600 rounded bg-saffron-300 text-seashell-900"
-              >
-                <span>{{ item.meaning }}</span>
+              <div class="mt-2 sm:mt-0 p-2 rounded bg-yellow-400 text-gray-900">
+                {{ item.meaning }}
               </div>
             </div>
-
             <div class="text-sm text-gray-600 mb-4 mt-2">
               Submitted by
               <span
-                @click="userdashboard(item.submittedBy)"
+                @click="userdashboard(item.username)"
                 class="text-indigo-600 hover:text-indigo-800 cursor-pointer"
                 >{{ item.username }}</span
               >
               on <span>{{ formatDate(item.creationDate) }}</span>
             </div>
-
             <div
               class="flex items-center justify-between w-full border-t border-gray-200 pt-4"
             >
               <div class="flex items-center">
                 <button
                   @click="upvoteSubmisson(item.id)"
-                  :class="{
-                    'text-carrotOrange-400':
-                      item.userVote === 'upvote' || isUserUpvoted(item),
-                  }"
                   class="focus:outline-none mr-2 hover:text-carrotOrange-500 transition-all duration-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
                     stroke="currentColor"
                     class="w-6 h-6"
                   >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"
+                      d="M5 15l7-7 7 7"
                     />
                   </svg>
                 </button>
                 <span class="text-gray-700">{{ item.votes.upvote.count }}</span>
                 <button
                   @click="downvoteSubmisson(item.id)"
-                  :class="{
-                    'text-red-400':
-                      item.userVote === 'downvote' || isUserDownvoted(item),
-                  }"
-                  class="focus:outline-none ml-4 mr-2 hover:text-red-500 transition-all duration-300"
+                  class="focus:outline-none ml-4 hover:text-red-500 mr-2 transition-all duration-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
                     stroke="currentColor"
                     class="w-6 h-6"
                   >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
+                      d="M19 9l-7 7-7-7"
                     />
                   </svg>
                 </button>
@@ -132,60 +115,41 @@
                     />
                   </svg>
                 </button>
-                <!-- TODO soon to be added -->
-                <button
-                  v-if="future_feature"
-                  class="rounded-lg text-gray-500 p-2 transition-all duration-300 mr-4"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6"
+                <!-- Delete submission -->
+                <div v-if="isLoggedIn">
+                  <button
+                    v-if="user.email === item.submittedBy"
+                    @click="deletessubmission(item.id, user.uid)"
+                    class="rounded-lg text-red-600 p-2 transition-all duration-300"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-                    />
-                  </svg>
-                </button>
-
-                <!-- delete submission -->
-                <button
-                  v-if="isLoggedIn && user.email === item.submittedBy"
-                  @click="deletessubmission(item.id, user.uid)"
-                  class="rounded-lg text-red-600 p-2 transition-all duration-300"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- Comments section -->
       <div>
-        <!-- adding comments will be added soon -->
         <div
-          class="flex flex-col items-center justify-center text-center bg-seashell-50 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl mb-4 p-4"
+          class="flex flex-col items-center justify-center text-center bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 mb-4 p-4"
         >
           <h2
-            class="text-2xl font-bold mb-2 text-seashell-900 hover:text-seashell-700 transition-all duration-300"
+            class="text-2xl font-bold mb-2 text-gray-900 hover:text-gray-700 transition-all duration-300"
           >
             Comments
           </h2>
@@ -195,13 +159,13 @@
         </div>
       </div>
     </div>
-    <!-- looking for a post that doesn't exist -->
+    <!-- Submission not found -->
     <div v-if="submissionNotFound">
       <div
-        class="flex flex-col items-center justify-center text-center bg-seashell-50 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl mb-4 p-4"
+        class="flex flex-col items-center justify-center text-center bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 mb-4 p-4"
       >
         <h2
-          class="text-2xl font-bold mb-2 text-seashell-900 hover:text-seashell-700 transition-all duration-300"
+          class="text-2xl font-bold mb-2 text-gray-900 hover:text-gray-700 transition-all duration-300"
         >
           Submission Not Found
         </h2>
@@ -209,11 +173,11 @@
           The submission you are looking for does not exist.
         </p>
       </div>
-      <!-- go back to collections button -->
+      <!-- Go back to collection button -->
       <div class="flex flex-col items-center justify-center text-center">
         <button
           @click="goback"
-          class="bg-seashell-900 text-seashell-50 hover:bg-seashell-700 transition-all duration-300 rounded-lg px-4 py-2 focus:outline-none"
+          class="bg-blue-500 text-white hover:bg-blue-700 transition-all duration-300 rounded-lg px-4 py-2 focus:outline-none"
         >
           Go Back to Collection
         </button>
@@ -287,8 +251,8 @@
       // set the user value to the user details
       if (authStore.dbUser) {
         user.value = authStore.dbUser.dbData
+        isLoggedIn.value = true
       }
-      isLoggedIn.value = true
     } catch (error) {
       console.error('Error getting current user:', error)
     }
@@ -346,7 +310,6 @@
         if (result.isConfirmed) {
           deleteSubmission(id, uid)
           Swal.fire('Deleted!', 'Your submission has been deleted.', 'success')
-          router.push('/collections')
         }
       })
       .catch((e) => console.error('Error deleting submission:', e))

@@ -79,12 +79,12 @@ export function Actions() {
   }
 
   // take a user to a user dashboard
-  const userdashboard = (email) => {
+  const userdashboard = (username) => {
     try {
       router.push({
         name: 'UserDashboard',
         params: {
-          id: email,
+          username: username,
         },
       })
     } catch (err) {

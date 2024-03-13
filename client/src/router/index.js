@@ -54,7 +54,7 @@ const routes = [
     meta: { title: 'Submission Details' },
   },
   {
-    path: '/users/:id/dashboard',
+    path: '/user/:username',
     name: 'UserDashboard',
     component: Dashboard,
     meta: { title: 'User Dashboard' },

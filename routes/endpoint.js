@@ -106,14 +106,13 @@ router.get("/submissions/:id", async (req, res) => {
   }
 });
 
-// get user data by email this is for the dashboard feature
-router.get("/users/:email/dashboard", async (req, res) => {
+// get user data by username this is for the dashboard feature
+router.get("/users/:username", async (req, res) => {
   try {
     // get the email from the request
-    const email = req.params.email;
-    const usersRef = db.ref("users");
+    const username = req.params.username;
 
-    await getDashboardData(email, usersRef, res);
+    await getDashboardData(username, res);
   } catch (error) {
     return handleError(res, error);
   }
@@ -239,7 +238,7 @@ router.post("/users/sync", async (req, res) => {
 });
 
 // Check if the username is already in the database
-router.get("/users/username", async (req, res) => {
+router.get("/validate/user/username", async (req, res) => {
   const idToken = req.headers.authorization?.split("Bearer ")[1];
 
   if (!idToken) {

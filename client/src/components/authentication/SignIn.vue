@@ -219,6 +219,7 @@
         router.push('/custom-username') // Redirect to username creation page
       }
     } catch (error) {
+
       if (error.code) {
         switch (error.code) {
           case 'auth/invalid-email':
@@ -229,6 +230,7 @@
             break
         }
       } else {
+
         firebaseError.value = 'An unknown error occurred'
       }
     }

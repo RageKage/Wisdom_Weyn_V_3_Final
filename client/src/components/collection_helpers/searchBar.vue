@@ -3,7 +3,7 @@
     <input
       type="text"
       id="searchInput"
-      placeholder="Search for proverb or Gabay"
+      placeholder="Search for Proverb or Gabay"
       v-model="searchQuery"
       class="flex-grow hover:cursor-pointer placeholder:text-seashell-900 px-4 py-2 rounded-2xl transition-all duration-300"
     />

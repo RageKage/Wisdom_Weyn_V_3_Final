@@ -1,4 +1,4 @@
-@import url("https://api.fontshare.com/v2/css?f[]=kalam@400&display=swap");
+@import url('https://api.fontshare.com/v2/css?f[]=kalam@400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,18 +7,18 @@
 /* Add these styles to your stylesheet or component */
 
 .router-link-exact-active.active {
-    @apply border border-redDamask-500  items-center rounded-full p-2 text-redDamask-500;
+  @apply items-center text-redDamask-500 border-b-2 border-redDamask-500;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .animate-fadeIn {
-    animation: fadeIn 1s ease-out;
+  animation: fadeIn 1s ease-out;
 }
