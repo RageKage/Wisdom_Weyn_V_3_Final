@@ -39,7 +39,7 @@
         <!-- Dropdown menu -->
         <div
           v-show="dropdownOpen"
-          class="z-50 absolute mt-2 w-48 bg-seashell-50 divide-y divide-gray-200 rounded-lg shadow-lg"
+          class="z-50 absolute mt-2 w-48 bg-white divide-y divide-gray-200 rounded-lg shadow-lg"
           id="user-dropdown"
           style="top: 100%; right: 0"
         >
@@ -56,11 +56,26 @@
             aria-labelledby="user-menu-button"
             @click="closeDropdown"
           >
-            <li class="px-4 py-2 hover:bg-gray-100">
-              <button @click="userdashboard(user?.username)">Dashboard</button>
-            </li>
-            <li class="px-4 py-2 hover:bg-gray-100">
-              <button @click="router.push('/setting')">Settings</button>
+            <li
+              v-for="item in dropdownItems"
+              :key="item.name"
+              class="px-4 py-2 hover:bg-gray-100"
+            >
+              <button
+                v-if="item.action"
+                @click="
+                  item.action === 'userdashboard'
+                    ? userdashboard(user?.username)
+                    : item.action === 'signOutUser'
+                      ? signOutUser()
+                      : ''
+                "
+              >
+                {{ item.name }}
+              </button>
+              <router-link active-class="active-img" v-else :to="item.path">{{
+                item.name
+              }}</router-link>
             </li>
             <li class="px-4 py-2 text-red-500 hover:text-red-600">
               <button @click="signOutUser">Sign out</button>
@@ -96,19 +111,14 @@
         <div
           class="text-base md:flex-grow items-center justify-end md:flex md:space-x-10 text-seashell-700"
         >
-          <span class="rounded-lg md:p-0 router-link-exact-active"
-            ><router-link to="/collections"> Wisdoms </router-link></span
+          <span
+            v-for="item in navItems"
+            :key="item.name"
+            class="font-medium hover:text-seashell-500 cursor-pointer transition-all duration-300 rounded-lg md:p-0 router-link-exact-active"
           >
-          <span class="rounded-lg md:p-0 router-link-exact-active"
-            ><router-link to="/submissions/create">
-              Contribute
-            </router-link></span
-          >
+            <router-link :to="item.path">{{ item.name }}</router-link>
+          </span>
         </div>
-        <div
-          id="slider"
-          class="absolute bottom-0 h-1 bg-blue-500 transition-all duration-300"
-        ></div>
       </div>
     </div>
   </nav>
@@ -119,12 +129,15 @@
   import { useRouter } from 'vue-router'
   import Logo from './Site-Logo.vue'
   import { Actions } from '../Composables/actions'
+  import useNavigation from '../Composables/useNavigation'
   import { useAuthStore } from '../../store/authStore' // Import useAuthStore
   const authStore = useAuthStore()
 
   const dropdownOpen = ref(false)
   const router = useRouter()
   const user = ref(null)
+
+  const { navItems, dropdownItems } = useNavigation()
 
   // Props and Emits
   const props = defineProps({

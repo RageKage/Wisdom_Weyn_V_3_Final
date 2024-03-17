@@ -19,10 +19,10 @@ async function getDashboardData(username, res) {
 
     const submissionsCount = {
       proverbs: Object.keys(userSubmissionsData).filter((key) =>
-        key.includes("Proverb")
+        key.includes("Proverb"),
       ).length,
       poetrys: Object.keys(userSubmissionsData).filter((key) =>
-        key.includes("Poetry")
+        key.includes("Poetry"),
       ).length,
       totalSubmissions: Object.keys(userSubmissionsData).length,
     };
@@ -96,7 +96,7 @@ async function processSubmissions(userSubmissionsData) {
 
 function sortAndFilterSubmissions(userSubmissionData) {
   const mostVotes = Object.values(userSubmissionData).filter(
-    (submission) => submission.votes && submission.votes.upvote.count > 0
+    (submission) => submission.votes && submission.votes.upvote.count > 0,
   );
   const mostRecent = [...Object.values(userSubmissionData)]; // Clone to avoid mutating original array
 
@@ -119,7 +119,7 @@ const getCollections = async (req, res) => {
     if (data === null) {
       return sendNotFound(
         res,
-        "No data found in the database. Please check back later."
+        "No data found in the database. Please check back later.",
       );
     }
     const mergedData = mergeAndSortCollections(data);

@@ -11,39 +11,35 @@ export function CollectionsFunctions() {
 
   const service = AppApiService()
 
-  // Truncate the string to a certain limit by words not text length
+  // Truncate the text by words
   const truncateString = (text, limit) => {
-    // Normalize the text to treat multiple newline characters and spaces equally
     const normalizedText = text.replace(/\s+/g, ' ')
 
-    // Split the normalized text into words
     const words = normalizedText.split(' ')
 
-    // Check if the text after normalization still respects the word limit
     if (words.length <= limit) {
       return words.join(' ')
     }
 
-    // Truncate the array of words to the specified limit
     const truncatedWords = words.slice(0, limit)
 
-    // Join the truncated words back into a string
-    return truncatedWords.join(' ') + '...' // Append ellipsis to indicate truncation
+    return truncatedWords.join(' ') + '...'
   }
 
   // Filter the collection data based on the active filter
   const filteredCollection = computed(() => {
     let allItems = []
 
-    // Loop through the collection data and push all the items into the allItems array and truncate the content and meaning
     if (Array.isArray(collectionData.value)) {
       collectionData.value.forEach((item) => {
-        // check if title isn't an empty string
-        if (item.title && item.title !== '') {
-          item.title = truncateString(item.title, 10)
+        // Check if title is empty, and if so, use content as the title
+        if (!item.title || item.title === '') {
+          item.title = item.content.split(' ').slice(0, 6).join(' ')
+        } else {
+          item.title = truncateString(item.title, 6)
         }
-        item.content = truncateString(item.content, 5)
-        item.meaning = truncateString(item.meaning, 12)
+        item.content = truncateString(item.content, 10)
+        item.meaning = truncateString(item.meaning, 5)
         allItems.push(item)
       })
     }

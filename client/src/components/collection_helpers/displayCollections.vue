@@ -1,47 +1,27 @@
 <template>
-  <div class="text-center">
-    <div v-if="activeFilter" class="text-seashell-900 leading-relaxed mb-4">
-      <div v-if="displayedItems.length > 0">
-        <div
-          class="flex flex-row justify-center items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse text-seashell-900"
-        >
-          <div class="flex items-center">
-            <div>
-              <div v-if="displayedItems.length > 0" class="p-2 mr-3">
-                {{ displayedItems.length }}
-              </div>
-            </div>
-          </div>
-          <div>
-            <span
-              class="rounded-3xl bg-saffron-400 p-3 transition-all duration-300"
-            >
-              {{ activeFilter }}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-else
-        class="flex flex-row justify-center items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
-      >
-        <div class="flex items-center">
-          <div>
-            <div
-              class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
-            >
-              No data available for
-            </div>
-          </div>
-        </div>
-        <div>
-          <span
-            class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
+  <div v-if="displayedItems.length <= 0">
+    <div
+      class="bg-orange-100 text-orange-800 font-medium py-2 px-4 rounded-3xl flex items-center text-center justify-between"
+    >
+      <div class="flex flex-row items-center text-center justify-between">
+        <span
+          class="bg-orange-500 text-white rounded-full mr-3 flex items-center justify-center w-8 h-8"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
           >
-            {{ activeFilter }}
-          </span>
-        </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+            />
+          </svg>
+        </span>
+        No data available for {{ activeFilter }}
       </div>
     </div>
   </div>
@@ -96,13 +76,27 @@
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start"
   >
     <div
+      v-motion
+      :initial="{
+        x: 0,
+        y: -200,
+        scale: 0.5,
+        opacity: 0,
+      }"
+      :enter="{
+        x: 0,
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        transition: { duration: 1, delay: 0.5 },
+      }"
       v-for="item in displayedItems"
       :key="item.id"
-      class="mb-6 p-4 bg-white rounded-lg shadow-md"
+      class="mb-6 p-4 bg-white rounded-lg shadow-md transition-all duration-300"
     >
       <div class="border-b pb-2 border-gray-200">
         <div class="mb-2 flex justify-between">
-          <span v-if="item.title" class="font-semibold">{{ item.title }}</span>
+          <span v-if="item.title" class="font-light">{{ item.title }}</span>
           <span v-else>{{ item.content }}</span>
           <span
             v-if="item.type === 'Poetry'"
@@ -124,7 +118,10 @@
           </span>
         </div>
 
-        <div v-if="item.showMeaning" class="leading-relaxed">
+        <div
+          v-if="item.showMeaning"
+          class="mt-2 bg-gray-100 p-2 rounded-md transition-all duration-300 text-sm text-gray-600 flex flex-col items-start justify-start"
+        >
           {{ item.meaning }}
         </div>
 
@@ -145,14 +142,14 @@
                 >{{ item.username }}
               </span>
             </span>
-            <span
+            <span class="text-xs"
               >Date: <span>{{ formatDate(item.creationDate) }}</span></span
             >
           </div>
-
-          <div class="flex items-center space-x-2"></div>
         </div>
       </div>
+
+      <!-- Action Buttons -->
 
       <div class="flex items-center space-x-4 text-sm text-gray-700">
         <div class="flex items-center space-x-2">

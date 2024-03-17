@@ -98,16 +98,16 @@
         data-aos="fade-up"
         data-aos-delay="700"
       >
-        <a
-          href="#"
-          class="btn-contribute bg-saffron-500 hover:bg-saffron-600 text-seashell-50 transition-all duration-300 px-6 py-3 rounded-3xl shadow-lg"
-          >Contribute to Wisdom Weyn</a
-        >
-        <a
-          href="#"
-          class="btn-collections bg-saffron-500 hover:bg-saffron-600 text-seashell-50 transition-all duration-300 px-6 py-3 rounded-3xl shadow-lg"
-          >Check out the Collections</a
-        >
+        <router-link
+          to="/collections"
+          class="text-seashell-800 px-4 py-2 rounded-2xl bg-saffron-400 transition-all duration-300 flex items-center cursor-pointer"
+          >Contribute to Wisdom Weyn
+        </router-link>
+        <router-link
+          to="/submissions/create"
+          class="text-seashell-800 px-4 py-2 rounded-2xl bg-saffron-400 transition-all duration-300 flex items-center cursor-pointer"
+          >Check out the Collections
+        </router-link>
       </div>
     </section>
 

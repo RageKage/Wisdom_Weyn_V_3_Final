@@ -4,11 +4,11 @@
       v-for="filter in filters"
       :key="filter.value"
       :class="[
-        ' px-4 py-2 rounded-2xl hover:bg-saffron-400 transition-all duration-300',
+        ' px-4 py-2 rounded-2xl hover:bg-saffron-400 transition-all duration-300 flex items-center cursor-pointer',
         ,
         activeFilter === filter.value
-          ? 'bg-saffron-300 hover:bg-saffron-400 text-seashell-800 shadow-lg outline-none ring-2 ring-offset-2 ring-saffron-300'
-          : 'bg-saffron-300 text-seashell-800',
+          ? 'bg-saffron-400 text-seashell-800'
+          : 'bg-saffron-300  px-4 py-2 rounded-2xl hover:bg-saffron-400  flex items-center cursor-pointer border-b-4 border-saffron-400  text-seashell-800 transition-all duration-300',
       ]"
       @click="filterType(filter.value)"
     >

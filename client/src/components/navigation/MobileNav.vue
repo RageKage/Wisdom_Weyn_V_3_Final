@@ -30,33 +30,15 @@
         </button>
       </div>
 
-      <div>
+      <div class="mt-4">
         <ul class="space-y-4 mt-4">
-          <li>
+          <li v-for="item in navItems" :key="item.name">
             <router-link
-              to="/"
+              :to="item.path"
               @click="closeMenu"
               class="block text-2xl font-medium text-seashell-900"
             >
-              Home
-            </router-link>
-          </li>
-          <li>
-            <router-link
-              to="/collections"
-              @click="closeMenu"
-              class="block text-2xl font-medium text-seashell-900"
-            >
-              Wisdoms
-            </router-link>
-          </li>
-          <li>
-            <router-link
-              to="/submissions/create"
-              @click="closeMenu"
-              class="block text-2xl font-medium text-seashell-900"
-            >
-              Contribute
+              {{ item.name }}
             </router-link>
           </li>
           <li v-if="!user">
@@ -78,6 +60,9 @@
   import Logo from './Site-Logo.vue'
   import { onMounted, ref } from 'vue'
   import { useAuthStore } from '../../store/authStore' // Import useAuthStore
+  import useNavigation from '../Composables/useNavigation'
+  const { navItems } = useNavigation()
+
   const authStore = useAuthStore()
 
   const props = defineProps({

@@ -100,4 +100,22 @@ async function handleVoting(req, res, newVoteType, uid, id) {
   }
 }
 
-module.exports = { updateData, updateUsername, handleVoting };
+const updateLastloginAt = async (res, userData, uid) => {
+  const userRef = db.ref(`users/${uid}`);
+  const snapshot = await userRef.once("value");
+  if (snapshot.exists()) {
+    // If user already exists, only update lastLoginAt
+    await userRef.update({ lastLoginAt: userData.lastLoginAt || null });
+  } else {
+    // If user doesn't exist, return Error
+    return handleError(res, "User not found");
+  }
+  res.json("User data processed successfully.");
+};
+
+module.exports = {
+  updateData,
+  updateUsername,
+  handleVoting,
+  updateLastloginAt,
+};

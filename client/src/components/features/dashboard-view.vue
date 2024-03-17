@@ -34,11 +34,8 @@
           <div>
             <h2 class="text-lg font-semibold">{{ data.username }}</h2>
             <p class="text-gray-600">
-              <!-- Fake bio -->
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              .......
+              <!-- bio coming soon
+-->
             </p>
           </div>
         </div>
@@ -82,8 +79,9 @@
             class="mb-6 border-b-2 p-2"
           >
             <p class="text-gray-600">
-              {{ truncateString(submission.title || submission.content, 50) }}
+              {{ truncateString(submission.title || submission.content, 8) }}
             </p>
+
             <div
               class="flex items-center justify-between mt-2 text-gray-600 space-x-4"
             >
@@ -111,7 +109,7 @@
             class="mb-6 border-b-2 p-2"
           >
             <p class="text-gray-600">
-              {{ truncateString(submission.title || submission.content, 50) }}
+              {{ truncateString(submission.title || submission.content, 8) }}
             </p>
             <div
               class="flex items-center justify-between mt-2 text-gray-600 space-x-4"
@@ -163,14 +161,19 @@
     }
   }
 
-  // Truncate text by words not characters
+  // Truncate the text by words
   const truncateString = (text, limit) => {
-    if (!text) return '' // Return empty string if text is undefined
+    const normalizedText = text.replace(/\s+/g, ' ')
 
-    if (text.length > limit) {
-      return text.slice(0, limit) + '...'
+    const words = normalizedText.split(' ')
+
+    if (words.length <= limit) {
+      return words.join(' ')
     }
-    return text
+
+    const truncatedWords = words.slice(0, limit)
+
+    return truncatedWords.join(' ') + '...'
   }
 
   // Format the date

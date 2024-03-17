@@ -111,24 +111,61 @@ const storeUserData = async (res, userData, uid) => {
     // validate userData
     validateUserData(userData);
 
-    await db.ref(`users/${uid}`).set({
-      personalName: userData.personalName,
-      email: userData.email,
-      createdAt: userData.createdAt || null,
-      lastLoginAt: userData.lastLoginAt || null,
-      submissionCount: 0,
-    });
+    const userRef = db.ref(`users/${uid}`);
+    const snapshot = await userRef.once("value");
+    if (snapshot.exists()) {
+      // If user already exists, only update lastLoginAt
+      await userRef.update({ lastLoginAt: userData.lastLoginAt || null });
+    } else {
+      // If user doesn't exist, set all data
+      await userRef.set({
+        personalName: userData.personalName,
+        email: userData.email,
+        createdAt: userData.createdAt || null,
+        lastLoginAt: userData.lastLoginAt || null,
+        submissionCount: 0,
+      });
+    }
     res.json("User data processed successfully.");
   } catch (error) {
     return handleError(res, error);
   }
 };
 
+function validateUsername(username) {
+  const usernameRegex = /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/;
+  const minLength = 3;
+  const maxLength = 20;
+
+  // Check if username is empty
+  if (username.length === 0) {
+    return "Username cannot be empty.";
+  }
+
+  // Check length requirements
+  if (username.length < minLength || username.length > maxLength) {
+    return `Username must be between ${minLength} and ${maxLength} characters long.`;
+  }
+
+  // Check for allowed characters
+  if (!usernameRegex.test(username)) {
+    return "Username can only contain letters, numbers, underscores (_), and hyphens (-). It cannot begin with an underscore or hyphen.";
+  }
+
+  return null;
+}
+
 const addUsernameToDB = async (username, uid, res) => {
   try {
     let updates = {};
     if (!username) {
       return handleError(res, "Please provide a username");
+    }
+
+    const usernameError = validateUsername(username);
+
+    if (usernameError) {
+      return handleError(res, usernameError);
     }
 
     // check if username is already taken

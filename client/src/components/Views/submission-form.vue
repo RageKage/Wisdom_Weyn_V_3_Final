@@ -122,7 +122,7 @@
           <button
             type="submit"
             @click="submitForm"
-            class="w-full sm:w-auto text-base text-center ease-in flex items-center justify-center bg-carrotOrange-500 border-2 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+            class="bg-saffron-300 px-4 py-2 rounded-2xl hover:bg-saffron-400 flex items-center cursor-pointer border-b-4 border-saffron-400 text-seashell-800 transition-all duration-300"
           >
             <span v-if="props.isLoading" class="flex items-center">
               <div role="status">

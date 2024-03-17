@@ -23,6 +23,7 @@ var createSubmission = require("./helper/Create.js").createSubmission;
 var DeleteSubmission = require("./helper/Delete.js").DeleteSubmission;
 
 var storeUserData = require("./helper/Create.js").storeUserData;
+var updateLastloginAt = require("./helper/Update.js").updateLastloginAt;
 
 var addUsernameToDB = require("./helper/Create.js").addUsernameToDB;
 
@@ -264,9 +265,14 @@ async function UsernameInDB(uid, usernamesRef) {
   const data = snapshot.val();
 
   if (data) {
-    const usernames = Object.values(data);
-    const exists = usernames.includes(uid);
-    return exists;
+    const usernames = Object.values(data).map((user) => user.uid); // map to array of UIDs
+
+    // now check if the useruid is in the usernames array and if yes then return existd or ture else false
+    if (usernames.includes(uid)) {
+      return true;
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
@@ -286,6 +292,25 @@ router.post("/users/username", async (req, res) => {
     const username = req.body.username;
 
     await addUsernameToDB(username, uid, res);
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+// update user last login time
+router.post("/users/lastLoginAt", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return sendUnauthorized(res, "Unauthorized");
+  }
+
+  try {
+    const decodedToken = await verifyToken(idToken);
+    const uid = decodedToken.uid;
+    const userData = req.body;
+
+    await updateLastloginAt(res, userData, uid);
   } catch (error) {
     return handleError(res, error);
   }

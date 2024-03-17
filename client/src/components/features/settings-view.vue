@@ -2,9 +2,9 @@
   <div class="max-w-3xl mx-auto">
     <div
       v-if="showSuccessPopup"
-      class="bg-green-100 text-green-700 p-2 rounded-2xl shadow mx-auto max-w-2xl text-center"
+      class="bg-green-100 text-green-700 p-4 rounded-2xl shadow mx-auto max-w-2xl text-center"
     >
-      <span class="text-sm font-semibold text-green-700 hover:text-green-900">
+      <span class="text-sm font-bold inline-block">
         Username updated successfully!
       </span>
     </div>
@@ -135,7 +135,6 @@
 
 <script setup>
   import { ref, onMounted } from 'vue'
-  import { Actions } from '../Composables/actions'
   import AppApiService from '../../service/index.js'
   import defaultPic from '@/assets/defaultprofilePic.svg'
 
@@ -204,12 +203,10 @@
   const showSuccessPopup = ref(false)
 
   const validateAndUpdateUsername = async () => {
-    await validateUsername()
+    usernameError.value = await validateUsername()
 
     if (!usernameError.value) {
       try {
-        // const updateuser = await updateUsername(user.value.username)
-
         const updateuser = await service.usernameUpdate(user.value.username)
 
         if (updateuser && updateuser.message) {
@@ -228,6 +225,4 @@
       }
     }
   }
-
-  const { updateUsername } = Actions()
 </script>

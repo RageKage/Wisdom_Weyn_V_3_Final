@@ -34,16 +34,18 @@
             >Proverb</span
           >
         </div>
-        <div class="px-4 py-6">
+        <div class="px-4 py-4">
           <h2 class="text-lg">
             {{ item.title }}
           </h2>
-          <div class="mt-4">
+          <div class="mt-4 mb-2">
             <div class="text-md leading-relaxed">
               {{ item.content }}
             </div>
-            <div class="mt-6 border-t border-gray-300 pt-4">
-              <div class="text-md leading-relaxed text-yellow-500">
+            <div class="mt-2 mb-8 border-t border-gray-300">
+              <div
+                class="text-sm text-gray-600 flex flex-col items-start justify-start"
+              >
                 {{ item.meaning }}
               </div>
             </div>
@@ -58,7 +60,7 @@
                     >{{ item.username }}
                   </span>
                 </span>
-                <span
+                <span class="text-xs"
                   >Date: <span>{{ formatDate(item.creationDate) }}</span></span
                 >
               </div>
@@ -67,7 +69,9 @@
             </div>
           </div>
           <!-- Action buttons -->
-          <div class="flex items-center space-x-4 text-sm text-gray-700">
+          <div
+            class="flex items-center space-x-4 text-sm text-gray-700 border-t border-gray-200"
+          >
             <div class="flex items-center space-x-2">
               <button
                 @click="upvoteSubmisson(item.id)"
