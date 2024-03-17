@@ -172,6 +172,23 @@ const AppApiService = () => {
         .catch(handleError)
     },
 
+    // update user last login time
+    async updateLastlongAt(user) {
+      const headers = await useAuthStore().getAuthHeaders()
+
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged ')
+      }
+
+      const data = {
+        lastLoginAt: user.metadata.lastSignInTime || null,
+      }
+      return axios
+        .post(apiPath + `/users/lastLoginAt`, data, { headers })
+        .then(handleResponse)
+        .catch(handleError)
+    },
+
     // Sync google user data with the database
     async syncGoogleUserData(user) {
       const headers = await useAuthStore().getAuthHeaders()

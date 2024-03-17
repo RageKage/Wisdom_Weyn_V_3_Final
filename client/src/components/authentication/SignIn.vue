@@ -174,6 +174,14 @@
     try {
       const userCredential = await signinWithEmail(email.value, password.value)
       //    if (userCredential.user.emailVerified) future implements email verification with firebase
+
+      const user = userCredential.user
+
+      // update the lastLogin time
+      await service.updateLastlongAt(user)
+
+      localStorage.setItem('isLoggedIn', 'true')
+
       if (userCredential.user) {
         router.push('/') // Redirect to home after successful login
       } else {
@@ -213,13 +221,12 @@
       // Check for existing username
       const hasUsername = await service.checkUsername()
 
-      if (hasUsername == true) {
-        router.push('') // Redirect to home if username exists
+      if (hasUsername.exists == true) {
+        router.push('/') // Redirect to home if username exists
       } else {
         router.push('/custom-username') // Redirect to username creation page
       }
     } catch (error) {
-
       if (error.code) {
         switch (error.code) {
           case 'auth/invalid-email':
@@ -230,7 +237,6 @@
             break
         }
       } else {
-
         firebaseError.value = 'An unknown error occurred'
       }
     }

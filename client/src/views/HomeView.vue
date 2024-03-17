@@ -70,43 +70,44 @@
       </div>
     </section>
 
-    <!-- Discover section -->
     <section
-      class="intro-section grid md:grid-cols-2 gap-10 items-center mb-6 mt-6 rounded-3xl bg-seashell-50 p-8"
+      class="flex flex-col items-center justify-center mb-6 mt-6 rounded-3xl bg-coolGray-50 py-8 px-4"
     >
-      <div class="text-center md:text-left">
-        <h1
-          class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-4"
-        >
-          Discover
-        </h1>
-        <p class="text-gray-700 leading-relaxed mb-6">
+      <h1
+        data-aos="fade-down"
+        data-aos-delay="100"
+        class="text-2xl md:text-4xl lg:text-4xl font-semibold text-center text-seashell-900 mt-6 mb-4"
+      >
+        Discover Wisdom Weyn
+      </h1>
+      <p
+        class="text-center text-seashell-900 leading-relaxed mb-10 max-w-3xl mx-auto"
+      >
+        <span data-aos="zoom-in" data-aos-delay="300">
           Browse through the collections of poems and Proverbs, each with its
-          own story and interpretation. You can also submit your own poems and
-          Proverbs, or share your insights and feedback with other users.
-        </p>
-        <div class="flex justify-center md:justify-start space-x-4 mt-6">
-          <router-link
-            to="/collections"
-            class="inline-block bg-saffron-500 hover:bg-saffron-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out"
-            >Collections</router-link
-          >
-          <router-link
-            to="/submissions/create"
-            class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out"
-            >Contribute</router-link
-          >
-        </div>
-      </div>
-      <div class="text-center md:text-right">
-        <div>
-          <h3 class="text-2xl font-semibold text-gray-900 mb-4">
-            Featured Collection
-          </h3>
-          <p class="text-gray-700 leading-relaxed mb-6">
-            "Geel meel fog laga keeno, waa gacal meel dhow laga helo"
-          </p>
-        </div>
+          own story and interpretation.
+        </span>
+        <span data-aos="zoom-in" data-aos-delay="500">
+          You can also submit your own poems and Proverbs, or share your
+          insights and feedback with other users.
+        </span>
+      </p>
+
+      <div
+        class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8"
+        data-aos="fade-up"
+        data-aos-delay="700"
+      >
+        <a
+          href="#"
+          class="btn-contribute bg-saffron-500 hover:bg-saffron-600 text-seashell-50 transition-all duration-300 px-6 py-3 rounded-3xl shadow-lg"
+          >Contribute to Wisdom Weyn</a
+        >
+        <a
+          href="#"
+          class="btn-collections bg-saffron-500 hover:bg-saffron-600 text-seashell-50 transition-all duration-300 px-6 py-3 rounded-3xl shadow-lg"
+          >Check out the Collections</a
+        >
       </div>
     </section>
 
@@ -206,47 +207,3 @@
   // show random pick each time the page refreshed
   onMounted(setRandomImage)
 </script>
-
-<style scoped>
-  /* Primary button */
-  .btn-primary {
-    background-color: #ff9900;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-primary:hover {
-    background-color: #ff6600;
-  }
-
-  /* Secondary button */
-  .btn-secondary {
-    background-color: #0099ff;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-secondary:hover {
-    background-color: #0066ff;
-  }
-
-  /* Tertiary button */
-  .btn-tertiary {
-    background-color: #ff6699;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-tertiary:hover {
-    background-color: #ff3366;
-  }
-</style>

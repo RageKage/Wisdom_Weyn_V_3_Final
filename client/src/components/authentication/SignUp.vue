@@ -285,8 +285,8 @@
       // Check for existing username
       const hasUsername = await service.checkUsername()
 
-      if (hasUsername == true) {
-        router.push('') // Redirect to home if username exists
+      if (hasUsername.exists == true) {
+        router.push('/') // Redirect to home if username exists
       } else {
         router.push('/custom-username') // Redirect to username creation page
       }

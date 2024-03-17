@@ -1,15 +1,12 @@
 <template>
   <nav class="text-seashell-700" v-if="loading">
-    <div class="flex items-center justify-between flex-wrap py-6 px-1">
+    <div class="flex items-center justify-between flex-wrap">
       <Logo />
 
       <div
-        class="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
+        class="relative flex items-center md:order-2 md:space-x-0 rtl:space-x-reverse bg-white p-2 rounded-full"
       >
-        <div
-          v-if="user"
-          class="flex items-center justify-center space-x-3 sm:pr-4 lg:pr-0 w-16 h-16 lg:w-20 lg:h-20 transition-all duration-300 ease-in-out transform"
-        >
+        <div v-if="user" class="p-1">
           <button
             @click="toggleDropdown"
             type="button"
@@ -23,7 +20,7 @@
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="w-10 h-10 ml-1 bg-redDamask-600 p-1 rounded-2xl text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
+              class="w-10 h-10 bg-redDamask-600 p-1 rounded-full text-redDamask-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-redDamask-500"
             >
               <path
                 stroke-linecap="round"
@@ -71,13 +68,13 @@
           </ul>
         </div>
 
-        <div class="lg:hidden flex justify-between">
+        <div class="lg:hidden flex justify-between p-1">
           <button
             @click="toggleMenu"
-            class="inline-flex items-center rounded-2xl p-2 w-10 h-10 justify-center text-seashell-700 hover:text-seashell-900 bg-seashell-200 md:inline-flex lg:hidden hover:bg-seashell-300 focus:outline-none focus:ring-2 focus:ring-seashell-400"
+            class="inline-flex items-center justify-center p-2 rounded-md text-seashell-700"
           >
             <svg
-              class="w-5 h-5"
+              class="w-4 h-4"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

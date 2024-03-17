@@ -5,9 +5,10 @@
   >
     <div class="navbar-backdrop fixed inset-0" @click="closeMenu"></div>
     <nav
-      class="rounded-2xl fixed top-0 left-0 bottom-0 flex z-5 flex-col w-5/6 max-w-sm py-5 px-5 sm:py-6 sm:px-6 bg-slate-50 border-r overflow-y-auto ease-in-out duration-300"
+      class="rounded-tr-3xl rounded-br-3xl fixed top-0 left-0 bottom-0 flex z-5 flex-col w-5/6 max-w-sm py-4 px-4 sm:px-5 bg-slate-50 border-r overflow-y-auto ease-in-out duration-300"
+      id="menu"
     >
-      <div class="flex justify-between items-center py-5 sm:py-4">
+      <div class="flex justify-between items-center">
         <a @click="closeMenu" href="#" class="flex items-center">
           <Logo class="mr-2"></Logo>
           <span class="font-semibold text-lg">Wisdom Weyn</span>
@@ -104,3 +105,18 @@
     }
   })
 </script>
+
+<style scoped>
+  #menu {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>

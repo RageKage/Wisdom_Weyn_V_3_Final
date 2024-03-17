@@ -1,17 +1,18 @@
 <template>
-  <div class="p-4 lg:w-2/4">
+  <div class="max-w-3xl mx-auto">
     <div
       v-if="showSuccessPopup"
       class="bg-green-100 text-green-700 p-2 rounded-2xl shadow mx-auto max-w-2xl text-center"
     >
-      <span
-        class="text-sm font-semibold text-green-700 hover:text-green-900 cursor-pointer"
-      >
+      <span class="text-sm font-semibold text-green-700 hover:text-green-900">
         Username updated successfully!
       </span>
     </div>
 
-    <div v-if="user" class="mt-4 bg-white rounded-2xl shadow">
+    <div
+      v-if="user"
+      class="mt-4 bg-white rounded-2xl shadow max-w-3xl mx-auto m"
+    >
       <div
         class="p-4 border-b border-seashell-200 flex items-center justify-between"
       >
@@ -35,6 +36,9 @@
             <h2 class="font-bold">Hello, {{ user.username }}</h2>
             <p class="text-sm">
               Member Since: {{ isotimeValueConvert(user.createdAt) }}
+            </p>
+            <p class="text-xs text-gray-500">
+              Last Login: {{ lastLoginAt(user.lastLoginAt) }}
             </p>
           </div>
         </div>
@@ -92,9 +96,6 @@
             Email: <span>{{ user.email }}</span>
           </p>
           <p>Email Verified: <span>No</span></p>
-          <p v-if="user.lastLoginAt">
-            Last Login: {{ isotimeValueConvert(user.lastLoginAt) }}
-          </p>
         </div>
       </div>
 
@@ -167,20 +168,38 @@
     })
   }
 
+  // last login at time by hour and minutes
+  const lastLoginAt = (value) => {
+    const date = new Date(value)
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+  }
+
   const validateUsername = async () => {
     const username = user.value.username
 
-    if (username.length <= 3) {
-      usernameError.value = 'Username must be longer than 3 characters.'
-      return
-    }
-    if (/\s/.test(username)) {
-      usernameError.value =
-        'Username cannot contain empty spaces between letters.'
-      return
+    const usernameRegex = /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/
+    const minLength = 3
+    const maxLength = 20
+
+    // Check if username is empty
+    if (username.length === 0) {
+      return 'Username cannot be empty.'
     }
 
-    usernameError.value = ''
+    // Check length requirements
+    if (username.length < minLength || username.length > maxLength) {
+      return `Username must be between ${minLength} and ${maxLength} characters long.`
+    }
+
+    // Check for allowed characters
+    if (!usernameRegex.test(username)) {
+      return 'Username can only contain letters, numbers, underscores (_), and hyphens (-). It cannot begin with an underscore or hyphen.'
+    }
+
+    return ''
   }
   const showSuccessPopup = ref(false)
 

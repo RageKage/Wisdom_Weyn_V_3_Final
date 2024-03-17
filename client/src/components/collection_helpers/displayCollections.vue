@@ -3,21 +3,18 @@
     <div v-if="activeFilter" class="text-seashell-900 leading-relaxed mb-4">
       <div v-if="displayedItems.length > 0">
         <div
-          class="flex flex-row justify-center items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
+          class="flex flex-row justify-center items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse text-seashell-900"
         >
           <div class="flex items-center">
             <div>
-              <div
-                v-if="displayedItems.length > 0"
-                class="rounded-lg text-seashell-900 p-2 hover:text-seashell-900 transition-all duration-300 mr-3"
-              >
+              <div v-if="displayedItems.length > 0" class="p-2 mr-3">
                 {{ displayedItems.length }}
               </div>
             </div>
           </div>
           <div>
             <span
-              class="rounded-lg bg-saffron-400 p-3 transition-all duration-300 text-seashell-900"
+              class="rounded-3xl bg-saffron-400 p-3 transition-all duration-300"
             >
               {{ activeFilter }}
             </span>
@@ -99,167 +96,150 @@
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start"
   >
     <div
-      v-motion
-      :initial="{
-        x: 0,
-        y: -200,
-        scale: 0.5,
-        opacity: 0,
-      }"
-      :enter="{
-        x: 0,
-        y: 0,
-        scale: 1,
-        opacity: 1,
-        transition: { duration: 1, delay: 0.5 },
-      }"
       v-for="item in displayedItems"
       :key="item.id"
-      class="bg-white rounded-lg shadow-lg transition-all duration-300 justify-between items-start p-4 mb-4"
+      class="mb-6 p-4 bg-white rounded-lg shadow-md"
     >
-      <div class="flex-1">
-        <div class="pr-2">
-          <div class="flex flex-row-reverse justify-between text-md">
-            <div>
-              <span
-                v-if="item.title"
-                class="bg-red-500 w-2 h-2 rounded-full inline-block ml-1"
-              ></span>
-
-              <span class="font-medium text-seashell-900">
-                {{ item.Proverb }}
-              </span>
-            </div>
-
-            <div class="text-seashell-900 py-1 font-medium">
-              {{ item.content }}
-            </div>
-          </div>
+      <div class="border-b pb-2 border-gray-200">
+        <div class="mb-2 flex justify-between">
+          <span v-if="item.title" class="font-semibold">{{ item.title }}</span>
+          <span v-else>{{ item.content }}</span>
+          <span
+            v-if="item.type === 'Poetry'"
+            class="bg-yellow-100 text-yellow-800 rounded-md px-2 py-1 text-xs font-medium"
+            >Poetry</span
+          >
+          <span
+            v-if="item.type === 'Proverb'"
+            class="bg-orange-100 text-orange-500 rounded-md px-2 py-1 text-xs font-medium"
+            >Proverb</span
+          >
         </div>
 
-        <div v-show="item.showMeaning" class="mt-2">
-          <span class="text-indigo-600">{{ item.meaning }}</span>
+        <div>
+          <span v-if="item.title"></span>
+
+          <span class="font-medium text-seashell-900">
+            {{ item.Proverb }}
+          </span>
+        </div>
+
+        <div v-if="item.showMeaning" class="leading-relaxed">
+          {{ item.meaning }}
         </div>
 
         <button
           @click="toggleMeaning(item)"
-          class="mt-4 text-indigo-600 hover:text-indigo-800 focus:outline-none text-sm transition-all duration-300"
+          class="text-blue-500 hover:text-blue-700 transition-all"
         >
           {{ item.showMeaning ? 'Hide Meaning' : 'See Meaning' }}
         </button>
-        <div class="text-sm text-gray-600 mb-4 mt-2">
-          Submitted by
-          <span
-            @click="userdashboard(item.username)"
-            class="text-indigo-600 hover:text-indigo-800 cursor-pointer"
-            >{{ item.username }}</span
+
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-600 flex flex-col">
+            <span
+              >Contributor:
+              <span
+                @click="userdashboard(item.username)"
+                class="text-indigo-600 hover:text-indigo-800 cursor-pointer"
+                >{{ item.username }}
+              </span>
+            </span>
+            <span
+              >Date: <span>{{ formatDate(item.creationDate) }}</span></span
+            >
+          </div>
+
+          <div class="flex items-center space-x-2"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4 text-sm text-gray-700">
+        <div class="flex items-center space-x-2">
+          <button
+            @click="upvoteSubmisson(item.id)"
+            class="focus:outline-none hover:text-orange-500 transition-all mr-2"
           >
-          on <span>{{ formatDate(item.creationDate) }}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 15l7-7 7 7"
+              />
+            </svg>
+          </button>
+          <span class="text-gray-700">{{ item.votes.upvote.count || 0 }}</span>
         </div>
 
-        <!-- voting -->
-        <div
-          class="flex flex-row justify-between items-center text-sm text-gray-600"
-        >
-          <div class="flex items-center">
-            <button
-              @click="upvoteSubmisson(item.id)"
-              :class="{
-                'text-carrotOrange-400':
-                  item.userVote === 'upvote' || isUserUpvoted(item),
-              }"
-              class="focus:outline-none mr-2 hover:text-carrotOrange-600 transition-all duration-300"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M5 15l7-7 7 7"
-                />
-              </svg>
-            </button>
-            <span>{{ item.votes.upvote.count || 0 }}</span>
-            <button
-              @click="downvoteSubmisson(item.id)"
-              :class="{
-                'text-red-400':
-                  item.userVote === 'downvote' || isUserDownvoted(item),
-              }"
-              class="focus:outline-none ml-2 mr-2 hover:text-cinnabar-500 transition-all duration-300"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            <span>{{ item.votes.downvote.count || 0 }}</span>
-          </div>
-          <div
-            class="flex flex-row justify-between items-center text-sm text-gray-600"
+        <div class="flex items-center space-x-2">
+          <button
+            @click="downvoteSubmisson(item.id)"
+            class="focus:outline-none hover:text-red-500 mr-2 transition-all"
           >
-            <button
-              @click="showFullText(item.id)"
-              class="focus:outline-none p-2"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="w-5 h-5"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 hover:text-carrotOrange-600 transition-all duration-300"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                />
-              </svg>
-            </button>
-            <div v-if="isLoggedIn">
-              <button
-                v-if="user.email === item.submittedBy"
-                @click="deletessubmission(item.id, user.uid)"
-                class="focus:outline-none ml-2 p-2"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-6 h-6 hover:text-cinnabar-500 tansition-all duration-300"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                  />
-                </svg>
-              </button>
-              <!-- wanna add a edit -->
-            </div>
-          </div>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <span class="text-gray-700">{{
+            item.votes.downvote.count || 0
+          }}</span>
+        </div>
+
+        <div class="flex-grow"></div>
+
+        <button @click="showFullText(item.id)" class="hover:text-blue-500 p-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+            />
+          </svg>
+        </button>
+
+        <div v-if="isLoggedIn && user.email === item.submittedBy">
+          <button
+            @click="deletessubmission(item.id, user.uid)"
+            class="hover:text-red-600 p-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -328,8 +308,7 @@
       // set the user value to the user details
       if (authStore.dbUser) {
         user.value = authStore.dbUser.dbData
-      isLoggedIn.value = true
-
+        isLoggedIn.value = true
       }
     } catch (error) {
       console.error('Error getting current user:', error)

@@ -55,10 +55,20 @@
   const usernameError = ref('')
 
   const validateUsername = () => {
-    usernameError.value =
-      chosenUsername.value.length < 4
-        ? 'Username must be at least 3 characters long.'
-        : ''
+    const username = chosenUsername.value
+
+    if (username.length < 4) {
+      usernameError.value = 'Username must be at least 4 characters long.'
+    } else if (username.length > 20) {
+      usernameError.value = 'Username must be no more than 20 characters long.'
+    } else if (username.startsWith(' ') || username.endsWith(' ')) {
+      usernameError.value = 'Username cannot start or end with a space.'
+    } // check if the username contains spaces or not
+    else if (username.includes(' ')) {
+      usernameError.value = 'Username cannot contain spaces.'
+    } else {
+      usernameError.value = ''
+    }
   }
 
   onMounted(async () => {

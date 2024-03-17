@@ -60,7 +60,12 @@
     </div>
 
     <div>
-      <formVue @submit="submitEntry" ref="formVueRef" :is-loading="isLoading" />
+      <formVue
+        @submit="submitEntry"
+        ref="formVueRef"
+        :is-loading="isLoading"
+        class="max-w-6xl mx-auto"
+      />
     </div>
   </div>
 </template>

@@ -5,7 +5,7 @@
       id="searchInput"
       placeholder="Search for Proverb or Gabay"
       v-model="searchQuery"
-      class="flex-grow hover:cursor-pointer placeholder:text-seashell-900 px-4 py-2 rounded-2xl transition-all duration-300"
+      class="flex-grow px-4 py-2 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-saffron-300 transition-all duration-300"
     />
 
     <span
@@ -18,7 +18,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        class="rtl:rotate-180 w-3.5 h-3.5 ms-2 mr-4"
+        class="w-3.5 h-3.5 mr-4"
       >
         <path
           stroke-linecap="round"
