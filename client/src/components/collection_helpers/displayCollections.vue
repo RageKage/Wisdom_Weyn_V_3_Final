@@ -21,7 +21,20 @@
             />
           </svg>
         </span>
+        <!-- check that 
         No data available for {{ activeFilter }}
+         isn't empty and if it then say no data in collections -->
+        <span
+          >No data available
+          <span v-if="activeFilter">for {{ activeFilter }}</span>
+          <span
+            v-else
+            class="
+            
+          "
+            >in Collections</span
+          >
+        </span>
       </div>
     </div>
   </div>

@@ -33,9 +33,13 @@ export const useAuthStore = defineStore('auth', () => {
                 resolve({ user, token }) // Resolve with user and token
               })
               .catch(reject) // Reject if there's an error getting the token
-          } else {
-            resolve(null) // Resolve with null if no user is signed in
           }
+          // else if the user session is expired then sign them out automatically
+          else if (user === null) {
+            signout()
+          }
+
+          resolve(null) // Resolve with null if no user is signed in
         })
       })
 
