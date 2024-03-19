@@ -2,17 +2,31 @@
   <div class="max-w-3xl mx-auto">
     <div
       v-if="showSuccessPopup"
-      class="bg-green-100 text-green-700 p-4 rounded-2xl shadow mx-auto max-w-2xl text-center"
+      class="fixed top-0 left-0 right-0 m-2 bg-green-400 text-white font-bold py-2 px-4 rounded-3xl max-w-3xl mx-auto"
     >
-      <span class="text-sm font-bold inline-block">
-        Username updated successfully!
-      </span>
+      <div class="flex flex-row items-center text-center justify-between">
+        <span
+          class="bg-green-600 rounded-full mr-3 flex items-center justify-center w-8 h-8"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+        </span>
+        <p>Changes Saved Successfully</p>
+      </div>
     </div>
 
-    <div
-      v-if="user"
-      class="mt-4 bg-white rounded-2xl shadow max-w-3xl mx-auto m"
-    >
+    <div v-if="user" class="mt-4 bg-white rounded-2xl shadow max-w-3xl mx-auto">
       <div
         class="p-4 border-b border-seashell-200 flex items-center justify-between"
       >
@@ -73,21 +87,61 @@
         <p v-if="usernameError" class="text-red-500">{{ usernameError }}</p>
       </div>
 
-      <!-- <div class="p-4 border-b border-seashell-200">
+      <div class="p-4 border-b border-seashell-200">
         <label class="block font-bold mb-2">Bio</label>
-
-        <div>
+        <div class="">
           <textarea
             v-model="user.bio"
             rows="4"
+            placeholder="Write a short bio about yourself."
             class="w-full p-2 border bg-white border-seashell-200 rounded-xl"
-            placeholder="Tell us something about yourself..."
+            maxlength="200"
           ></textarea>
-          <button class="bg-blue-500 text-white px-4 py-2 rounded-xl mt-2">
-            Save
-          </button>
+          <p
+            class="text-xs text-gray-500 text-right mt-2 transition duration-300"
+          >
+            {{ user.bio.length }}/200
+          </p>
         </div>
-      </div> -->
+      </div>
+      <!-- Intrests -->
+
+      <div class="p-4 border-b border-seashell-200">
+        <label class="block font-bold mb-2">Interests</label>
+        <p class="text-gray-600 text-sm m-2">
+          Select the categories you are interested in.
+        </p>
+        <div class="flex flex-wrap items-center mb-2">
+          <div
+            v-for="interest in categoryOfIntrests"
+            :key="interest.name"
+            class="flex items-center mr-4"
+          >
+            <input
+              type="checkbox"
+              :id="interest.name"
+              :value="interest.name"
+              class="hidden"
+              :checked="selectedInterests.includes(interest.name)"
+              @change="toggleIntrest(interest.name)"
+            />
+            <label
+              :for="interest.name"
+              class="cursor-pointer px-3 py-2 rounded-xl text-xs font-bold m-1 transition duration-300"
+              :class="{
+                'bg-orange-500 text-white': selectedInterests.includes(
+                  interest.name,
+                ),
+                'bg-orange-100 text-orange-500': !selectedInterests.includes(
+                  interest.name,
+                ),
+              }"
+            >
+              {{ interest.name }}
+            </label>
+          </div>
+        </div>
+      </div>
 
       <div>
         <div class="p-4 border-b border-seashell-200">
@@ -129,100 +183,53 @@
           </div>
         </div>
       </div> -->
+      <!-- 
+
+       -->
+
+      <div class="p-4 border-b border-seashell-200">
+        <button
+          class="bg-orange-500 text-white px-4 py-2 rounded-xl mt-2 hover:bg-orange-700 transition duration-300"
+          @click="saveChanges"
+        >
+          Save Changes
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue'
-  import AppApiService from '../../service/index.js'
+  import { onMounted } from 'vue'
   import defaultPic from '@/assets/defaultprofilePic.svg'
-
-  import { useAuthStore } from '../../store/authStore' // Import useAuthStore
-  const authStore = useAuthStore()
-
-  const service = AppApiService()
-  const user = ref(null)
-
-  const usernameError = ref('')
+  import useSettings from '../Composables/settingComposable.js'
 
   onMounted(async () => {
-    // get the current user details
-
     // get the current user details
     await authStore.getCurrentUserDetails()
 
     // set the user value to the user details
     if (authStore.dbUser) {
       user.value = authStore.dbUser.dbData
+
+      // update selectedInterests with the user's interests
+      if (user.value.interests) {
+        selectedInterests.value = user.value.interests
+      }
     }
   })
 
-  const isotimeValueConvert = (value) => {
-    const date = new Date(value)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  }
-
-  // last login at time by hour and minutes
-  const lastLoginAt = (value) => {
-    const date = new Date(value)
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-    })
-  }
-
-  const validateUsername = async () => {
-    const username = user.value.username
-
-    const usernameRegex = /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/
-    const minLength = 3
-    const maxLength = 20
-
-    // Check if username is empty
-    if (username.length === 0) {
-      return 'Username cannot be empty.'
-    }
-
-    // Check length requirements
-    if (username.length < minLength || username.length > maxLength) {
-      return `Username must be between ${minLength} and ${maxLength} characters long.`
-    }
-
-    // Check for allowed characters
-    if (!usernameRegex.test(username)) {
-      return 'Username can only contain letters, numbers, underscores (_), and hyphens (-). It cannot begin with an underscore or hyphen.'
-    }
-
-    return ''
-  }
-  const showSuccessPopup = ref(false)
-
-  const validateAndUpdateUsername = async () => {
-    usernameError.value = await validateUsername()
-
-    if (!usernameError.value) {
-      try {
-        const updateuser = await service.usernameUpdate(user.value.username)
-
-        if (updateuser && updateuser.message) {
-          showSuccessPopup.value = true
-
-          const userDetails = await authStore.getCurrentUserDetails()
-
-          localStorage.setItem('dbUser', JSON.stringify(userDetails))
-        }
-      } catch (error) {
-        usernameError.value = error
-      } finally {
-        setTimeout(() => {
-          showSuccessPopup.value = false
-        }, 3000)
-      }
-    }
-  }
+  const {
+    selectedInterests,
+    usernameError,
+    showSuccessPopup,
+    categoryOfIntrests,
+    isotimeValueConvert,
+    lastLoginAt,
+    validateAndUpdateUsername,
+    toggleIntrest,
+    authStore,
+    user,
+    saveChanges,
+  } = useSettings()
 </script>

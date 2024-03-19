@@ -228,6 +228,25 @@ const AppApiService = () => {
         .then(handleResponse)
         .catch(handleError)
     },
+
+    // save settings changes
+    async updateUserDetails(bio, interests) {
+      const headers = await useAuthStore().getAuthHeaders()
+
+      if (Object.keys(headers).length === 0) {
+        return Promise.reject('You must be logged in to create a submission')
+      }
+
+      const data = {
+        ...bio,
+        ...interests,
+      }
+
+      return axios
+        .put(apiPath + `/users/settings`, data, { headers })
+        .then(handleResponse)
+        .catch(handleError)
+    },
     checkServerStatus() {
       return axios
         .get(`${apiPath}/server/status`)
