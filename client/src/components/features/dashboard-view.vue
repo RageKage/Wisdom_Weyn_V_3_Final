@@ -33,10 +33,23 @@
           />
           <div>
             <h2 class="text-lg font-semibold">{{ data.username }}</h2>
-            <p class="text-gray-600">
-              <!-- bio coming soon
--->
+            <p class="text-gray-600 text-sm">
+              {{ data.bio }}
             </p>
+            <!-- user Intrests -->
+            <div class="mt-4">
+              <div
+                class="flex items-center justify-start flex-wrap text-gray-600"
+              >
+                <div
+                  v-for="interest in data.interests"
+                  :key="interest"
+                  class="bg-orange-100 rounded-md text-center mr-2"
+                >
+                  <p class="text-orange-500 text-sm p-2">{{ interest }}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -96,7 +109,7 @@
           </div>
         </div>
         <div v-else>
-          <p>No upvotes yet. Be the first to upvote their submissions.</p>
+          <p>No top contributions yet.</p>
         </div>
       </section>
 
@@ -123,6 +136,9 @@
               </button>
             </div>
           </div>
+        </div>
+        <div v-else>
+          <p>No recent activity yet.</p>
         </div>
       </section>
     </div>

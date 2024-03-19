@@ -33,13 +33,9 @@ export const useAuthStore = defineStore('auth', () => {
                 resolve({ user, token }) // Resolve with user and token
               })
               .catch(reject) // Reject if there's an error getting the token
+          } else {
+            resolve(null) // Resolve with null if no user is signed in
           }
-          // else if the user session is expired then sign them out automatically
-          else if (user === null) {
-            signout()
-          }
-
-          resolve(null) // Resolve with null if no user is signed in
         })
       })
 
@@ -66,6 +62,8 @@ export const useAuthStore = defineStore('auth', () => {
                   personalName: snapshot.val().personalName,
                   submissionCount: snapshot.val().submissionCount,
                   username: snapshot.val().username,
+                  bio: snapshot.val().bio,
+                  interests: snapshot.val().interests,
                 },
               }
               resolve(userData)
@@ -81,10 +79,18 @@ export const useAuthStore = defineStore('auth', () => {
         authUser.value = null
         token.value = null
         dbUser.value = null
+
+        localStorage.removeItem('authUser')
+        localStorage.removeItem('token')
+        localStorage.removeItem('dbUser')
       } else {
         authUser.value = authUserValue.user
         token.value = authUserValue.token
         dbUser.value = dbUserValue
+
+        localStorage.removeItem('authUser')
+        localStorage.removeItem('token')
+        localStorage.removeItem('dbUser')
         // and also save to localStorage
         localStorage.setItem('authUser', JSON.stringify(authUserValue.user))
         localStorage.setItem('token', JSON.stringify(authUserValue.token))

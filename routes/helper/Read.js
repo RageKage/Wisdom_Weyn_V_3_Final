@@ -33,6 +33,8 @@ async function getDashboardData(username, res) {
       email: userObject.email,
       submissionCount: userObject.submissionCount,
       userStats: submissionsCount,
+      bio: userObject.bio,
+      interests: userObject.interests,
       mostVotes,
       mostRecent,
     });

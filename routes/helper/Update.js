@@ -113,9 +113,36 @@ const updateLastloginAt = async (res, userData, uid) => {
   res.json("User data processed successfully.");
 };
 
+// updateUserDetails
+
+async function updateUserDetails(res, data, uid) {
+  const bio = data.bio;
+  const interests = data.interests;
+
+  const userRef = db.ref(`users/${uid}`);
+
+  const snapshot = await userRef.once("value");
+
+  // now if any of the bio or interests field is not present in the data then create them else update them
+  if (snapshot.exists()) {
+    if (bio) {
+      await userRef.update({ bio: bio });
+    }
+    if (interests) {
+      await userRef.update({ interests: interests });
+    }
+  } else {
+    // If user doesn't exist, return Error
+    return handleError(res, "User not found");
+  }
+
+  res.json("User data processed successfully.");
+}
+
 module.exports = {
   updateData,
   updateUsername,
   handleVoting,
   updateLastloginAt,
+  updateUserDetails,
 };

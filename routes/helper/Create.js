@@ -124,6 +124,7 @@ const storeUserData = async (res, userData, uid) => {
         createdAt: userData.createdAt || null,
         lastLoginAt: userData.lastLoginAt || null,
         submissionCount: 0,
+        bio: "",
       });
     }
     res.json("User data processed successfully.");

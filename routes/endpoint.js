@@ -21,6 +21,7 @@ var getDashboardData = require("./helper/Read.js").getDashboardData;
 var getCollections = require("./helper/Read.js").getCollections;
 var createSubmission = require("./helper/Create.js").createSubmission;
 var DeleteSubmission = require("./helper/Delete.js").DeleteSubmission;
+var updateUserDetails = require("./helper/Update.js").updateUserDetails;
 
 var storeUserData = require("./helper/Create.js").storeUserData;
 var updateLastloginAt = require("./helper/Update.js").updateLastloginAt;
@@ -137,6 +138,25 @@ router.delete("/submissions/:id", async (req, res) => {
     await DeleteSubmission(id, uid, res);
   } catch (error) {
     return handleError(res, error);
+  }
+});
+
+// update user bio and intrests
+router.put("/users/settings", async (req, res) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  if (!idToken) {
+    return sendUnauthorized(res, "Unauthorized");
+  }
+
+  try {
+    const decodedToken = await verifyToken(idToken);
+    const uid = decodedToken.uid;
+    const data = req.body;
+
+    await updateUserDetails(res, data, uid);
+  } catch (error) {
+    console.error(error); // Log the error instead of sending a response
   }
 });
 
