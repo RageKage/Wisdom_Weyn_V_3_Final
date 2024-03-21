@@ -26,11 +26,22 @@
     <div v-else-if="data" class="max-w-3xl mx-auto mb-6">
       <section class="mb-6 p-4 bg-white rounded-lg shadow-md">
         <div class="flex items-center space-x-4">
-          <img
-            :src="defaultPic"
-            alt="Profile Picture"
-            class="w-16 h-16 rounded-full"
-          />
+          <div>
+          
+            <img
+              v-if="data.photoURL"
+              :src="data.photoURL"
+              alt="User Photo"
+              class="w-18 h-20 rounded-full object-cover border-2"
+            />
+
+            <img
+              v-else
+              :src="defaultPic"
+              alt="User Photo"
+              class="w-18 h-20 rounded-full object-cover border-2"
+            />
+          </div>
           <div>
             <h2 class="text-lg font-semibold">{{ data.username }}</h2>
             <p class="text-gray-600 text-sm">

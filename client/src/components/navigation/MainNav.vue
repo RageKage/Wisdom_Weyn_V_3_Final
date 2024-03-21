@@ -4,7 +4,7 @@
       <Logo />
 
       <div
-        class="relative flex items-center md:order-2 md:space-x-0 rtl:space-x-reverse bg-white p-2 rounded-full"
+        class="relative flex items-center md:order-2 md:space-x-0 rtl:space-x-reverse"
       >
         <div v-if="user" class="p-1">
           <button
@@ -33,7 +33,7 @@
         <router-link
           v-else
           to="/sign-in"
-          class="hidden lg:inline text-gray-900 hover:-700"
+          class="bg-carrotOrange-400 px-4 py-2 rounded-2xl hover:bg-carrotOrange-500 text-white cursor-pointer border-b-4 border-carrotOrange-500 transition-all duration-300 max-w-xl hidden lg:inline"
           >Log in <span>&rarr;</span></router-link
         >
         <!-- Dropdown menu -->
@@ -86,7 +86,7 @@
         <div class="lg:hidden flex justify-between p-1">
           <button
             @click="toggleMenu"
-            class="inline-flex items-center justify-center p-2 rounded-md text-seashell-700"
+            class="inline-flex items-center justify-center bg-white p-4 rounded-full"
           >
             <svg
               class="w-4 h-4"

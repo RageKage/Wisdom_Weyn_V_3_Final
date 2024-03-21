@@ -100,12 +100,12 @@
       >
         <router-link
           to="/collections"
-          class="text-seashell-800 px-4 py-2 rounded-2xl bg-saffron-400 transition-all duration-300 flex items-center cursor-pointer"
+          class="bg-saffron-300 px-4 py-2 rounded-2xl hover:bg-saffron-400 flex items-center cursor-pointer border-b-4 border-saffron-400 text-seashell-800 transition-all duration-300"
           >Contribute to Wisdom Weyn
         </router-link>
         <router-link
           to="/submissions/create"
-          class="text-seashell-800 px-4 py-2 rounded-2xl bg-saffron-400 transition-all duration-300 flex items-center cursor-pointer"
+          class="bg-saffron-300 px-4 py-2 rounded-2xl hover:bg-saffron-400 flex items-center cursor-pointer border-b-4 border-saffron-400 text-seashell-800 transition-all duration-300"
           >Check out the Collections
         </router-link>
       </div>

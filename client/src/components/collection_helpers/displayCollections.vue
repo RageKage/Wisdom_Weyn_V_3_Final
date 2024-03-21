@@ -129,6 +129,10 @@
           <button
             @click="upvoteSubmisson(item.id)"
             class="focus:outline-none hover:text-orange-500 transition-all mr-2"
+            :class="{
+              'text-carrotOrange-400':
+                item.userVote === 'upvote' || isUserUpvoted(item),
+            }"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -150,6 +154,11 @@
         <div class="flex items-center space-x-2">
           <button
             @click="downvoteSubmisson(item.id)"
+
+            :class="{
+              'text-red-400':
+                item.userVote === 'downvote' || isUserDownvoted(item),
+            }"
             class="focus:outline-none hover:text-red-500 mr-2 transition-all"
           >
             <svg

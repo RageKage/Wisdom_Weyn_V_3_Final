@@ -36,18 +36,18 @@
               v-if="user.photoURL"
               :src="user.photoURL"
               alt="User Photo"
-              class="w-12 h-12 rounded-full"
+              class="w-18 h-20 rounded-full object-cover border-2"
             />
 
             <img
               v-else
               :src="defaultPic"
               alt="User Photo"
-              class="w-12 h-12 rounded-full"
+              class="w-18 h-20 rounded-full object-cover border-2"
             />
           </div>
           <div>
-            <h2 class="font-bold">Hello, {{ user.username }}</h2>
+            <h2 class="font-bold">Hello, {{ user.personalName }}</h2>
             <p class="text-sm">
               Member Since: {{ isotimeValueConvert(user.createdAt) }}
             </p>
@@ -107,15 +107,15 @@
       <!-- Intrests -->
 
       <div class="p-4 border-b border-seashell-200">
-        <label class="block font-bold mb-2">Interests</label>
-        <p class="text-gray-600 text-sm m-2">
+        <label class="block font-bold mb-2">Interest</label>
+        <p class="text-gray-500 text-sm mb-2">
           Select the categories you are interested in.
         </p>
-        <div class="flex flex-wrap items-center mb-2">
+        <div class="flex flex-wrap items-center">
           <div
             v-for="interest in categoryOfIntrests"
             :key="interest.name"
-            class="flex items-center mr-4"
+            class="flex items-center mr-2"
           >
             <input
               type="checkbox"
@@ -127,7 +127,7 @@
             />
             <label
               :for="interest.name"
-              class="cursor-pointer px-3 py-2 rounded-xl text-xs font-bold m-1 transition duration-300"
+              class="cursor-pointer px-3 py-2 rounded-xl text-xs font-bold mb-1 transition duration-300"
               :class="{
                 'bg-orange-500 text-white': selectedInterests.includes(
                   interest.name,
@@ -181,6 +181,12 @@
               Delete All Posts
             </button>
           </div>
+
+
+          <p class="font-bold">Danger Zone</p>
+
+
+
         </div>
       </div> -->
       <!-- 
@@ -189,7 +195,7 @@
 
       <div class="p-4 border-b border-seashell-200">
         <button
-          class="bg-orange-500 text-white px-4 py-2 rounded-xl mt-2 hover:bg-orange-700 transition duration-300"
+          class="bg-orange-500 text-white px-4 py-2 rounded-xl mt-2 hover:bg-orange-700 transition duration-300 hover:scale-105"
           @click="saveChanges"
         >
           Save Changes

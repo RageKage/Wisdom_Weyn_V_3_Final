@@ -34,6 +34,7 @@ async function getDashboardData(username, res) {
       submissionCount: userObject.submissionCount,
       userStats: submissionsCount,
       bio: userObject.bio,
+      photoURL: userObject.photoURL,
       interests: userObject.interests,
       mostVotes,
       mostRecent,

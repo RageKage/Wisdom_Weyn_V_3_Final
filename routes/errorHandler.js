@@ -12,7 +12,7 @@ function handleError(res, error) {
       errorMessage = "Session expired, please login again.";
       break;
     case "auth/email-already-exists":
-      statusCode = 400; // Not Authorized
+      statusCode = 400; // Bad Request
       errorMessage = "The email address is already in use by another account.";
       break;
     case "auth/invalid-email":

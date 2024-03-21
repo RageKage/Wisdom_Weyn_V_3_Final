@@ -111,7 +111,7 @@
         <button
           type="submit"
           @click.prevent="signup"
-          class="bg-carrotOrange-500 border-2 hover:bg-carrotOrange-600 text-white font-bold py-3 px-6 rounded-3xl shadow-lg transition duration-300"
+          class="bg-carrotOrange-400 px-4 py-2 rounded-2xl hover:bg-carrotOrange-500 flex items-center justify-center text-white cursor-pointer border-b-4 border-carrotOrange-500 transition-all duration-300"
         >
           Sign Up
         </button>
@@ -120,10 +120,11 @@
           <span class="p-2 text-seashell-400">OR</span>
           <hr class="w-full" />
         </div>
+
         <button
           type="button"
           @click="signUpGoogle"
-          class="w-full flex justify-center items-center gap-2 text-sm text-seashell-600 p-2 rounded-md hover:bg-seashell-50 border border-seashell-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-seashell-200 transition-colors duration-300"
+          class="bg-saffron-300 px-4 py-2 rounded-2xl hover:bg-saffron-400 flex items-center justify-center text-seashell-800 cursor-pointer border-b-4 border-saffron-400 transition-all duration-300"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -148,8 +149,13 @@
               d="m419.404 58.936-82.933 67.896C313.136 112.246 285.552 103.82 256 103.82c-66.729 0-123.429 42.957-143.965 102.724l-83.397-68.276h-.014C71.23 56.123 157.06 0 256 0c62.115 0 119.068 22.126 163.404 58.936z"
             ></path>
           </svg>
-          Sign Up with Google
+          <span
+            class="ml-2 text-seashell-800 font-semibold hover:text-seashell-700 focus:outline-none"
+          >
+            Sign up with Google
+          </span>
         </button>
+
         <div class="mt-4 text-sm text-seashell-600 text-center">
           <p>
             Already have an account?
